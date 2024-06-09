@@ -62,7 +62,6 @@ const LocationService = () => {
                 <div className="location-result-div">
                   <div className="location-details-div">
                     <div className="location-result-header">Location Log</div>
-                    <div className="location-result-distance">{log}</div>
                   </div>
                 </div>
               </div>
@@ -75,9 +74,9 @@ const LocationService = () => {
                 <div className="text-block">What you see</div>
               </div>
             </div>
-            <pre contenteditable="false" className="code-block-examples w-code-block" style={{ display: 'block', overflowX: 'auto', background: '#2b2b2b', color: '#f8f8f2', padding: '0.5em' }}>
-              <code className="language-javascript" style={{ whiteSpace: 'pre' }}>{log}</code>
-            </pre>
+            <div className="code-block-custom">
+              {log}
+            </div>
           </div>
         </div>
       </div>
