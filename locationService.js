@@ -8,7 +8,8 @@ const LocationService = () => {
             const { lat, lon, city, country } = data;
             setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Approx location via IP:`);
             setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Lat: ${lat}, Lng: ${lon}`);
-            setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Longitude: ${lon}, City: ${city}, Country: ${country}`);
+            setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] City: ${city}`);
+            setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Country: ${country}`);
         })
         .catch((error) => {
             setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error getting location via IP: ${error.message}`);
@@ -77,7 +78,6 @@ const LocationService = () => {
                 <div className="text-block">What you see</div>
               </div>
             </div>
-            <div className="code-block-header">Event Log</div>
             <pre contenteditable="false" className="code-block-examples w-code-block" style={{ display: 'block', overflowX: 'auto', background: '#2b2b2b', color: '#f8f8f2', padding: '0.5em' }}>
               <code className="language-javascript" style={{ whiteSpace: 'pre' }}>{log}</code>
             </pre>
