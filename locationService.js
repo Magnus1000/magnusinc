@@ -1,21 +1,35 @@
 const LocationService = () => {
     const [log, setLog] = React.useState('');
 
+    React.useEffect(() => {
+        fetch('http://ip-api.com/json')
+        .then(response => response.json())
+        .then(data => {
+            const { lat, lon, city, country } = data;
+            setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Initial location via IP: Latitude: ${lat}, Longitude: ${lon}, City: ${city}, Country: ${country}`);
+        })
+        .catch((error) => {
+            setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error getting location via IP: ${error.message}`);
+        });
+    }, []);
+
     const handleGetLocation = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            setLog(`Latitude: ${latitude}, Longitude: ${longitude}`);
-          },
-          (error) => {
-            setLog(`Error getting location: ${error.message}`);
-          }
-        );
-      } else {
-        setLog('Geolocation is not supported by this browser.');
-      }
-    };
+        setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Button clicked.`);
+        if (navigator.geolocation) {
+          setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Permission granted.`);
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              const { latitude, longitude } = position.coords;
+              setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Latitude: ${latitude}, Longitude: ${longitude}`);
+            },
+            (error) => {
+              setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error getting location: ${error.message}`);
+            }
+          );
+        } else {
+          setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Geolocation is not supported by this browser.`);
+        }
+      };
 
     return (
       <div className="service-row">
