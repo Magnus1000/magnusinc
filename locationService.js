@@ -49,7 +49,7 @@ const handleGetLocation = () => {
           setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Lat: ${latitude}, Lng: ${longitude}`);
 
           // Fetch closest results
-          fetch(`https://magnusinc-magnus1000team.vercel.app/api/fetchCloseResults?lat=${latitude}&lng=${longitude}`)
+          fetch(`https://magnusinc-magnus1000team.vercel.app/api/fetchClosestResults?lat=${latitude}&lng=${longitude}`)
             .then(response => response.json())
             .then(data => {
               setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Closest results fetched:`);
