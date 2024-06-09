@@ -3,18 +3,22 @@ const LocationService = () => {
 
     React.useEffect(() => {
         let uuid = Cookies.get('uuid');
-        if (!uuid) {
-          uuid = generateUUID();
-          Cookies.set('uuid', uuid);
+        if (uuid) {
+            setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] UUID fetched from cookies: ${uuid}`);
+        } else {
+            uuid = generateUUID();
+            Cookies.set('uuid', uuid);
+            setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] UUID not found in cookies. New UUID generated and set: ${uuid}`);
         }
         fetch('https://ip-api.com/json')
         .then(response => response.json())
         .then(data => {
             const { lat, lon, city, country } = data;
-            setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Approx location via IP:`);
-            setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Lat: ${lat}, Lng: ${lon}`);
-            setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] City: ${city}`);
-            setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Country: ${country}`);
+            let newLog = `${log}\n[${new Date().toISOString()}] Approx location via IP:`;
+            newLog += `\n[${new Date().toISOString()}] Lat: ${lat}, Lng: ${lon}`;
+            newLog += `\n[${new Date().toISOString()}] City: ${city}`;
+            newLog += `\n[${new Date().toISOString()}] Country: ${country}`;
+            setLog(newLog);
         })
         .catch((error) => {
             setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error getting location via IP: ${error.message}`);
