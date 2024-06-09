@@ -1,12 +1,14 @@
 const LocationService = () => {
-    const [log, setLog] = React.useState('');
+    const [log, setLog] = React.useState('// event_logs');
 
     React.useEffect(() => {
         fetch('https://ip-api.com/json')
         .then(response => response.json())
         .then(data => {
             const { lat, lon, city, country } = data;
-            setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Initial location via IP: Latitude: ${lat}, Longitude: ${lon}, City: ${city}, Country: ${country}`);
+            setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Approx location via IP:`);
+            setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Lat: ${lat}, Lng: ${lon}`);
+            setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Longitude: ${lon}, City: ${city}, Country: ${country}`);
         })
         .catch((error) => {
             setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error getting location via IP: ${error.message}`);
@@ -20,14 +22,15 @@ const LocationService = () => {
           navigator.geolocation.getCurrentPosition(
             (position) => {
               const { latitude, longitude } = position.coords;
-              setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Latitude: ${latitude}, Longitude: ${longitude}`);
+              setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Precise location via Browser:`);
+              setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Lat: ${latitude}, Lng: ${longitude}`);
             },
             (error) => {
               setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error getting location: ${error.message}`);
             }
           );
         } else {
-          setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Geolocation is not supported by this browser.`);
+          setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Geolocation not supported by this browser.`);
         }
       };
 
