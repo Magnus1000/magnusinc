@@ -78,6 +78,7 @@ const LocationService = () => {
             <pre contenteditable="false" className="code-block-examples w-code-block" style={{ display: 'block', overflowX: 'auto', background: '#2b2b2b', color: '#f8f8f2', padding: '0.5em' }}>
               <code className="language-javascript" style={{ whiteSpace: 'pre' }}>{log}</code>
             </pre>
+          </div>
         </div>
       </div>
     );
