@@ -14,11 +14,7 @@ const LocationService = () => {
         .then(response => response.json())
         .then(data => {
             const { lat, lon, city, country } = data;
-            let newLog = `${log}\n[${new Date().toISOString()}] Approx location via IP:`;
-            newLog += `\n[${new Date().toISOString()}] Lat: ${lat}, Lng: ${lon}`;
-            newLog += `\n[${new Date().toISOString()}] City: ${city}`;
-            newLog += `\n[${new Date().toISOString()}] Country: ${country}`;
-            setLog(newLog);
+            setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Approx location via IP:\n[${new Date().toISOString()}] Lat: ${lat}, Lng: ${lon}\n[${new Date().toISOString()}] City: ${city}\n[${new Date().toISOString()}] Country: ${country}`);
         })
         .catch((error) => {
             setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error getting location via IP: ${error.message}`);
