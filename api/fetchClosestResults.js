@@ -15,7 +15,10 @@ module.exports = (req, res) => {
       });
 
       const records = response.data.records.map(record => ({
-        ...record.fields,
+        image: record.fields.image,
+        dealer: record.fields.dealer,
+        name: record.fields.name,
+        value: record.fields.value,
         distance: getDistance(
           { latitude: lat, longitude: lng },
           { latitude: record.fields.lat, longitude: record.fields.lng }

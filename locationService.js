@@ -1,5 +1,6 @@
 const LocationService = () => {
     const [log, setLog] = React.useState('// event_logs');
+    const [results, setResults] = React.useState([]);
 
     React.useEffect(() => {
         let uuid = Cookies.get('uuid');
@@ -37,24 +38,35 @@ const LocationService = () => {
         });
     }
 
-    const handleGetLocation = () => {
-        setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Button clicked.`);
-        if (navigator.geolocation) {
-          setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Permission granted.`);
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              const { latitude, longitude } = position.coords;
-              setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Precise location via Browser:`);
-              setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Lat: ${latitude}, Lng: ${longitude}`);
-            },
-            (error) => {
-              setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error getting location: ${error.message}`);
-            }
-          );
-        } else {
-          setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Geolocation not supported by this browser.`);
+const handleGetLocation = () => {
+    setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Button clicked.`);
+    if (navigator.geolocation) {
+      setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Permission granted.`);
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Precise location via Browser:`);
+          setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Lat: ${latitude}, Lng: ${longitude}`);
+
+          // Fetch closest results
+          fetch(`https://magnusinc-magnus1000team.vercel.app/api/fetchCloseResults?lat=${latitude}&lng=${longitude}`)
+            .then(response => response.json())
+            .then(data => {
+              setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Closest results fetched:`);
+              setResults(data); 
+            })
+            .catch((error) => {
+              setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error fetching closest results: ${error.message}`);
+            });
+        },
+        (error) => {
+          setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error getting location: ${error.message}`);
         }
-      };
+      );
+    } else {
+      setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Geolocation not supported by this browser.`);
+    }
+  };
 
     return (
       <div className="service-row">
@@ -83,13 +95,24 @@ const LocationService = () => {
               </button>
             </div>
             <div className="column-left-header-row">
-              <div className="location-result-grid">
-                <div className="location-result-div">
-                  <div className="location-details-div">
-                    <div className="location-result-header">Location Log</div>
-                  </div>
+                {results.slice(0, 4).map((result, index) => (
+                <div key={index} className="location-result-div">
+                    <div className="location-image-div">
+                    <img 
+                        src={result.image} 
+                        loading="lazy" 
+                        alt="" 
+                        className="location-image"
+                    />
+                    </div>
+                    <div className="location-details-div">
+                    <div className="location-result-header">{result.dealer}</div>
+                    <div className="location-result-name">{result.name}</div>
+                    <div className="location-result-value">{result.value}</div>
+                    <div className="location-result-distance">{result.distance}</div>
+                    </div>
                 </div>
-              </div>
+                ))}
             </div>
           </div>
           <div className="column-right">
