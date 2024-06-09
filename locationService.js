@@ -48,16 +48,16 @@ const handleGetLocation = () => {
           setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Precise location via Browser:`);
           setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Lat: ${latitude}, Lng: ${longitude}`);
 
-          // Fetch closest results
-          fetch(`https://magnusinc-magnus1000team.vercel.app/api/fetchClosestResults?lat=${latitude}&lng=${longitude}`)
-            .then(response => response.json())
-            .then(data => {
-              setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Closest results fetched:`);
-              setResults(data); 
-            })
-            .catch((error) => {
-              setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error fetching closest results: ${error.message}`);
-            });
+        // Fetch closest results
+        fetch(`https://magnusinc-magnus1000team.vercel.app/api/fetchClosestResults?lat=${latitude}&lng=${longitude}`)
+        .then(response => response.json())
+        .then(data => {
+            setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Closest results fetched:`);
+            setResults(data.records); // Update this line
+        })
+        .catch((error) => {
+            setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error fetching closest results: ${error.message}`);
+        });
         },
         (error) => {
           setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error getting location: ${error.message}`);
