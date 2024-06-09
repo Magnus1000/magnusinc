@@ -74,9 +74,11 @@ const LocationService = () => {
                 <div className="text-block">What you see</div>
               </div>
             </div>
-            <div className="code-block-custom">
-              {log}
-            </div>
+            <pre className="code-block-custom">
+            <code>
+                {log}
+            </code>
+            </pre>
           </div>
         </div>
       </div>
