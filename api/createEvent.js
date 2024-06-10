@@ -24,21 +24,26 @@ module.exports = async (req, res) => {
                     filterByFormula: `{UUID} = '${uuid}'`,
                 }).firstPage();
 
+                let uuidRecordId;
+
                 // If the UUID doesn't exist, create a new record in the UUID table
                 if (records.length === 0) {
+                    console.log('UUID not found, creating a new record...');
                     const newRecord = await base(process.env.AIRTABLE_USER_TABLE_ID).create([
                         { fields: { UUID: uuid } },
                     ]);
-                    uuid = newRecord[0].id;
+                    uuidRecordId = newRecord[0].id;
                 } else {
-                    uuid = records[0].id;
+                    uuidRecordId = records[0].id;
                 }
+
+                console.log('UUID Record ID:', uuidRecordId);
 
                 // Create a new record in the specified table
                 await base(process.env.AIRTABLE_EVENT_LOG_TABLE_ID).create([
                     {
                         fields: {
-                            uuid: [uuid],
+                            uuid: [uuidRecordId], // Ensure this is an array of record IDs
                             event_content,
                             event_time,
                             event_type,
