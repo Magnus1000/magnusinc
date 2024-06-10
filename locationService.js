@@ -1,6 +1,7 @@
 const LocationService = () => {
     const [log, setLog] = React.useState('// event_logs');
     const [isFetching, setIsFetching] = React.useState(false);
+    const [country, setCountry] = React.useState('United States');
     const [results, setResults] = React.useState([
         {
             dealer: 'Wormwood Motors',
@@ -79,6 +80,7 @@ const LocationService = () => {
         .then(response => response.json())
         .then(data => {
             setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Obtained address from coordinates.\n[${new Date().toISOString()}] ${data.address}`);
+            setCountry(data.country);
         })
         .catch((error) => {
             setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error fetching location string: ${error.message}`);
