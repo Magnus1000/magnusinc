@@ -57,7 +57,7 @@ const LocationService = () => {
 
             // Send page load event    
             if (!pageLoadRecorded) {
-                createEvent(uuid, `Page loaded in ${city}, ${country}`, 'page_load');
+                createEvent(uuid, `Page loaded in ${city}, ${country}`, 'page_view');
                 setPageLoadRecorded(true);
             }
         })
