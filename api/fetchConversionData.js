@@ -14,11 +14,9 @@ module.exports = (req, res) => {
         console.log(`Received response from Airtable: ${JSON.stringify(response.data)}`); // Add this line
 
         const records = response.data.records.map(record => ({
-            uuid: record.fields.uuid,
-            service_1: record.fields.service_1,
-            service_2: record.fields.service_2,
-            service_3: record.fields.service_3,
-            completion: record.fields['completion_percentage'],
+            event_type: record.fields.uuid,
+            event_order: record.fields.event_order,
+            event_count: record.fields.event_count,
         }));
 
         res.json(records);
