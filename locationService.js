@@ -179,6 +179,7 @@ const LocationService = () => {
                 ) : (
                     results.map((result, index) => (
                         <div key={index} className={`location-result-div ${selectedResultIndex === index ? 'selected' : ''}`} onClick={() => handleResultClick(result, index)}>
+                            <div className="location-result-value">{result.value === 0 ? "SOLD OUT" : result.value}</div>
                             <div className="location-image-div">
                                 <img 
                                     src={result.image} 
@@ -188,9 +189,8 @@ const LocationService = () => {
                                 />
                             </div>
                             <div className="location-details-div">
-                                <div className="location-result-header">{result.dealer}</div>
-                                <div className="location-result-name">{result.name}</div>
-                                <div className="location-result-value">{result.value === 0 ? "SOLD OUT" : result.value}</div>
+                                <div className="location-result-header">{result.name}</div>
+                                <div className="location-result-name">{result.dealer}</div>
                                 {result.distance !== 0 && (
                                     <div className="location-result-distance">{convertDistance(result.distance, country)}</div>
                                 )}
