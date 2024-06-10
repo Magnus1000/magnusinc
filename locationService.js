@@ -29,7 +29,7 @@ const LocationService = () => {
             name: 'VW Beatle',
             value: 0.0,
             distance: 0.0,
-            image: 'https://uploads-ssl.webflow.com/66622a9748f9ccb21e21b57e/666636aaf244c26abb87ef53_vw.webp'
+            image: 'https://uploads-ssl.webflow.com/66622a9748f9ccb21e21b57e/6667293fb45b148bef095611_vw2.webp'
         }
     ]);
     const [selectedResultIndex, setSelectedResultIndex] = React.useState(null);
