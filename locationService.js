@@ -174,7 +174,8 @@ const LocationService = () => {
                 <div className="location-result-grid">
                 {isFetching ? (
                     results.map((_, index) => (
-                        <div key={index} className="location-result-placeholder">Loading...</div>
+                        <div key={index} className="location-result-placeholder">
+                        </div>
                     ))
                 ) : (
                     results.map((result, index) => (
