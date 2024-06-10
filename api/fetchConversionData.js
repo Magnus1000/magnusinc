@@ -14,7 +14,7 @@ module.exports = (req, res) => {
         console.log(`Received response from Airtable: ${JSON.stringify(response.data)}`); // Add this line
 
         const records = response.data.records.map(record => ({
-            event_type: record.fields.uuid,
+            event_type: record.fields.event_type,
             event_order: record.fields.event_order,
             event_count: record.fields.event_count,
         }));

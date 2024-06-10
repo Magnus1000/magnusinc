@@ -19,12 +19,12 @@ const ConversionService = () => {
         .then(data => {
             console.log('Received data from server:', data);
             if (data.length > 0) {
-                const labels = data.map(record => record.uuid);
-                const dataset = data.map(record => record.completion);
+                const labels = data.map(record => record.event_type);
+                const dataset = data.map(record => record.event_count);
                 setChartData({
                     labels: labels,
                     datasets: [{
-                        label: 'Completion',
+                        label: 'Event Count',
                         data: dataset,
                         fill: false,
                         backgroundColor: 'rgb(75, 192, 192)',
