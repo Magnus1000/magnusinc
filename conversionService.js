@@ -11,7 +11,7 @@ const ConversionService = () => {
             console.log(`UUID not found in cookies. New UUID generated and set: ${uuid}`);
         }
         console.log('Fetching data from server...');
-        fetch('https://magnusinc-magnus1000team.vercel.app/api/fetchClosestResults')
+        fetch('https://magnusinc-magnus1000team.vercel.app/api/fetchConversionData')
         .then(response => {
             console.log('Received response from server');
             return response.json();
