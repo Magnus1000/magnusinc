@@ -2,6 +2,8 @@ const LocationService = () => {
     const [log, setLog] = React.useState('// event_logs');
     const [isFetching, setIsFetching] = React.useState(false);
     const [country, setCountry] = React.useState('United States');
+    const [uuid, setUuid] = React.useState(null);
+    const [url, setUrl] = React.useState(window.location.pathname);
     const [results, setResults] = React.useState([
         {
             dealer: 'Wormwood Motors',
@@ -38,16 +40,21 @@ const LocationService = () => {
         let uuid = Cookies.get('uuid');
         if (uuid) {
             setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] UUID fetched from cookies: ${uuid}.`);
+            setUuid(uuid);
         } else {
             uuid = generateUUID();
             Cookies.set('uuid', uuid);
             setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] UUID not found in cookies. New UUID generated and set: ${uuid}.`);
+            setUuid(uuid);
         }
         fetch('https://ipapi.co/json')
         .then(response => response.json())
         .then(data => {
             const { latitude: lat, longitude: lon, city, country_name: country } = data;
             setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Approx location via IP:\n[${new Date().toISOString()}] Lat: ${lat}, Lng: ${lon}\n[${new Date().toISOString()}] City: ${city}\n[${new Date().toISOString()}] Country: ${country}`);
+
+            // Send initial event
+            createEvent(`Page loaded in ${city}, ${country}`, 'page_load');
         })
         .catch((error) => {
             setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error getting location via IP: ${error.message}`);
@@ -68,6 +75,33 @@ const LocationService = () => {
             }
             return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
         });
+    }
+
+    function createEvent(event_content, event_type) {
+        // Generate event time in ISO format
+        const event_time = new Date().toISOString();
+        const event_page = url; // Add the URL to the event data
+
+        // Define the event data
+        const eventData = {
+            uuid,
+            event_content,
+            event_time,
+            event_type,
+            event_page
+        };
+
+        // Send a POST request to the endpoint
+        fetch('https://magnusinc-magnus1000team.vercel.app/api/createEvent.js', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(eventData),
+        })
+        .then(response => response.json())
+        .then(data => console.log('Success:', data))
+        .catch((error) => console.error('Error:', error));
     }
 
     const handleResultClick = (result, index) => {
@@ -102,6 +136,9 @@ const LocationService = () => {
 
                     // Fetch location string
                     fetchLocationString(latitude, longitude);
+
+                    // Send initial event
+                    createEvent(`Location: ${latitude}, ${longitude}`, 'location_service');
 
                     // Fetch closest results
                     fetch(`https://magnusinc-magnus1000team.vercel.app/api/fetchClosestResults?lat=${latitude}&lng=${longitude}`)
