@@ -4,6 +4,8 @@ const LocationService = () => {
     const [country, setCountry] = React.useState('United States');
     const [uuid, setUuid] = React.useState(null);
     const [url, setUrl] = React.useState(window.location.pathname);
+    const [pageLoadRecorded, setPageLoadRecorded] = React.useState(false);
+    const [locationServiceRecorded, setLocationServiceRecorded] = React.useState(false);
     const [results, setResults] = React.useState([
         {
             dealer: 'Wormwood Motors',
@@ -53,8 +55,11 @@ const LocationService = () => {
             const { latitude: lat, longitude: lon, city, country_name: country } = data;
             setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Approx location via IP:\n[${new Date().toISOString()}] Lat: ${lat}, Lng: ${lon}\n[${new Date().toISOString()}] City: ${city}\n[${new Date().toISOString()}] Country: ${country}`);
 
-            // Send initial event
-            createEvent(uuid, `Page loaded in ${city}, ${country}`, 'page_load');
+            // Send page load event    
+            if (!pageLoadRecorded) {
+                createEvent(uuid, `Page loaded in ${city}, ${country}`, 'page_load');
+                setPageLoadRecorded(true);
+            }
         })
         .catch((error) => {
             setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error getting location via IP: ${error.message}`);
@@ -143,7 +148,10 @@ const LocationService = () => {
                     let uuid = uuid;
 
                     // Send initial event
-                    createEvent(uuid, `Location: ${latitude}, ${longitude}`, 'location_service');
+                    if (!locationServiceRecorded) {
+                        createEvent(uuid, `Location: ${latitude}, ${longitude}`, 'location_service');
+                        setLocationServiceRecorded(true);
+                    }
 
                     // Fetch closest results
                     fetch(`https://magnusinc-magnus1000team.vercel.app/api/fetchClosestResults?lat=${latitude}&lng=${longitude}`)
