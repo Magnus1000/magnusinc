@@ -129,11 +129,12 @@ const LocationService = () => {
     };
 
     const convertDistance = (distance, country) => {
+        distance = distance / 1000; // Convert distance from meters to kilometers
         if (country === 'United States') {
             // Convert distance to miles if the country is United States
             return `${(distance * 0.621371).toFixed(2)} miles`;
         } else {
-            // Assume the distance is in kilometers for other countries
+            // The distance is in kilometers for other countries
             return `${distance.toFixed(2)} km`;
         }
     }
@@ -170,7 +171,7 @@ const LocationService = () => {
                 </button>
             </div>
             <div className="column-left-header-row">
-                <div className="location-results-grid">
+                <div className="location-result-grid">
                     {results && results.slice(0, 4).map((result, index) => (
                     <div key={index} className={`location-result-div ${selectedResultIndex === index ? 'selected' : ''}`} onClick={() => handleResultClick(result, index)}>
                         <div className="location-image-div">
