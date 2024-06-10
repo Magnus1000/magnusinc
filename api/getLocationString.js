@@ -14,8 +14,9 @@ module.exports = (req, res) => {
       });
 
       const address = response.data.features[0].place_name;
+      const country = response.data.features[0].context.find(item => item.id.startsWith('country')).text;
 
-      res.json({ address });
+      res.json({ address, country });
     } catch (error) {
       res.status(500).json({ error: 'An error occurred while fetching data from Mapbox' });
     }
