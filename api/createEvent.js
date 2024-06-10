@@ -20,7 +20,7 @@ module.exports = async (req, res) => {
         
             try {
                 // Check if the UUID exists in the UUID table
-                const records = await base(process.env.AIRTABLE_UUID_TABLE_ID).select({
+                const records = await base(process.env.AIRTABLE_USER_TABLE_ID).select({
                     filterByFormula: `{UUID} = '${uuid}'`,
                 }).firstPage();
 
