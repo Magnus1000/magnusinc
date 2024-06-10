@@ -172,25 +172,33 @@ const LocationService = () => {
             </div>
             <div className="column-left-header-row">
                 <div className="location-result-grid">
-                    {results && results.slice(0, 4).map((result, index) => (
-                    <div key={index} className={`location-result-div ${selectedResultIndex === index ? 'selected' : ''}`} onClick={() => handleResultClick(result, index)}>
-                        <div className="location-image-div">
-                        <img 
-                            src={result.image} 
-                            loading="lazy" 
-                            alt="" 
-                            className="location-image"
-                        />
+                {isFetching ? (
+                    results.map((_, index) => (
+                        <div key={index} className="location-result-placeholder">Loading...</div>
+                    ))
+                ) : (
+                    results.map((result, index) => (
+                        <div key={index} className={`location-result-div ${selectedResultIndex === index ? 'selected' : ''}`} onClick={() => handleResultClick(result, index)}>
+                            <div className="location-image-div">
+                                <img 
+                                    src={result.image} 
+                                    loading="lazy" 
+                                    alt="" 
+                                    className="location-image"
+                                />
+                            </div>
+                            <div className="location-details-div">
+                                <div className="location-result-header">{result.dealer}</div>
+                                <div className="location-result-name">{result.name}</div>
+                                <div className="location-result-value">{result.value === 0 ? "SOLD OUT" : result.value}</div>
+                                {result.distance !== 0 && (
+                                    <div className="location-result-distance">{convertDistance(result.distance, country)}</div>
+                                )}
+                            </div>
                         </div>
-                        <div className="location-details-div">
-                            <div className="location-result-header">{result.dealer}</div>
-                            <div className="location-result-name">{result.name}</div>
-                            <div className="location-result-value">{result.value === 0 ? "SOLD OUT" : result.value}</div>
-                            <div className="location-result-distance">{convertDistance(result.distance, country)}</div>
-                        </div>
-                    </div>
-                    ))}
-                </div>
+                    ))
+                )}
+            </div>
             </div>
           </div>
           <div className="column-right">
