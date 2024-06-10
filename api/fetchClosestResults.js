@@ -9,7 +9,7 @@ module.exports = (req, res) => {
     console.log(`Received request with lat: ${lat}, lng: ${lng}`); // Add this line
 
     try {
-      const response = await axios.get(`https://api.airtable.com/v0/${process.env.AIRTABLE_APP_ID}/${process.env.AIRTABLE_TABLE_NAME}`, {
+      const response = await axios.get(`https://api.airtable.com/v0/${process.env.AIRTABLE_APP_ID}/${process.env.AIRTABLE_TABLE_ID}`, {
         headers: {
           'Authorization': `Bearer ${process.env.AIRTABLE_API_KEY}`
         }
