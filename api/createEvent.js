@@ -47,8 +47,11 @@ module.exports = async (req, res) => {
                 'conversion_service': 'recMWzUdSeywemBhr'
                 };
 
-                // Assuming event_type is an array of event type strings
-                let eventTypeArray = event_type.map(type => eventTypeToRecordId[type]);
+                // Find the record ID corresponding to the event type
+                let eventTypeRecordId = eventTypeToRecordId[event_type];
+
+                // Wrap the record ID in brackets to create an array
+                let eventTypeArray = [eventTypeRecordId];
 
                 // Create a new record in the specified table
                 await base(process.env.AIRTABLE_EVENT_LOG_TABLE_ID).create([
