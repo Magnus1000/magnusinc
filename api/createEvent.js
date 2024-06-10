@@ -44,7 +44,6 @@ module.exports = async (req, res) => {
                 await base(process.env.AIRTABLE_EVENT_LOG_TABLE_ID).create([
                     {
                         fields: {
-                            uuid: ["recdcFtSwyBrTIxvo"], // Ensure this is an array of record IDs
                             event_content,
                             event_time,
                             event_type,
