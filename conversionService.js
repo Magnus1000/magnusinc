@@ -1,26 +1,47 @@
 const ConversionService = () => {
-    const [setChartData, chartData] = React.useState('');
+    const [chartData, setChartData] = React.useState(null);
 
     React.useEffect(() => {
         let uuid = Cookies.get('uuid');
         if (uuid) {
-            setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] UUID fetched from cookies: ${uuid}.`);
+            console.log(`UUID fetched from cookies: ${uuid}`);
         } else {
             uuid = generateUUID();
             Cookies.set('uuid', uuid);
-            setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] UUID not found in cookies. New UUID generated and set: ${uuid}.`);
+            console.log(`UUID not found in cookies. New UUID generated and set: ${uuid}`);
         }
-        fetch('https://ipapi.co/json')
-        .then(response => response.json())
+        console.log('Fetching data from server...');
+        fetch('https://magnusinc-magnus1000team.vercel.app/api/fetchClosestResults')
+        .then(response => {
+            console.log('Received response from server');
+            return response.json();
+        })
         .then(data => {
-            const { latitude: lat, longitude: lon, city, country_name: country } = data;
-            setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Approx location via IP:\n[${new Date().toISOString()}] Lat: ${lat}, Lng: ${lon}\n[${new Date().toISOString()}] City: ${city}\n[${new Date().toISOString()}] Country: ${country}`);
+            console.log('Processing data...');
+            if (data.length > 0) {
+                const labels = data.map(record => record.uuid);
+                const dataset = data.map(record => record.completion);
+                setChartData({
+                    labels: labels,
+                    datasets: [{
+                        label: 'Completion',
+                        data: dataset,
+                        fill: false,
+                        backgroundColor: 'rgb(75, 192, 192)',
+                        borderColor: 'rgba(75, 192, 192, 0.2)',
+                    }],
+                });
+                console.log('Data processed and chart data set');
+            } else {
+                console.log('No data received from server');
+            }
         })
         .catch((error) => {
-            setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error getting location via IP: ${error.message}`);
+            console.error(`Error getting data from server: ${error.message}`);
         });
     }, []);
 
+    console.log('Rendering component...');
     return (
       <div className="service-row">
         <div className="service-inner-row">
@@ -44,10 +65,12 @@ const ConversionService = () => {
                 <div className="column-subheader-text light">What you see</div>
               </div>
             </div>
+            {chartData && <Line data={chartData} />}
           </div>
         </div>
       </div>
     );
   };
 
+  console.log('Rendering ConversionService component...');
   ReactDOM.render(<ConversionService />, document.getElementById('conversionService'));
