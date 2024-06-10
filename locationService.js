@@ -149,10 +149,11 @@ const LocationService = () => {
             <div className="column-left-header-row">
               <div className="column-header-wrapper">
                 <div className="column-header-text">FRONTEND</div>
-                <div className="text-block-2">What your users see</div>
+                <div className="column-subheader-text">What your users see</div>
               </div>
             </div>
             <div className="column-left-button-row">
+                <div className="call-to-action-text">Find nearest dealership</div>
                 <button className="button-primary w-inline-block" onClick={handleGetLocation}>
                     <div className="button-text">
                         {isFetching ? "Fetching..." : "Get Location"}
@@ -215,7 +216,7 @@ const LocationService = () => {
             <div className="column-right-header-row">
               <div className="column-header-wrapper">
                 <div className="column-header-text light">BACKEND</div>
-                <div className="text-block">What you see</div>
+                <div className="column-subheader-text light">What you see</div>
               </div>
             </div>
             <pre contenteditable="false" className="code-block-examples w-code-block" style={{ display: 'block', overflowX: 'auto', background: '#2b2b2b', color: '#f8f8f2', padding: '0.5em' }}>
