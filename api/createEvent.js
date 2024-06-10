@@ -16,7 +16,7 @@ module.exports = async (req, res) => {
             const event_time = new Date().toISOString();
         
             // Initialize Airtable with your base ID and API key
-            const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_BASE_ID);
+            const base = new Airtable({ apiKey: process.env.AIRTABLE_API_KEY }).base(process.env.AIRTABLE_APP_ID);
         
             try {
                 // Create a new record in the specified table
