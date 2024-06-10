@@ -54,7 +54,7 @@ const LocationService = () => {
             setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Approx location via IP:\n[${new Date().toISOString()}] Lat: ${lat}, Lng: ${lon}\n[${new Date().toISOString()}] City: ${city}\n[${new Date().toISOString()}] Country: ${country}`);
 
             // Send initial event
-            createEvent(`Page loaded in ${city}, ${country}`, 'page_load');
+            createEvent(uuid, `Page loaded in ${city}, ${country}`, 'page_load');
         })
         .catch((error) => {
             setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error getting location via IP: ${error.message}`);
@@ -77,7 +77,7 @@ const LocationService = () => {
         });
     }
 
-    function createEvent(event_content, event_type) {
+    function createEvent(uuid, event_content, event_type) {
         // Generate event time in ISO format
         const event_time = new Date().toISOString();
         const event_page = url; // Add the URL to the event data
@@ -140,8 +140,10 @@ const LocationService = () => {
                     // Fetch location string
                     fetchLocationString(latitude, longitude);
 
+                    let uuid = uuid;
+
                     // Send initial event
-                    createEvent(`Location: ${latitude}, ${longitude}`, 'location_service');
+                    createEvent(uuid, `Location: ${latitude}, ${longitude}`, 'location_service');
 
                     // Fetch closest results
                     fetch(`https://magnusinc-magnus1000team.vercel.app/api/fetchClosestResults?lat=${latitude}&lng=${longitude}`)
