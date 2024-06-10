@@ -132,10 +132,10 @@ const LocationService = () => {
         distance = distance / 1000; // Convert distance from meters to kilometers
         if (country === 'United States') {
             // Convert distance to miles if the country is United States
-            return `${(distance * 0.621371).toFixed(2)} miles`;
+            return `${(distance * 0.621371).toFixed(2)} mi away`;
         } else {
             // The distance is in kilometers for other countries
-            return `${distance.toFixed(2)} km`;
+            return `${distance.toFixed(2)} km away`;
         }
     }
 
@@ -160,11 +160,11 @@ const LocationService = () => {
                     <div className="button-icon w-embed">
                         {isFetching ? (
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                            <path d="M224 80h64V16l-64 0V80zM208 96V80 16 0h16 64 16V16 80 96l-16 0H224 208zM80 224H16v64H80V224zM16 208H80 96v16 64 16H80 16 0V288 224 208H16zM224 432v64h64V432H224zm-16 64V432 416h16 64 16v16 64 16H288 224 208V496zM432 224v64h64V224H432zm-16-16h16 64 16v16 64 16H496 432 416V288 224 208zM108.9 357.8L63.7 403.1l45.3 45.3 45.3-45.3-45.3-45.3zM52.4 391.8l45.3-45.3 11.3-11.3 11.3 11.3 45.3 45.3 11.3 11.3-11.3 11.3-45.3 45.3L108.9 471 97.6 459.6 52.4 414.4 41 403.1l11.3-11.3zm305.5 11.3l45.3 45.3 45.3-45.3-45.3-45.3-45.3 45.3zm33.9 56.6l-45.3-45.3-11.3-11.3 11.3-11.3 45.3-45.3 11.3-11.3 11.3 11.3 45.3 45.3L471 403.1l-11.3 11.3-45.3 45.3L403.1 471l-11.3-11.3zM108.9 154.2l45.3-45.3L108.9 63.7 63.7 108.9l45.3 45.3zm0 22.6L97.6 165.5 52.4 120.2 41 108.9 52.4 97.6 97.6 52.4 108.9 41l11.3 11.3 45.3 45.3 11.3 11.3-11.3 11.3-45.3 45.3-11.3 11.3z"/>
+                                <path fill="currentColor" d="M224 80h64V16l-64 0V80zM208 96V80 16 0h16 64 16V16 80 96l-16 0H224 208zM80 224H16v64H80V224zM16 208H80 96v16 64 16H80 16 0V288 224 208H16zM224 432v64h64V432H224zm-16 64V432 416h16 64 16v16 64 16H288 224 208V496zM432 224v64h64V224H432zm-16-16h16 64 16v16 64 16H496 432 416V288 224 208zM108.9 357.8L63.7 403.1l45.3 45.3 45.3-45.3-45.3-45.3zM52.4 391.8l45.3-45.3 11.3-11.3 11.3 11.3 45.3 45.3 11.3 11.3-11.3 11.3-45.3 45.3L108.9 471 97.6 459.6 52.4 414.4 41 403.1l11.3-11.3zm305.5 11.3l45.3 45.3 45.3-45.3-45.3-45.3-45.3 45.3zm33.9 56.6l-45.3-45.3-11.3-11.3 11.3-11.3 45.3-45.3 11.3-11.3 11.3 11.3 45.3 45.3L471 403.1l-11.3 11.3-45.3 45.3L403.1 471l-11.3-11.3zM108.9 154.2l45.3-45.3L108.9 63.7 63.7 108.9l45.3 45.3zm0 22.6L97.6 165.5 52.4 120.2 41 108.9 52.4 97.6 97.6 52.4 108.9 41l11.3 11.3 45.3 45.3 11.3 11.3-11.3 11.3-45.3 45.3-11.3 11.3z"/>
                             </svg>
                         ) : (
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
-                            <path fill="currentColor" d="M256 224v32V431.1L377.8 102.2 48.9 224H224h32zM0 208L392.5 62.6 432 48 417.4 87.5 272 480H256 224V448 288 256H192 32 0V224 208z"></path>
+                                <path fill="currentColor" d="M256 224v32V431.1L377.8 102.2 48.9 224H224h32zM0 208L392.5 62.6 432 48 417.4 87.5 272 480H256 224V448 288 256H192 32 0V224 208z"></path>
                             </svg>
                         )}
                     </div>
@@ -179,7 +179,9 @@ const LocationService = () => {
                 ) : (
                     results.map((result, index) => (
                         <div key={index} className={`location-result-div ${selectedResultIndex === index ? 'selected' : ''}`} onClick={() => handleResultClick(result, index)}>
-                            <div className="location-result-value">{result.value === 0 ? "SOLD OUT" : result.value}</div>
+                            <div className="location-result-value">
+                                {result.value === 0 ? "SOLD OUT" : `${result.value} on lot`}
+                            </div>
                             <div className="location-image-div">
                                 <img 
                                     src={result.image} 
@@ -192,7 +194,14 @@ const LocationService = () => {
                                 <div className="location-result-header">{result.name}</div>
                                 <div className="location-result-name">{result.dealer}</div>
                                 {result.distance !== 0 && (
-                                    <div className="location-result-distance">{convertDistance(result.distance, country)}</div>
+                                    <div className="location-result-distance-div">
+                                        <div className="button-icon w-embed">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                                                <path fill="currentColor" d="M352 192c0-88.4-71.6-160-160-160S32 103.6 32 192c0 20.2 9.1 48.6 26.5 82.7c16.9 33.2 39.9 68.2 63.4 100.5c23.4 32.2 46.9 61 64.5 81.9c1.9 2.3 3.8 4.5 5.6 6.6c1.8-2.1 3.6-4.3 5.6-6.6c17.7-20.8 41.1-49.7 64.5-81.9c23.5-32.3 46.4-67.3 63.4-100.5C342.9 240.6 352 212.2 352 192zm32 0c0 88.8-120.7 237.9-170.7 295.9C200.2 503.1 192 512 192 512s-8.2-8.9-21.3-24.1C120.7 429.9 0 280.8 0 192C0 86 86 0 192 0S384 86 384 192zm-240 0a48 48 0 1 0 96 0 48 48 0 1 0 -96 0zm48 80a80 80 0 1 1 0-160 80 80 0 1 1 0 160z"/>
+                                            </svg>
+                                        </div>
+                                        <div className="location-result-distance">{convertDistance(result.distance, country)}</div>
+                                    </div>
                                 )}
                             </div>
                         </div>
