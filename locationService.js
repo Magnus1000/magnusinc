@@ -91,6 +91,9 @@ const LocationService = () => {
             event_page
         };
 
+        // Log the event data
+        console.log('Event data:', eventData);
+
         // Send a POST request to the endpoint
         fetch('https://magnusinc-magnus1000team.vercel.app/api/createEvent.js', {
             method: 'POST',
