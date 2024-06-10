@@ -5,7 +5,7 @@ const cors = require('cors')();
 module.exports = (req, res) => {
   cors(req, res, async () => {
     try {
-        const response = await axios.get(`https://api.airtable.com/v0/${process.env.AIRTABLE_APP_ID}/${process.env.AIRTABLE_CONVERSION_TABLE_ID}`, {
+        const response = await axios.get(`https://api.airtable.com/v0/${process.env.AIRTABLE_APP_ID}/${process.env.AIRTABLE_EVENT_TYPE_TABLE_ID}`, {
             headers: {
             'Authorization': `Bearer ${process.env.AIRTABLE_API_KEY}`
             }
