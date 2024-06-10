@@ -53,8 +53,8 @@ const handleGetLocation = () => {
         .then(response => response.json())
         .then(data => {
             setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Closest results fetched:`);
-            setResults(data.records); // Update this line
-            console.log(data.records);
+            setResults(data); // Update this line
+            console.log(data);
         })
         .catch((error) => {
             setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error fetching closest results: ${error.message}`);
@@ -96,7 +96,7 @@ const handleGetLocation = () => {
               </button>
             </div>
             <div className="column-left-header-row">
-                {results.slice(0, 4).map((result, index) => (
+                {results && results.slice(0, 4).map((result, index) => (
                 <div key={index} className="location-result-div">
                     <div className="location-image-div">
                     <img 
