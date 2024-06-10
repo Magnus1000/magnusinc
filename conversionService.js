@@ -13,7 +13,7 @@ const ConversionService = () => {
         console.log('Fetching data from server...');
         fetch('https://magnusinc-magnus1000team.vercel.app/api/fetchConversionData')
         .then(response => {
-            console.log('Received response from server');
+            console.log('Received data from server:', data);
             return response.json();
         })
         .then(data => {
