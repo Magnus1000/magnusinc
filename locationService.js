@@ -54,6 +54,7 @@ const handleGetLocation = () => {
         .then(data => {
             setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Closest results fetched:`);
             setResults(data.records); // Update this line
+            console.log(data.records);
         })
         .catch((error) => {
             setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error fetching closest results: ${error.message}`);
