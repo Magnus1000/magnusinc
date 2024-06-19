@@ -3,12 +3,32 @@ const EmailSignupService = () => {
   const [isSubmitted, setIsSubmitted] = React.useState(false);
   const emailRef = React.useRef(null);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     if (email && email.includes('@')) {
       console.log(`Email submitted: ${email}`);
       setIsSubmitted(true);
-      // Here you can add the code to send the email to your server or API
+
+      try {
+        const response = await fetch('https://magnusinc-magnus1000team.vercel.app/api/emailService.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: email }),
+        });
+
+        if (response.ok) {
+          console.log('Email successfully sent to the server');
+          // Handle success response
+        } else {
+          console.error('Failed to send email to the server');
+          // Handle server errors or invalid responses
+        }
+      } catch (error) {
+        console.error('Error sending email:', error);
+        // Handle network errors
+      }
     } else {
       console.error('Invalid email address');
     }
