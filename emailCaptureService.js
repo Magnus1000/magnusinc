@@ -74,6 +74,20 @@ const handleSubmit = async (event) => {
 };
 
 React.useEffect(() => {
+    const ws = new WebSocket('ws://localhost:3000');
+
+    ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        console.log('Data received:', data);
+        // Update the UI based on the received data
+    };
+
+    return () => {
+        ws.close();
+    };
+}, []);
+
+React.useEffect(() => {
     if (isSubmitted && emailRef.current) {
     emailRef.current.disabled = true; // Disable the email field after submission
     }
@@ -131,3 +145,4 @@ return (
 };
 
 ReactDOM.render(<EmailSignupService />, document.getElementById('EmailService'));
+
