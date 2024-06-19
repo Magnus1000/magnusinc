@@ -6,48 +6,35 @@ const emailRef = React.useRef(null);
 const handleSubmit = async (event) => {
     event.preventDefault();
     if (email && email.includes('@')) {
-    console.log(`Email submitted: ${email}`);
-    setIsSubmitted(true);
+        console.log(`Email submitted: ${email}`);
+        setIsSubmitted(true);
 
-    let uuid = Cookies.get('uuid');
-    if (uuid) {
-        console.log(`UUID fetched from cookies: ${uuid}`);
-    } else {
-        uuid = generateUUID();
-        Cookies.set('uuid', uuid);
-        console.log(`UUID not found in cookies. New UUID generated and set: ${uuid}`);
-    }
+        let uuid = Cookies.get('uuid');
+        if (uuid) {
+            console.log(`UUID fetched from cookies: ${uuid}`);
+        } else {
+            uuid = generateUUID();
+            Cookies.set('uuid', uuid);
+            console.log(`UUID not found in cookies. New UUID generated and set: ${uuid}`);
+        }
 
-    const event_content = JSON.stringify({ email });
-    const event_time = new Date().toISOString();
-    const event_type = 'email_capture';
-    const event_page = '/services';
+        const event_content = JSON.stringify({ email });
+        const event_time = new Date().toISOString();
+        const event_type = 'email_capture';
+        const event_page = '/services';
 
-    // Define the event data
-    const eventData = {
-        uuid,
-        event_content,
-        event_time,
-        event_type,
-        event_page
-    };
+        // Define the event data
+        const eventData = {
+            uuid,
+            event_content,
+            event_time,
+            event_type,
+            event_page
+        };
 
-    try {
-        // Sending email to the second serverless function first
-        const responseSendEmail = await fetch('https://magnusinc-magnus1000team.vercel.app/api/sendEmail.js', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email: email, uuid: uuid }), // Include UUID in the request body if it exists
-        });
-
-        if (responseSendEmail.ok) {
-            console.log('Email successfully sent to the server (sendEmail)');
-            // Handle success response
-
-            // After successfully sending the email, create the user event
-            const responseCreateUserEvent = await fetch('https://magnusinc-magnus1000team.vercel.app/api/createUserEvent.js', {
+        try {
+            // Sending email to the second serverless function first
+            const responseSendEmail = await fetch('https://magnusinc-magnus1000team.vercel.app/api/sendEmail.js', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -55,17 +42,35 @@ const handleSubmit = async (event) => {
                 body: JSON.stringify({ email: email, uuid: uuid }), // Include UUID in the request body if it exists
             });
 
-            if (responseCreateUserEvent.ok) {
-                console.log('Email successfully sent to the server (createUserEvent)');
+            if (responseSendEmail.ok) {
+                console.log('Email successfully sent to the server (sendEmail)');
                 // Handle success response
+
+                // After successfully sending the email, create the user event
+                const responseCreateUserEvent = await fetch('https://magnusinc-magnus1000team.vercel.app/api/createUserEvent.js', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email: email, uuid: uuid }), // Include UUID in the request body if it exists
+                });
+
+                if (responseCreateUserEvent.ok) {
+                    console.log('Email successfully sent to the server (createUserEvent)');
+                    // Handle success response
+                } else {
+                    console.error('Failed to send email to the server (createUserEvent)');
+                    // Handle server errors or invalid responses
+                }
             } else {
-                console.error('Failed to send email to the server (createUserEvent)');
+                console.error('Failed to send email to the server (sendEmail)');
                 // Handle server errors or invalid responses
             }
-        } else {
-            console.error('Failed to send email to the server (sendEmail)');
-            // Handle server errors or invalid responses
+        } catch (error) {
+            console.error('An error occurred:', error);
+            // Handle the error appropriately
         }
+    }
 };
 
 React.useEffect(() => {
