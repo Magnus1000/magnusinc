@@ -20,6 +20,10 @@ const EmailSignupService = () => {
     }
   }, [isSubmitted]);
 
+  React.useEffect(() => {
+    console.log('EmailSignupService component mounted.');
+  }, []);
+
   console.log('Rendering EmailSignupService component...');
   return (
     <div className="service-row">
