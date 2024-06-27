@@ -1,49 +1,36 @@
-// api/webhook.js
+const express = require('express');
+const http = require('http');
 const WebSocket = require('ws');
 
-// Create WebSocket server
-const server = require('http').createServer();
+const app = express();
+const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
-// Store connected clients
-let clients = [];
-
 wss.on('connection', (ws) => {
-  clients.push(ws);
-  console.log('Client connected, total clients:', clients.length);
+    console.log('Client connected');
 
-  ws.on('close', () => {
-    clients = clients.filter(client => client !== ws);
-    console.log('Client disconnected, remaining clients:', clients.length);
-  });
+    ws.on('close', () => {
+        console.log('Client disconnected');
+    });
 });
 
-// Handle incoming webhook requests
-module.exports = (req, res) => {
-  console.log('Received request on:', req.url, 'with method:', req.method);
-
-  if (req.method === 'POST') {
-    const newEvent = req.body;
-    console.log('Broadcasting event:', newEvent);
-
-    // Broadcast the new event to all connected clients
-    clients.forEach(client => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify(newEvent));
-        console.log('Event sent to a client');
-      }
+const broadcast = (data) => {
+    wss.clients.forEach((client) => {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify(data));
+        }
     });
-
-    console.log('Event broadcasted to all clients');
-    res.status(200).send('Event broadcasted');
-  } else {
-    console.log('Request method not allowed:', req.method);
-    res.status(405).send('Method Not Allowed');
-  }
 };
 
-// Start the server
-const PORT = process.env.PORT || 8080;
+app.use(express.json());
+
+app.post('/broadcast', (req, res) => {
+    const data = req.body;
+    broadcast(data);
+    res.sendStatus(200);
+});
+
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-  console.log(`WebSocket server started on port ${PORT}`);
+    console.log(`Server is listening on port ${PORT}`);
 });
