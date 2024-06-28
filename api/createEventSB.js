@@ -1,5 +1,3 @@
-// Fixed version of the code with initialization of Supabase client and extraction of request body parameters
-
 const axios = require('axios');
 const cors = require('cors');
 const { createClient } = require('@supabase/supabase-js');
@@ -22,7 +20,8 @@ module.exports = async (req, res) => {
                 .eq('uuid', uuid)
                 .single();
 
-            if (userError) {
+            if (userError && userError.code !== 'PGRST116') {
+                // Handle errors other than "no rows returned"
                 console.error('Supabase user check error:', userError);
                 throw new Error(JSON.stringify(userError));
             }
