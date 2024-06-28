@@ -11,9 +11,6 @@ module.exports = async (req, res) => {
 
         corsHandler(req, res, async () => {
             let { uuid, event_content, event_type, event_page } = req.body;
-
-            // Generate event time in ISO format
-            const event_time = new Date().toISOString();
         
             // Initialize Supabase client
             const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
@@ -23,7 +20,7 @@ module.exports = async (req, res) => {
                 const { data: newRecord, error: insertError } = await supabase
                     .from('event_logs')
                     .insert([
-                        { uuid, event_content, event_time, event_type, event_page },
+                        { uuid, event_content, event_type, event_page },
                     ]);
 
                 if (insertError) throw insertError;
