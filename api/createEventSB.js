@@ -46,7 +46,7 @@ module.exports = async (req, res) => {
                 .from('event_logs')
                 .insert([
                     { 
-                        uuid_text: uuid,
+                        uuid: uuid,
                         event_content: event_content,
                         event_type: event_type,
                         event_page: event_page
