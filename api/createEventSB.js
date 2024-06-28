@@ -24,7 +24,7 @@ module.exports = async (req, res) => {
                 const { data: newRecord, error: insertError } = await supabase
                     .from('event_logs')
                     .insert([
-                        { uuid_text: uuid },
+                        { uuid_text: uuid, uuid },
                     ]);
 
                 // Log the full response from Supabase
