@@ -9,11 +9,66 @@ const handleRealtimeUpdates = (payload) => {
   // Update your UI here with the new data
 };
 
-// Subscribe to realtime changes on your table
-const channel = supabase.channel('custom-all-channel')
-  .on('postgres_changes', { event: '*', schema: 'public', table: 'event_logs' }, handleRealtimeUpdates)
-  .subscribe((status) => {
-    if (status === 'SUBSCRIBED') {
-      console.log('Subscribed to the event_logs table');
-    }
-  });
+    // Subscribe to realtime changes
+    const subscription = supabase
+      .from('event_logs')
+      .on('*', (payload) => {
+        console.log('Change received!', payload);
+        // Add new log to the top of the list
+        setLogs((currentLogs) => [payload.new, ...currentLogs]);
+      })
+      .subscribe();
+
+  function EventLogs() {
+    const [logs, setLogs] = React.useState([]);
+  
+    React.useEffect(() => {
+      // Fetch the last 100 event logs
+      const fetchLogs = async () => {
+        const { data, error } = await supabase
+          .from('event_logs')
+          .select('*')
+          .order('created_at', { ascending: false })
+          .limit(100);
+  
+        if (error) {
+          console.error('Error fetching logs:', error);
+        } else {
+          setLogs(data);
+        }
+      };
+  
+      fetchLogs();
+  
+    // Subscribe to realtime changes
+    const subscription = supabase
+      .from('event_logs')
+      .on('*', (payload) => {
+        console.log('Change received!', payload);
+        // Add new log to the top of the list
+        setLogs((currentLogs) => [payload.new, ...currentLogs]);
+      })
+      .subscribe();
+
+    // Cleanup function to unsubscribe when the component unmounts
+    return () => {
+      supabase.removeSubscription(subscription);
+    };
+  }, []);
+
+  return (
+    <div>
+      <h2>Event Logs</h2>
+      <ul>
+        {logs.map((log, index) => (
+          <li key={index}>
+            {/* Adjust according to your log structure */}
+            {log.event_content} - {new Date(log.event_time).toLocaleString()}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+  }
+  
+ReactDOM.render(<EventLogs />, document.getElementById('eventLogs'));
