@@ -12,7 +12,7 @@ function EventLogs() {
       const { data, error } = await supabase
         .from('event_logs')
         .select('*')
-        .order('created_at', { ascending: false })
+        .order('event_time', { ascending: false })
         .limit(100);
 
       if (error) {
