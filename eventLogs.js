@@ -1,39 +1,16 @@
-const { useState, useEffect } = React;
-    
-const EventsList = () => {
-  const [events, setEvents] = useState([]);
+  // Initialize Supabase
+  const supabaseUrl = 'https://lbrtnalayoyzwrnthdse.supabase.co';
+  const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxicnRuYWxheW95endybnRoZHNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTk1ODgyMjEsImV4cCI6MjAzNTE2NDIyMX0.H16NPoL9OS-7l_GoaoJ-2xKQZ-CdJ4Mo9QXpM-6YRfY';
+  const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
-  useEffect(() => {
-    // Replace 'your-vercel-websocket-url' with the actual WebSocket URL provided by Vercel
-    const rws = new ReconnectingWebSocket('wss://magnusinc-magnus1000team.vercel.app/api/webhook');
+  // Function to handle realtime updates
+  const handleRealtimeUpdates = (payload) => {
+    console.log('Change received!', payload);
+    // Update your UI here with the new data
+  };
 
-    rws.onmessage = (event) => {
-      const newEvent = JSON.parse(event.data);
-      setEvents(prevEvents => [newEvent, ...prevEvents]);
-    };
-
-    rws.onopen = () => console.log('WebSocket connection opened');
-    rws.onclose = () => console.log('WebSocket connection closed');
-
-    return () => {
-      rws.close();
-    };
-  }, []);
-
-  return (
-    <div>
-      <h2>Latest Events</h2>
-      <ul>
-        {events.map(event => (
-          <li key={event.id}>
-            <h3>{event.Name}</h3>
-            <p>{event.Description}</p>
-            <p>{event.Date}</p> s
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
-
-ReactDOM.render(<EventsList />, document.getElementById('eventLogs'));
+  // Subscribe to realtime changes on your table
+  const realtimeSubscription = supabase
+    .from('event_logs')
+    .on('*', handleRealtimeUpdates)
+    .subscribe();
