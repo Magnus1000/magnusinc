@@ -14,6 +14,12 @@ module.exports = async (req, res) => {
         // Extract parameters from request body
         const { uuid, event_content, event_type, event_page } = req.body;
 
+        // Add a check for uuid
+        if (!uuid) {
+            console.error('UUID is null or undefined.');
+            return res.status(400).json({ error: 'UUID is required and cannot be null.' });
+        }
+
         try {
             // Check if user exists in the "users" table
             const { data: user, error: userError } = await supabase
