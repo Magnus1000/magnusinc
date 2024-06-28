@@ -1,7 +1,8 @@
 // Wait for the Socket.IO library to load
 window.addEventListener('load', function() {
     const socket = io('https://magnusinc-magnus1000team.vercel.app', {
-        path: '/api/socket'
+        path: '/api/socket',
+        transports: ['websocket', 'polling']
     });
 
     socket.on('connect', function() {
