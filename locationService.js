@@ -125,11 +125,11 @@ const LocationService = () => {
             setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error fetching location string: ${error.message}`);
         });
     };
-
+    
     const handleGetLocation = () => {
         // Set isFetching to true before starting the fetch
         setIsFetching(true);
-
+    
         setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Button clicked.`);
         if (navigator.geolocation) {
             setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Permission granted.`);
@@ -138,18 +138,28 @@ const LocationService = () => {
                     const { latitude, longitude } = position.coords;
                     setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Precise location via Browser:`);
                     setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Lat: ${latitude}, Lng: ${longitude}.`);
-
+    
                     // Fetch location string
                     fetchLocationString(latitude, longitude);
-
-                    let uuid = uuid;
-
+    
+                    // Check uuid from state, fallback to cookies if not available
+                    let userUuid = uuid || Cookies.get('uuid');
+    
+                    if (!userUuid) {
+                        userUuid = generateUUID();
+                        Cookies.set('uuid', userUuid);
+                        setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] UUID not found in state or cookies. New UUID generated and set: ${userUuid}.`);
+                        setUuid(userUuid); // Update state with the new UUID
+                    } else {
+                        setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] UUID fetched from ${uuid ? 'state' : 'cookies'}: ${userUuid}.`);
+                    }
+    
                     // Send initial event
                     if (!locationServiceRecorded) {
-                        createEvent(uuid, `Location: ${latitude}, ${longitude}`, 'location_service');
+                        createEvent(userUuid, `Location: ${latitude}, ${longitude}`, 'location_service');
                         setLocationServiceRecorded(true);
                     }
-
+    
                     // Fetch closest results
                     fetch(`https://magnusinc-magnus1000team.vercel.app/api/fetchClosestResults?lat=${latitude}&lng=${longitude}`)
                     .then(response => response.json())
@@ -173,7 +183,7 @@ const LocationService = () => {
             setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Geolocation not supported by this browser.`);
             setIsFetching(false);
         }
-    };
+    };    
 
     const convertDistance = (distance, country) => {
         distance = distance / 1000; // Convert distance from meters to kilometers
