@@ -1,3 +1,5 @@
+// Fixed version of the code with initialization of Supabase client and extraction of request body parameters
+
 const axios = require('axios');
 const cors = require('cors');
 const { createClient } = require('@supabase/supabase-js');
@@ -5,46 +7,63 @@ const { createClient } = require('@supabase/supabase-js');
 const corsHandler = cors();
 
 module.exports = async (req, res) => {
-    try {
-        console.log('Inside the serverless function...');
-        console.log('Request body:', req.body);
+    corsHandler(req, res, async () => {
+        // Initialize Supabase client
+        const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
 
-        corsHandler(req, res, async () => {
-            let { uuid, event_content, event_type, event_page } = req.body;
-        
-            // Log environment variables to ensure they are loaded correctly
-            console.log('Supabase URL:', process.env.SUPABASE_URL);
-            console.log('Supabase Key:', process.env.SUPABASE_KEY);
+        // Extract parameters from request body
+        const { uuid, event_content, event_type, event_page } = req.body;
 
-            // Initialize Supabase client
-            const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
-        
-            try {
-                // Insert a new record in the event_logs table
-                const { data: newRecord, error: insertError } = await supabase
-                    .from('event_logs')
-                    .insert([
-                        { uuid_text: uuid, uuid },
-                    ]);
+        try {
+            // Check if user exists in the "users" table
+            const { data: user, error: userError } = await supabase
+                .from('users')
+                .select('*')
+                .eq('uuid', uuid)
+                .single();
 
-                // Log the full response from Supabase
-                console.log('Supabase response:', { newRecord, insertError });
+            if (userError) {
+                console.error('Supabase user check error:', userError);
+                throw new Error(JSON.stringify(userError));
+            }
 
-                if (insertError) {
-                    console.error('Supabase insert error:', insertError);
-                    throw new Error(JSON.stringify(insertError));
+            // If user does not exist, create one
+            if (!user) {
+                const { data: newUser, error: newUserError } = await supabase
+                    .from('users')
+                    .insert([{ uuid: uuid }]);
+
+                if (newUserError) {
+                    console.error('Supabase user creation error:', newUserError);
+                    throw new Error(JSON.stringify(newUserError));
                 }
 
-                console.log('Record created successfully:', newRecord);
-
-                res.status(200).json({ message: 'Record created successfully' });
-            } catch (error) {
-                console.error('Error details:', error);
-                res.status(500).json({ error: error.message || 'Internal Server Error' });
+                console.log('User created successfully:', newUser);
             }
-        });
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: 'Internal Server Error' });
-    }
+
+            // Insert a new record in the event_logs table
+            const { data: newRecord, error: insertError } = await supabase
+                .from('event_logs')
+                .insert([
+                    { 
+                        uuid_text: uuid,
+                        event_content: event_content,
+                        event_type: event_type,
+                        event_page: event_page
+                    },
+                ]);
+
+            if (insertError) {
+                console.error('Supabase insert error:', insertError);
+                throw new Error(JSON.stringify(insertError));
+            }
+
+            console.log('Record created successfully:', newRecord);
+
+            res.status(200).json({ message: 'Record created successfully' });
+        } catch (error) {
+            console.error('Error details:', error);
+            res.status(500).json({ error: error.message || 'Internal Server Error' });
+        }
+    });
 };
