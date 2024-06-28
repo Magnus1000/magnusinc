@@ -83,15 +83,12 @@ const LocationService = () => {
     }
 
     function createEvent(uuid, event_content, event_type) {
-        // Generate event time in ISO format
-        const event_time = new Date().toISOString();
         const event_page = url; // Add the URL to the event data
 
         // Define the event data
         const eventData = {
             uuid,
             event_content,
-            event_time,
             event_type,
             event_page
         };
