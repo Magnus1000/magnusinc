@@ -9,6 +9,8 @@ module.exports = async (req, res) => {
         // Initialize Supabase client
         const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
+        console.log('Request body:', req.body);
+
         // Extract parameters from request body
         const { uuid, event_content, event_type, event_page } = req.body;
 
