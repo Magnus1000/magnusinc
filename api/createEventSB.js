@@ -29,8 +29,8 @@ module.exports = async (req, res) => {
 
                 res.status(200).json({ message: 'Record created successfully' });
             } catch (error) {
-                console.error('Error:', error);
-                res.status(500).json({ error: 'Internal Server Error' });
+                console.error('Error details:', error.message);
+                res.status(500).json({ error: error.message || 'Internal Server Error' });
             }
         });
     } catch (error) {
