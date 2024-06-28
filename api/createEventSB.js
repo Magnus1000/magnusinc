@@ -23,9 +23,12 @@ module.exports = async (req, res) => {
                         { uuid_text: uuid, event_content, event_type, event_page },
                     ]);
 
-                if (insertError) throw insertError;
+                if (insertError) {
+                    console.error('Supabase insert error:', insertError.message);
+                    throw insertError;
+                }
 
-                console.log('Record created successfully:', newRecord[0].id);
+                console.log('Record created successfully:', newRecord[0]);
 
                 res.status(200).json({ message: 'Record created successfully' });
             } catch (error) {
