@@ -12,6 +12,10 @@ module.exports = async (req, res) => {
         corsHandler(req, res, async () => {
             let { uuid, event_content, event_type, event_page } = req.body;
         
+            // Log environment variables to ensure they are loaded correctly
+            console.log('Supabase URL:', process.env.SUPABASE_URL);
+            console.log('Supabase Key:', process.env.SUPABASE_KEY);
+
             // Initialize Supabase client
             const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
         
@@ -23,8 +27,11 @@ module.exports = async (req, res) => {
                         { uuid_text: uuid, event_content, event_type, event_page },
                     ]);
 
+                // Log the full response from Supabase
+                console.log('Supabase response:', { newRecord, insertError });
+
                 if (insertError) {
-                    console.error('Supabase insert error:', insertError.message);
+                    console.error('Supabase insert error:', insertError);
                     throw insertError;
                 }
 
@@ -32,7 +39,7 @@ module.exports = async (req, res) => {
 
                 res.status(200).json({ message: 'Record created successfully' });
             } catch (error) {
-                console.error('Error details:', error.message);
+                console.error('Error details:', error);
                 res.status(500).json({ error: error.message || 'Internal Server Error' });
             }
         });
