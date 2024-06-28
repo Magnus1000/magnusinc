@@ -9,7 +9,7 @@ const corsHandler = cors();
 module.exports = async (req, res) => {
     corsHandler(req, res, async () => {
         // Initialize Supabase client
-        const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+        const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_KEY);
 
         // Extract parameters from request body
         const { uuid, event_content, event_type, event_page } = req.body;
