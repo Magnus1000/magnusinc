@@ -4,7 +4,6 @@ const cors = require('cors');
 const corsHandler = cors({
   origin: "https://magnusinc.webflow.io",
   methods: ["GET", "POST"],
-  allowedHeaders: ["my-custom-header"],
   credentials: true
 });
 
@@ -15,7 +14,6 @@ const ioHandler = (req, res) => {
       cors: {
         origin: "https://magnusinc.webflow.io",
         methods: ["GET", "POST"],
-        allowedHeaders: ["my-custom-header"],
         credentials: true
       }
     });
