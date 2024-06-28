@@ -144,6 +144,8 @@ const LocationService = () => {
     
                     // Check uuid from state, fallback to cookies if not available
                     let userUuid = uuid || Cookies.get('uuid');
+
+                    console.log('userUuid:', userUuid);
     
                     if (!userUuid) {
                         userUuid = generateUUID();
