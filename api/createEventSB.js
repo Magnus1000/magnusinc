@@ -32,10 +32,10 @@ module.exports = async (req, res) => {
 
                 if (insertError) {
                     console.error('Supabase insert error:', insertError);
-                    throw insertError;
+                    throw new Error(JSON.stringify(insertError));
                 }
 
-                console.log('Record created successfully:', newRecord[0]);
+                console.log('Record created successfully:', newRecord);
 
                 res.status(200).json({ message: 'Record created successfully' });
             } catch (error) {
