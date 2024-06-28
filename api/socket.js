@@ -1,28 +1,43 @@
 const { Server } = require('socket.io');
 const cors = require('cors');
 
-const corsHandler = cors();
+const corsHandler = cors({
+  origin: "https://magnusinc.webflow.io",
+  methods: ["GET", "POST"],
+  allowedHeaders: ["my-custom-header"],
+  credentials: true
+});
 
-module.exports = async (req, res) => {
-  corsHandler(req, res, async () => {
-    if (!res.socket.server.io) {
-        const io = new Server(res.socket.server, {
-        cors: {
-            origin: "*", // Allow all origins
-            methods: ["GET", "POST"],
-            allowedHeaders: ["my-custom-header"],
-            credentials: false // Correctly set to false since 'origin' is '*'
-        }
-        });
+const ioHandler = (req, res) => {
+  if (!res.socket.server.io) {
+    const io = new Server(res.socket.server, {
+      path: '/api/socket',
+      cors: {
+        origin: "https://magnusinc.webflow.io",
+        methods: ["GET", "POST"],
+        allowedHeaders: ["my-custom-header"],
+        credentials: true
+      }
+    });
 
-      res.socket.server.io = io;
+    res.socket.server.io = io;
 
-      io.on('connection', (socket) => {
-        console.log('Client connected');
-      });
-    }
-    res.end();
-  });
+    io.on('connection', (socket) => {
+      console.log('Client connected');
+    });
+  }
+
+  res.end();
+};
+
+module.exports = (req, res) => {
+  if (req.method === 'OPTIONS') {
+    return corsHandler(req, res, () => {
+      res.status(200).end();
+    });
+  }
+
+  return corsHandler(req, res, () => ioHandler(req, res));
 };
 
 export const config = {
