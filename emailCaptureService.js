@@ -112,6 +112,7 @@ const EmailSignupService = () => {
         </div>
         <div className="service-inner-row" style={{ position: 'relative', height: '100vh' }}>
           <div className={`column ${view === 'frontend' ? 'active' : ''}`} style={{ position: 'absolute', width: '100%', transition: 'opacity 0.5s', opacity: view === 'frontend' ? 1 : 0 }}>
+            <div className="column-left">
               <div className="email-form-div">
                 <form className="email-form" onSubmit={handleSubmit}>
                   <input
@@ -126,6 +127,7 @@ const EmailSignupService = () => {
                   <button className="submit-button" type="submit">Sign Up</button>
                 </form>
               </div>
+            </div>
           </div>
           <div className={`column ${view === 'backend' ? 'active' : ''}`} style={{ position: 'absolute', width: '100%', transition: 'opacity 0.5s', opacity: view === 'backend' ? 1 : 0 }}>
             <div className="column-right">
