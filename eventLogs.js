@@ -1,10 +1,11 @@
 // Initialize Supabase client
 const supabaseUrl = 'https://lbrtnalayoyzwrnthdse.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxicnRuYWxheW95endybnRoZHNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTk1ODgyMjEsImV4cCI6MjAzNTE2NDIyMX0.H16NPoL9OS-7l_GoaoJ-2xKQZ-CdJ4Mo9QXpM-6YRfY';
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxicnRuYWxheW95endrbnRoZHNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTk1ODgyMjEsImV4cCI6MjAzNTE2NDIyMX0.H16NPoL9OS-7l_GoaoJ-2xKQZ-CdJ4Mo9QXpM-6YRfY';
+const supabase = createClient(supabaseUrl, supabaseKey);
 
 function EventLogs() {
   const [logs, setLogs] = React.useState([]);
+  const [uuid, setUuid] = React.useState('');
 
   React.useEffect(() => {
     // Fetch the last 100 event logs
@@ -59,6 +60,29 @@ function EventLogs() {
     };
   }, []);
 
+  React.useEffect(() => {
+    // Function to get uuid from cookies
+    const getUuidFromCookies = () => {
+      const cookieUuid = Cookies.get('uuid');
+      if (cookieUuid && !uuid) {
+        setUuid(cookieUuid);
+      }
+    };
+  
+    // Check if uuid is not already set
+    if (!uuid) {
+      // Initial check
+      getUuidFromCookies();
+  
+      // Set an interval to keep trying until uuid is set
+      const interval = setInterval(getUuidFromCookies, 1000);
+  
+      // Cleanup the interval on component unmount
+      return () => clearInterval(interval);
+    }
+  }, [uuid, logs]);
+  
+
   return (
     <div className="service-row">
       <div className="try-me-div">
@@ -74,7 +98,11 @@ function EventLogs() {
           </div>
           <pre contentEditable="false" className="code-block-examples w-code-block" style={{ display: 'block', overflowX: 'auto', background: '#2b2b2b', color: '#f8f8f2', padding: '0.5em' }}>
               <code className="language-javascript" style={{ whiteSpace: 'pre' }}>
-                {logs.map(log => JSON.stringify(log)).join('\n')}
+                {logs.map(log => (
+                  <div key={log.id} className={log.uuid === uuid ? 'lime-green' : ''}>
+                    {JSON.stringify(log)}
+                  </div>
+                ))}
               </code>
           </pre>
         </div>
