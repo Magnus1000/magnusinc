@@ -12,7 +12,7 @@ module.exports = async (req, res) => {
             if (req.method === 'POST') {
                 try {
                     // Replace with your Make webhook URL
-                    const response = await axios.post('https://hook.us1.make.com/r37y92kco6z6et7gawuyfnmyit8jdbu1', req.body, {
+                    const response = await axios.post('https://hook.us1.make.com/hwokeowcw3so3jfkgy5pnns0o2r9mkd6', req.body, {
                         headers: {
                             'Content-Type': 'application/json',
                         },
