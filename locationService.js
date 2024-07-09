@@ -205,8 +205,8 @@ const LocationService = () => {
             <div className="try-me-text">TRY ME</div>
         </div>
         <div className="toggle-buttons">
-          <button onClick={() => setView('frontend')}>Frontend</button>
-          <button onClick={() => setView('backend')}>Backend</button>
+            <button className={`toggle-class ${view === 'frontend' ? 'active' : ''}`} onClick={() => setView('frontend')}>Frontend</button>
+            <button className={`toggle-class ${view === 'backend' ? 'active' : ''}`} onClick={() => setView('backend')}>Backend</button>
         </div>
         <div className="service-inner-row" style={{ position: 'relative', height: '100vh' }}>
           <div className={`column ${view === 'frontend' ? 'active' : ''}`} style={{ position: 'absolute', width: '100%', transition: 'opacity 0.5s', opacity: view === 'frontend' ? 1 : 0 }}>
