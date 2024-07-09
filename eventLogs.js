@@ -85,15 +85,15 @@ function EventLogs() {
 
   return (
     <div className="service-row">
-      <div className="try-me-div">
-          <div className="try-me-text">EVENT LOGS</div>
-      </div>
       <div className="service-inner-row">
         <div className="column-right">
           <div className="column-right-header-row">
               <div className="column-header-wrapper">
                   <div className="column-header-text light">EVENT LOGS</div>
-                  <div className="column-subheader-text light">Last 100 events</div>
+                  <div className="legend-wrapper">
+                    <div className="legend-dot lime-green"></div>
+                    <div className="legend-text lime-green">your events</div>
+                  </div>
               </div>
           </div>
           <pre contentEditable="false" className="code-block-examples w-code-block" style={{ display: 'block', overflowX: 'auto', background: '#2b2b2b', color: '#f8f8f2', padding: '0.5em' }}>
