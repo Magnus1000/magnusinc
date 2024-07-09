@@ -113,7 +113,7 @@ const EmailSignupService = () => {
         <div className="service-inner-row" style={{ position: 'relative', height: '100vh' }}>
           <div className={`column ${view === 'frontend' ? 'active' : ''}`} style={{ position: 'absolute', width: '100%', transition: 'opacity 0.5s', opacity: view === 'frontend' ? 1 : 0 }}>
               <div className="email-form-div">
-                <form onSubmit={handleSubmit}>
+                <form className="email-form" onSubmit={handleSubmit}>
                   <input
                     ref={emailRef}
                     type="email"
@@ -121,8 +121,9 @@ const EmailSignupService = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
                     required
+                    className="email-input"
                   />
-                  <button type="submit">Sign Up</button>
+                  <button className="submit-button" type="submit">Sign Up</button>
                 </form>
               </div>
           </div>
