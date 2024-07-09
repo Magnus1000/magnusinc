@@ -48,12 +48,12 @@ const EmailSignupService = () => {
             // Handle success response
   
             // After successfully sending the email, create the user event
-            const responseCreateUserEvent = await fetch('https://magnusinc-magnus1000team.vercel.app/api/createUserEvent.js', {
+            const responseCreateUserEvent = await fetch('https://magnusinc-magnus1000team.vercel.app/api/createUserEventSB.js', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({ email: email, uuid: uuid }), // Include UUID in the request body if it exists
+              body: JSON.stringify(eventData),
             });
   
             if (responseCreateUserEvent.ok) {
