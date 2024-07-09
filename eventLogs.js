@@ -18,7 +18,12 @@ function EventLogs() {
       if (error) {
         console.error('Error fetching logs:', error);
       } else {
-        setLogs(data);
+        // Filter out the unwanted properties
+        const cleanedData = data.map(log => {
+          const { event_order, event_content, ...cleanedLog } = log;
+          return cleanedLog;
+        });
+        setLogs(cleanedData);
       }
     };
 
@@ -29,8 +34,8 @@ function EventLogs() {
       console.log('Realtime update received:', payload);
       // Check if the event type is an INSERT to add new logs
       if (payload.eventType === 'INSERT') {
-        // Prepend the new log to the existing logs
-        setLogs((currentLogs) => [payload.new, ...currentLogs]);
+        const { event_order, event_content, ...newLog } = payload.new;
+        setLogs((currentLogs) => [newLog, ...currentLogs]);
       }
     };
 
@@ -69,7 +74,9 @@ function EventLogs() {
           </div>
         </div>
         <pre contentEditable="false" className="code-block-examples w-code-block" style={{ display: 'block', overflowX: 'auto', background: '#2b2b2b', color: '#f8f8f2', padding: '0.5em' }}>
-            <code className="language-javascript" style={{ whiteSpace: 'pre' }}>{JSON.stringify(logs, null, 2)}</code>
+            <code className="language-javascript" style={{ whiteSpace: 'pre' }}>
+              {logs.map(log => JSON.stringify(log)).join('\n')}
+            </code>
         </pre>
       </div>
     </div>
