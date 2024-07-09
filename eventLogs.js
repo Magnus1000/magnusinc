@@ -13,7 +13,7 @@ function EventLogs() {
       const { data, error } = await supabase
         .from('event_logs')
         .select('*')
-        .order('event_time', { ascending: false })
+        .order('event_id', { ascending: false })
         .limit(100);
 
       if (error) {
@@ -98,11 +98,14 @@ function EventLogs() {
           </div>
           <pre contentEditable="false" className="code-block-examples w-code-block" style={{ display: 'block', overflowX: 'auto', background: '#2b2b2b', color: '#f8f8f2', padding: '0.5em' }}>
               <code className="language-javascript" style={{ whiteSpace: 'pre' }}>
-                {logs.map((log, index) => (
-                  <div key={index} className={`event-log ${log.uuid === uuid ? 'lime-green' : ''}`}>
-                    <span className="code-line-number">{index + 1}</span> {JSON.stringify(log)}
-                  </div>
-                ))}
+                {logs.map((log, index) => {
+                  const { uuid: logUuid, ...logWithoutUuid } = log; // Remove uuid from log
+                  return (
+                    <div key={index} className={`event-log ${logUuid === uuid ? 'lime-green' : ''}`}>
+                      <span className="code-line-number">{index + 1}</span> {JSON.stringify(logWithoutUuid)}
+                    </div>
+                  );
+                })}
               </code>
           </pre>
         </div>
