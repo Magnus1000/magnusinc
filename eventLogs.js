@@ -99,7 +99,7 @@ function EventLogs() {
           <pre contentEditable="false" className="code-block-examples w-code-block" style={{ display: 'block', overflowX: 'auto', background: '#2b2b2b', color: '#f8f8f2', padding: '0.5em' }}>
               <code className="language-javascript" style={{ whiteSpace: 'pre' }}>
                 {logs.map((log, index) => (
-                  <div key={index} className={`code-line-number ${log.uuid === uuid ? 'lime-green' : ''}`}>
+                  <div key={index} className={`event-log ${log.uuid === uuid ? 'lime-green' : ''}`}>
                     <span className="code-line-number">{index + 1}</span> {JSON.stringify(log)}
                   </div>
                 ))}
