@@ -55,18 +55,67 @@ function EventLogs() {
   }, []);
 
   return (
-    <div>
-      <h2>Event Logs</h2>
-      <ul>
-        {logs.map((log, index) => (
-          <li key={index}>
-            {/* Adjust according to your log structure */}
-            {log.event_content} - {new Date(log.event_time).toLocaleString()}
-          </li>
-        ))}
-      </ul>
+    <div className="service-row">
+      <div className="try-me-div">
+          <div className="try-me-text">EVENT LOGS</div>
+      </div>
+      <div className="service-inner-row">
+        <div className="column-right">
+          <div className="column-right-header-row">
+              <div className="column-header-wrapper">
+                  <div className="column-header-text light">EVENT LOGS</div>
+                  <div className="column-subheader-text light">Last 100 events</div>
+              </div>
+          </div>
+        </div>
+        <pre contenteditable="false" className="code-block-examples w-code-block" style={{ display: 'block', overflowX: 'auto', background: '#2b2b2b', color: '#f8f8f2', padding: '0.5em' }}>
+            <code className="language-javascript" style={{ whiteSpace: 'pre' }}>{logs}</code>
+        </pre>
+      </div>
     </div>
   );
 }
 
 ReactDOM.render(<EventLogs />, document.getElementById('eventLogs'));
+
+return (
+  <div className="service-row">
+    <div className="try-me-div">
+        <div className="try-me-text">TRY ME</div>
+    </div>
+    <div className="toggle-buttons">
+      <button className={`toggle-class ${view === 'frontend' ? 'active' : ''}`} onClick={() => setView('frontend')}>Frontend</button>
+      <button className={`toggle-class ${view === 'backend' ? 'active' : ''}`} onClick={() => setView('backend')}>Backend</button>
+    </div>
+    <div className="service-inner-row">
+      <div className={`column ${view === 'frontend' ? 'active' : ''}`} style={{ position: 'absolute', width: '100%', transition: 'opacity 0.5s', opacity: view === 'frontend' ? 1 : 0 }}>
+        <div className="column-left">
+          <div className="email-form-div">
+            <form className="email-form" onSubmit={handleSubmit}>
+              <input
+                ref={emailRef}
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                required
+                className="email-input"
+              />
+              <button className="submit-button" type="submit">Sign Up</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div className={`column ${view === 'backend' ? 'active' : ''}`} style={{ position: 'absolute', width: '100%', transition: 'opacity 0.5s', opacity: view === 'backend' ? 1 : 0 }}>
+        <div className="column-right">
+            <div className="column-right-header-row">
+                <div className="column-header-wrapper">
+                    <div className="column-header-text light">BACKEND</div>
+                    <div className="column-subheader-text light">What you see</div>
+                </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+);
