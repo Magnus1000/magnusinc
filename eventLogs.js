@@ -91,8 +91,14 @@ function EventLogs() {
               <div className="column-header-wrapper">
                   <div className="column-header-text light">EVENT LOGS</div>
                   <div className="legend-wrapper">
-                    <div className="legend-dot lime-green"></div>
-                    <div className="legend-text lime-green">your events</div>
+                    <div className="legend-div">
+                      <div className="legend-dot lime-green"></div>
+                      <div className="legend-text lime-green">You (anonymous)</div>
+                    </div>
+                    <div className="legend-div">
+                      <div className="legend-dot white"></div>
+                      <div className="legend-text white">Other users (anonymous)</div>
+                    </div>
                   </div>
               </div>
           </div>
