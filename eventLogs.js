@@ -72,12 +72,12 @@ function EventLogs() {
                   <div className="column-subheader-text light">Last 100 events</div>
               </div>
           </div>
+          <pre contentEditable="false" className="code-block-examples w-code-block" style={{ display: 'block', overflowX: 'auto', background: '#2b2b2b', color: '#f8f8f2', padding: '0.5em' }}>
+              <code className="language-javascript" style={{ whiteSpace: 'pre' }}>
+                {logs.map(log => JSON.stringify(log)).join('\n')}
+              </code>
+          </pre>
         </div>
-        <pre contentEditable="false" className="code-block-examples w-code-block" style={{ display: 'block', overflowX: 'auto', background: '#2b2b2b', color: '#f8f8f2', padding: '0.5em' }}>
-            <code className="language-javascript" style={{ whiteSpace: 'pre' }}>
-              {logs.map(log => JSON.stringify(log)).join('\n')}
-            </code>
-        </pre>
       </div>
     </div>
   );
