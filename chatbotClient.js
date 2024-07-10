@@ -85,12 +85,12 @@ const Chatbot = () => {
         <div className="chat-button-wrapper">
           <button onClick={handleSend} disabled={isLoading} className="send-button">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-              <path d="M209 50.2l-17-17-17 17L21.4 203.8l-17 17 33.9 33.9 17-17L168 125.1V456v24h48V456 125.1L328.6 237.8l17 17 33.9-33.9-17-17L209 50.2z"/>
+              <path fill="currentColor" d="M209 50.2l-17-17-17 17L21.4 203.8l-17 17 33.9 33.9 17-17L168 125.1V456v24h48V456 125.1L328.6 237.8l17 17 33.9-33.9-17-17L209 50.2z"/>
             </svg>
           </button>
           <button onClick={handleClearChat} className="clear-chat-button">
             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-              <path d="M345 137l17-17L328 86.1l-17 17-119 119L73 103l-17-17L22.1 120l17 17 119 119L39 375l-17 17L56 425.9l17-17 119-119L311 409l17 17L361.9 392l-17-17-119-119L345 137z"/>
+              <path fill="currentColor" d="M345 137l17-17L328 86.1l-17 17-119 119L73 103l-17-17L22.1 120l17 17 119 119L39 375l-17 17L56 425.9l17-17 119-119L311 409l17 17L361.9 392l-17-17-119-119L345 137z"/>
             </svg>
           </button>
         </div>
