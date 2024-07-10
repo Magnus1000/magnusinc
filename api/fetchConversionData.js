@@ -25,7 +25,18 @@ module.exports = (req, res) => {
         return acc;
       }, {});
 
-      res.json(eventTypeCounts);
+      // Calculate the total number of users (page_view count)
+      const totalUsers = eventTypeCounts['page_view'] || 1; // Default to 1 to avoid division by zero
+
+      // Calculate the percentage of users for each event type
+      const eventTypePercentages = Object.keys(eventTypeCounts).reduce((acc, eventType) => {
+        if (eventType !== 'page_view') {
+          acc[eventType] = (eventTypeCounts[eventType] / totalUsers) * 100;
+        }
+        return acc;
+      }, {});
+
+      res.json(eventTypePercentages);
     } catch (error) {
       console.error(`An error occurred: ${error.message}`);
       res.status(500).json({ error: 'An error occurred while fetching data from Supabase' });
