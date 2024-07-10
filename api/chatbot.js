@@ -7,7 +7,11 @@ const openai = new OpenAI({
 });
 
 export default async function handler(req, res) {
-  const { input, messages } = req.body;
+  const { input, messages } = req.body || {};
+
+  if (!input || !messages) {
+    return res.status(400).json({ error: 'Invalid request body' });
+  }
 
   console.log('Request received');
   console.log('Input:', input);
