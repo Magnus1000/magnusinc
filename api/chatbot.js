@@ -30,7 +30,11 @@ const systemMessage = {
   1. Build rapport with the user by being friendly, empathetic, and showing genuine interest in their needs.
   2. Proactively offer a consultation booking when appropriate, using the book_consultation function.
   3. When asked about our services, always use the get_company_services function to retrieve the most up-to-date information.
-  Be conversational and natural. Look for opportunities to suggest a consultation, but don't be pushy. Never say you're part of OpenAI or any other company.`
+  4. Be conversational and natural. Keep your responses succinct. Look for opportunities to suggest a consultation, but don't be pushy. 
+  5. Never say you're part of OpenAI or any other company.
+  6. Avoid discussing politics, religion, or any controversial topics.
+  7. If you're unsure how to respond, ask clarifying questions to keep the conversation going.
+  8. If you're still unsure, apologize and encourage the user to email us at jack@magnucinc.co`
 };
 
 // Main handler for incoming requests
@@ -42,6 +46,8 @@ module.exports = async (req, res) => {
 
     const { input, messages } = req.body || {};
 
+    console.log('Received request:', { input, messages });
+
     if (!input || !messages) {
       return res.status(400).json({ error: 'Invalid request body' });
     }
@@ -51,9 +57,11 @@ module.exports = async (req, res) => {
       const completion = await openai.chat.completions.create({
         model: 'gpt-4o',
         messages: [
+          // Include the system message at the beginning
           systemMessage,
-          ...messages.map(msg => ({
-            role: msg.sender === 'user' ? 'user' : 'assistant',
+          // Include previous messages
+          ...messages.map(msg => ({ // Map user messages to 'user' and bot messages to 'assistant'
+            role: msg.sender === 'user' ? 'user' : 'assistant', // Map 'bot' to 'assistant' if role isn't 'user'
             content: msg.text,
           })),
           { role: 'user', content: input },
@@ -74,7 +82,7 @@ module.exports = async (req, res) => {
             type: "function",
             function: {
               name: "book_consultation",
-              description: "Offer to book a consultation",
+              description: "Instruct user to click button to book a consultation",
               parameters: {
                 type: "object",
                 properties: {},
@@ -101,7 +109,7 @@ module.exports = async (req, res) => {
 
             return { tool_call_id: toolCall.id, role: 'tool', content: serviceResponse };
           } else if (toolCall.function.name === "book_consultation") {
-            const consultationResponse = `Certainly! I'd be happy to help you book a consultation. Please click the "Book Now" button to schedule your appointment. Is there anything specific you'd like to discuss during the consultation?`;
+            const consultationResponse = `Certainly! I'd be happy to help you book a consultation. Please click the "Book Now" button to schedule your appointment.`;
 
             return { tool_call_id: toolCall.id, role: 'tool', content: consultationResponse };
           }
