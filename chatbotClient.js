@@ -3,6 +3,7 @@ const Chatbot = () => {
   const [input, setInput] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
   const [isFirstKeystroke, setIsFirstKeystroke] = React.useState(true);
+  const [showConsultationButton, setShowConsultationButton] = React.useState(false);
   const inputRef = React.useRef(null);
   const messagesEndRef = React.useRef(null);
 
@@ -40,7 +41,28 @@ const Chatbot = () => {
         messages
       });
 
-      const botMessage = { sender: 'bot', text: response.data.content };
+      let botMessageContent = response.data.content;
+
+      if (response.data.tool === 'consultation_link') {
+        // Create a temporary div to parse the HTML content
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = botMessageContent;
+
+        // Find the consultation link
+        const consultationLink = tempDiv.querySelector('.consultation-link');
+        if (consultationLink) {
+          // Replace the link with a placeholder in the message content
+          botMessageContent = botMessageContent.replace(
+            /<a href="#bookConsultation"[^>]*>([^<]+)<\/a>/,
+            '[Book Consultation]'
+          );
+          setShowConsultationButton(true);
+        }
+      } else {
+        setShowConsultationButton(false);
+      }
+
+      const botMessage = { sender: 'bot', text: botMessageContent };
       setMessages(prevMessages => [...prevMessages, botMessage]);
     } catch (error) {
       console.error('Error fetching response from serverless function:', error);
@@ -55,6 +77,7 @@ const Chatbot = () => {
     setMessages([]);
     setInput('');
     setIsFirstKeystroke(true);
+    setShowConsultationButton(false);
     handleInitialMessage();
   };
 
@@ -71,6 +94,10 @@ const Chatbot = () => {
     if (e.key === 'Enter') {
       handleSend();
     }
+  };
+
+  const handleBookConsultation = () => {
+    window.location.href = '#bookConsultation';
   };
 
   return (
@@ -106,6 +133,11 @@ const Chatbot = () => {
               <path fill="currentColor" d="M345 137l17-17L328 86.1l-17 17-119 119L73 103l-17-17L22.1 120l17 17 119 119L39 375l-17 17L56 425.9l17-17 119-119L311 409l17 17L361.9 392l-17-17-119-119L345 137z"/>
             </svg>
           </button>
+          {showConsultationButton && (
+            <button onClick={handleBookConsultation} className="consultation-button">
+              Book Consultation
+            </button>
+          )}
         </div>
       </div>
     </div>
