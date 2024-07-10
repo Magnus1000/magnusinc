@@ -43,12 +43,16 @@ const Chatbot = () => {
     setIsLoading(true);
     setIsFirstKeystroke(true);
 
+    const payload = {
+      input,
+      messages: [...messages, userMessage],
+      threadId
+    };
+
+    console.log('Request payload:', payload);
+
     try {
-      const response = await axios.post('https://magnusinc-magnus1000team.vercel.app/api/chatbot', {
-        input,
-        messages: [...messages, userMessage],
-        threadId
-      });
+      const response = await axios.post('https://magnusinc-magnus1000team.vercel.app/api/chatbot', payload);
 
       let botMessageContent = response.data.content;
       let showConsultationButton = false;
