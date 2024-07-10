@@ -44,20 +44,11 @@ const Chatbot = () => {
       let botMessageContent = response.data.content;
 
       if (response.data.tool === 'consultation_link') {
-        // Create a temporary div to parse the HTML content
-        const tempDiv = document.createElement('div');
-        tempDiv.innerHTML = botMessageContent;
-
-        // Find the consultation link
-        const consultationLink = tempDiv.querySelector('.consultation-link');
-        if (consultationLink) {
-          // Replace the link with a placeholder in the message content
-          botMessageContent = botMessageContent.replace(
-            /<a href="#bookConsultation"[^>]*>([^<]+)<\/a>/,
-            '[Book Consultation]'
-          );
-          setShowConsultationButton(true);
-        }
+        setShowConsultationButton(true);
+        botMessageContent = botMessageContent.replace(
+          /<a href="#bookConsultation"[^>]*>([^<]+)<\/a>/,
+          '[Book Consultation]'
+        );
       } else {
         setShowConsultationButton(false);
       }
