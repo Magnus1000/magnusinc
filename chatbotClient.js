@@ -35,6 +35,9 @@ const Chatbot = () => {
     setIsLoading(true);
     setIsFirstKeystroke(true);
 
+    // Log the input and messages before sending the request
+    console.log('Sending to OpenAI:', { input, messages });
+
     try {
       const response = await axios.post('https://magnusinc-magnus1000team.vercel.app/api/chatbot', {
         input,
@@ -49,8 +52,10 @@ const Chatbot = () => {
 
       if (response.data.tool === 'consultation_button') {
         setShowConsultationButton(true);
+        console.log('Consultation button should be shown');
       } else {
         setShowConsultationButton(false);
+        console.log('Consultation button should not be shown');
       }
 
       const botMessage = { sender: 'bot', text: botMessageContent, showConsultationButton };
