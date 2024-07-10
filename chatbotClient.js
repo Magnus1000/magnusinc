@@ -7,11 +7,11 @@ const Chatbot = () => {
   const inputRef = React.useRef(null);
   const messagesEndRef = React.useRef(null);
 
-  useEffect(() => {
+  React.useEffect(() => {
     handleInitialMessage();
   }, []);
 
-  useEffect(() => {
+  React.useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
