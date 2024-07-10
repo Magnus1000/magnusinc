@@ -45,21 +45,22 @@ const Chatbot = () => {
       });
 
       let botMessageContent = response.data.content;
-      let showConsultationButton = false;
+      let showConsultationButton = response.data.tool === 'consultation_button';
 
       // Log the data back from the serverless function
       console.log(response.data);
 
-      if (response.data.tool === 'consultation_button') {
-        setShowConsultationButton(true);
-        console.log('Consultation button should be shown');
-      } else {
-        setShowConsultationButton(false);
-        console.log('Consultation button should not be shown');
-      }
-
       const botMessage = { sender: 'bot', text: botMessageContent, showConsultationButton };
       setMessages(prevMessages => [...prevMessages, botMessage]);
+
+      // Update the state for showing the consultation button
+      setShowConsultationButton(showConsultationButton);
+
+      if (showConsultationButton) {
+        console.log('Consultation button should be shown');
+      } else {
+        console.log('Consultation button should not be shown');
+      }
     } catch (error) {
       console.error('Error fetching response from serverless function:', error);
       setMessages(prevMessages => [...prevMessages, { sender: 'bot', text: 'Sorry, an error occurred.', showConsultationButton: false }]);
