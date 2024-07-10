@@ -31,9 +31,11 @@ const ConversionService = () => {
             datasets: [{
               label: 'Event Count',
               data: dataset,
-              fill: false,
+              fill: true,
+              borderColor: 'rgba(75, 192, 192, 1)',
               backgroundColor: 'rgb(75, 192, 192)',
               borderColor: 'rgba(75, 192, 192, 0.2)',
+              tension: 0.1 // Smoothen the curve
             }],
           });
           console.log('Data processed and chart data set');
@@ -67,19 +69,6 @@ const ConversionService = () => {
   return (
     <div className="service-row">
       <div className="service-inner-row">
-        <div className="try-me-div">
-          <div className="try-me-text">TRY ME</div>
-        </div>
-        <div className="column-left">
-          <div className="column-left-header-row">
-            <div className="column-header-wrapper">
-              <div className="column-header-text">FRONTEND</div>
-              <div className="column-subheader-text">What your users see</div>
-            </div>
-          </div>
-          <div className="column-left-header-row">
-          </div>
-        </div>
         <div className="column-right">
           <div className="column-right-header-row">
             <div className="column-header-wrapper">
