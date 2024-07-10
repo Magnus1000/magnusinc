@@ -3,8 +3,13 @@ const Chatbot = () => {
   const [input, setInput] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
 
+  React.useEffect(() => {
+    // Set initial placeholder text
+    setInput('Reply to Maggy...');
+  }, []);
+
   const handleSend = async () => {
-    if (!input.trim()) return;
+    if (!input.trim() || input === 'Reply to Maggy...') return;
 
     const userMessage = { sender: 'user', text: input };
     setMessages(prevMessages => [...prevMessages, userMessage]);
@@ -19,9 +24,11 @@ const Chatbot = () => {
 
       const botMessage = { sender: 'bot', text: response.data.content };
       setMessages(prevMessages => [...prevMessages, botMessage]);
+      
+      // Set the input field to "Reply to Maggy..." after bot response
+      setInput('Reply to Maggy...');
     } catch (error) {
       console.error('Error fetching response from serverless function:', error);
-      // Optionally add an error message to the chat
       setMessages(prevMessages => [...prevMessages, { sender: 'bot', text: 'Sorry, an error occurred.' }]);
     } finally {
       setIsLoading(false);
@@ -30,6 +37,28 @@ const Chatbot = () => {
 
   const handleClearChat = () => {
     setMessages([]);
+    setInput('Reply to Maggy...');
+  };
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    if (value === 'Reply to Maggy...') {
+      setInput('');
+    } else {
+      setInput(value);
+    }
+  };
+
+  const handleInputFocus = () => {
+    if (input === 'Reply to Maggy...') {
+      setInput('');
+    }
+  };
+
+  const handleInputBlur = () => {
+    if (input === '') {
+      setInput('Reply to Maggy...');
+    }
   };
 
   return (
@@ -40,13 +69,15 @@ const Chatbot = () => {
             {message.text}
           </div>
         ))}
-        {isLoading && <div className="chatbot-message loading">Bot is typing...</div>}
+        {isLoading && <div className="chatbot-message loading">Maggy is typing...</div>}
       </div>
       <div className="chatbot-input">
         <input
           type="text"
           value={input}
-          onChange={(e) => setInput(e.target.value)}
+          onChange={handleInputChange}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
           onKeyPress={(e) => e.key === 'Enter' ? handleSend() : null}
           disabled={isLoading}
           className="chat-input"
