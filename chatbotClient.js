@@ -1,6 +1,6 @@
 const Chatbot = () => {
-  const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
+  const [messages, setMessages] = React.useState([]);
+  const [input, setInput] = React.useState('');
 
   const handleSend = async () => {
     const userMessage = { sender: 'user', text: input };
