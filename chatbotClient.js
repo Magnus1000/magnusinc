@@ -16,7 +16,7 @@ const Chatbot = () => {
           localStorage.setItem('hasShownInitialMessage', 'true');
         }
       },
-      { threshold: 0.1 } // Trigger when 10% of the element is visible
+      { threshold: 0.1 }
     );
 
     if (chatbotRef.current) {
@@ -28,21 +28,21 @@ const Chatbot = () => {
         observer.unobserve(chatbotRef.current);
       }
     };
-  }, []);
+  }, [messages]);
 
   const handleInitialMessage = async () => {
     setIsLoading(true);
     try {
       const response = await axios.post('https://magnusinc-magnus1000team.vercel.app/api/chatbot', {
         input: 'Hello',
-        messages: [],
+        messages: []
       });
 
       const botMessage = { sender: 'bot', text: response.data.content };
       setMessages([botMessage]);
     } catch (error) {
       console.error('Error fetching initial response:', error);
-      setMessages([{ sender: 'bot', text: 'Hello! I'm Maggy, Magnus Inc's AI assistant. How can I help you today?' }]);
+      setMessages([{ sender: 'bot', text: "Hello! I'm Maggy, Magnus Inc's AI assistant. How can I help you today?" }]);
     } finally {
       setIsLoading(false);
     }
@@ -59,7 +59,7 @@ const Chatbot = () => {
     try {
       const response = await axios.post('https://magnusinc-magnus1000team.vercel.app/api/chatbot', {
         input,
-        messages,
+        messages
       });
 
       const botMessage = { sender: 'bot', text: response.data.content };
