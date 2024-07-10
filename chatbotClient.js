@@ -43,12 +43,10 @@ const Chatbot = () => {
       let botMessageContent = response.data.content;
       let showConsultationButton = false;
 
-      if (response.data.tool === 'consultation_link') {
-        botMessageContent = botMessageContent.replace(
-          /<a href="#bookConsultation"[^>]*>([^<]+)<\/a>/,
-          '[Book Consultation]'
-        );
-        showConsultationButton = true;
+      if (response.data.tool === 'consultation_button') {
+        setShowConsultationButton(true);
+      } else {
+        setShowConsultationButton(false);
       }
 
       const botMessage = { sender: 'bot', text: botMessageContent, showConsultationButton };
