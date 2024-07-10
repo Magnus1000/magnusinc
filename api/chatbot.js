@@ -33,6 +33,7 @@ const systemMessage = {
 async function initializeThread() {
   try {
     const thread = await openai.beta.threads.create();
+    console.log('Thread initialized with ID:', thread.id);
     return thread.id;
   } catch (error) {
     console.error('Error initializing thread:', error);
@@ -148,7 +149,7 @@ module.exports = async (req, res) => {
         res.status(200).json({ content: message.content, type: 'chat', threadId: currentThreadId });
       }
     } catch (error) {
-      console.error('Error:', error.message);
+      console.error('Error:', error);
       res.status(500).json({ error: 'Error processing request', message: error.message });
     }
   });
