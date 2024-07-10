@@ -22,7 +22,11 @@ const Chatbot = () => {
   const handleInitialMessage = async () => {
     setIsLoading(true);
     try {
-      const response = await axios.post('https://magnusinc-magnus1000team.vercel.app/api/chatbot', {});
+      const response = await axios.post('https://magnusinc-magnus1000team.vercel.app/api/chatbot', {}, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
       setThreadId(response.data.threadId);
       setMessages(response.data.messages);
     } catch (error) {
@@ -52,7 +56,11 @@ const Chatbot = () => {
     console.log('Request payload:', payload);
 
     try {
-      const response = await axios.post('https://magnusinc-magnus1000team.vercel.app/api/chatbot', payload);
+      const response = await axios.post('https://magnusinc-magnus1000team.vercel.app/api/chatbot', payload, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
 
       let botMessageContent = response.data.content;
       let showConsultationButton = false;
