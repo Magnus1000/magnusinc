@@ -75,7 +75,9 @@ const ConversionService = () => {
               <div className="column-subheader-text light">What you see</div>
             </div>
           </div>
-          {chartData ? <canvas ref={chartRef} /> : null}
+          <div className="chart-wrapper">
+            {chartData ? <canvas ref={chartRef} /> : null}
+          </div>
         </div>
       </div>
     </div>
