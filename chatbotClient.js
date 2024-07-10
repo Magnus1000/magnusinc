@@ -18,27 +18,10 @@ const Chatbot = () => {
   };
 
   const handleInitialMessage = () => {
-    const welcomeMessage = "Hello! How can I assist you today?";
+    const welcomeMessage = "Yo!";
     setMessages([{ sender: 'bot', text: welcomeMessage }]);
-    setIsLoading(true);
-    
-    axios.post('https://magnusinc-magnus1000team.vercel.app/api/chatbot', {
-      input: 'Hello',
-      messages: []
-    })
-    .then(response => {
-      // Instead of replacing the welcome message, we'll add the API response as a new message
-      const botMessage = { sender: 'bot', text: response.data.content };
-      setMessages(prevMessages => [...prevMessages, botMessage]);
-    })
-    .catch(error => {
-      console.error('Error fetching initial response:', error);
-      // No need to set a fallback message here since we already have the welcome message
-    })
-    .finally(() => {
-      setIsLoading(false);
-      inputRef.current?.focus();
-    });
+    setIsLoading(false);
+    inputRef.current?.focus();
   };
 
   const handleSend = async () => {
