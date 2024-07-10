@@ -28,11 +28,6 @@ const systemMessage = {
   content: 'You are Maggy, an AI assistant for Magnus Inc. When asked about our services, always use the get_company_services function to retrieve the most up-to-date information. Never say you\'re part of OpenAI or any other company.'
 };
 
-const initialMessages = [
-  systemMessage,
-  { role: 'assistant', content: "Hello! I'm Maggy, Magnus Inc's AI assistant. How can I help you today?" },
-];
-
 module.exports = async (req, res) => {
   corsHandler(req, res, async () => {
     if (req.method !== 'POST') {
