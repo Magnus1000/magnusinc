@@ -47,6 +47,8 @@ module.exports = async (req, res) => {
       return res.status(405).json({ error: 'Method Not Allowed' });
     }
 
+    console.log('Request body:', req.body);
+
     const { input, messages, threadId } = req.body || {};
 
     if (!input || !messages) {
