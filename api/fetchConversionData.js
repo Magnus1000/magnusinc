@@ -20,35 +20,40 @@ module.exports = (req, res) => {
 
       console.log(`Received response from Supabase: ${JSON.stringify(data)}`);
 
-      // Count unique events by uuid and event_type
+      // Count unique users for each event type
       const eventTypeCounts = {};
+      const uniqueUsers = new Set();
+
       data.forEach(record => {
-        const key = `${record.uuid}_${record.event_type}`;
-        if (!eventTypeCounts[key]) {
-          eventTypeCounts[key] = 1;
+        uniqueUsers.add(record.uuid);
+        if (!eventTypeCounts[record.event_type]) {
+          eventTypeCounts[record.event_type] = new Set();
         }
+        eventTypeCounts[record.event_type].add(record.uuid);
       });
 
-      // Aggregate the counts by event_type
-      const aggregatedEventTypeCounts = {};
-      Object.keys(eventTypeCounts).forEach(key => {
-        const eventType = key.split('_')[1];
-        aggregatedEventTypeCounts[eventType] = (aggregatedEventTypeCounts[eventType] || 0) + 1;
-      });
-
-      // Calculate the total number of unique users (page_view count)
-      const totalUsers = aggregatedEventTypeCounts['page_view'] || 1; // Default to 1 to avoid division by zero
+      // Calculate the total number of unique users
+      const totalUsers = uniqueUsers.size;
 
       // Calculate the percentage of users for each event type
       const eventTypePercentages = {};
-      Object.keys(aggregatedEventTypeCounts).forEach(eventType => {
-        eventTypePercentages[eventType] = (aggregatedEventTypeCounts[eventType] / totalUsers) * 100;
+      Object.keys(eventTypeCounts).forEach(eventType => {
+        const count = eventTypeCounts[eventType].size;
+        eventTypePercentages[eventType] = (count / totalUsers) * 100;
       });
 
       // Ensure page_view is always 100%
       eventTypePercentages['page_view'] = 100;
 
-      res.json(eventTypePercentages);
+      // Sort event types by percentage in descending order
+      const sortedEventTypes = Object.entries(eventTypePercentages)
+        .sort((a, b) => b[1] - a[1])
+        .reduce((obj, [key, value]) => {
+          obj[key] = value;
+          return obj;
+        }, {});
+
+      res.json(sortedEventTypes);
     } catch (error) {
       console.error(`An error occurred: ${error.message}`);
       res.status(500).json({ error: 'An error occurred while fetching data from Supabase' });
