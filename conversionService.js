@@ -11,6 +11,7 @@ const ConversionService = () => {
       Cookies.set('uuid', uuid);
       console.log(`UUID not found in cookies. New UUID generated and set: ${uuid}`);
     }
+    
     console.log('Fetching data from server...');
     fetch('https://magnusinc-magnus1000team.vercel.app/api/fetchConversionData')
       .then(response => {
@@ -19,9 +20,12 @@ const ConversionService = () => {
       })
       .then(data => {
         console.log('Received data from server:', data);
-        if (data.length > 0) {
-          const labels = data.map(record => record.event_type);
-          const dataset = data.map(record => record.event_count);
+        
+        if (Object.keys(data).length > 0) {
+          // Transforming the response data
+          const labels = Object.keys(data);
+          const dataset = Object.values(data);
+          
           setChartData({
             labels: labels,
             datasets: [{
