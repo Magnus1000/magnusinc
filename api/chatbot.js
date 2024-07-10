@@ -1,110 +1,132 @@
-const OpenAI = require("openai");
-const axios = require("axios");
-const cors = require('cors');
+const Chatbot = () => {
+  const [messages, setMessages] = React.useState([]);
+  const [input, setInput] = React.useState('Reply to Maggy...');
+  const [isLoading, setIsLoading] = React.useState(false);
+  const inputRef = React.useRef(null);
+  const messagesEndRef = React.useRef(null);
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-  apiVersion: 'v1',
-});
+  React.useEffect(() => {
+    handleInitialMessage();
+  }, []);
 
-const corsHandler = cors();
+  React.useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
-// Function to fetch services from the external API
-async function fetchServices() {
-  try {
-    const response = await axios.get('https://magnusinc-magnus1000team.vercel.app/api/fetchServicesForChatbot');
-    return response.data.map(service => ({
-      name: service.service_name,
-      description: service.service_description
-    }));
-  } catch (error) {
-    console.error('Error fetching services:', error);
-    return null;
-  }
-}
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
-const systemMessage = {
-  role: 'system', 
-  content: 'You are Maggy, an AI assistant for Magnus Inc. When asked about our services, always use the get_company_services function to retrieve the most up-to-date information. Never say you\'re part of OpenAI or any other company.'
-};
-
-const initialMessages = [
-  systemMessage,
-  { role: 'assistant', content: "Hello! I'm Maggy, Magnus Inc's AI assistant. How can I help you today?" },
-];
-
-module.exports = async (req, res) => {
-  corsHandler(req, res, async () => {
-    if (req.method !== 'POST') {
-      return res.status(405).json({ error: 'Method Not Allowed' });
-    }
-
-    const { input, messages } = req.body || {};
-
-    if (!input || !messages) {
-      return res.status(400).json({ error: 'Invalid request body' });
-    }
-
+  const handleInitialMessage = async () => {
+    setIsLoading(true);
     try {
-      const completion = await openai.chat.completions.create({
-        model: 'gpt-4',
-        messages: [
-          systemMessage,
-          ...messages.map(msg => ({
-            role: msg.sender === 'user' ? 'user' : 'assistant',
-            content: msg.text,
-          })),
-          { role: 'user', content: input },
-        ],
-        tools: [
-          {
-            type: "function",
-            function: {
-              name: "get_company_services",
-              description: "Get the services provided by Magnus Inc",
-              parameters: {
-                type: "object",
-                properties: {},
-              },
-            },
-          },
-        ],
-        tool_choice: "auto",
+      const response = await axios.post('https://magnusinc-magnus1000team.vercel.app/api/chatbot', {
+        input: 'Hello',
+        messages: []
       });
 
-      const message = completion.choices[0].message;
-
-      if (message.tool_calls && message.tool_calls[0].function.name === "get_company_services") {
-        const services = await fetchServices();
-        let serviceResponse;
-        
-        if (services && services.length > 0) {
-          serviceResponse = `Magnus Inc offers the following services:\n${services.map(s => `- ${s.name}: ${s.description}`).join('\n')}`;
-        } else {
-          serviceResponse = `I apologize, but I'm currently unable to retrieve our service information. Please check our website or contact our sales team for the most up-to-date list of services.`;
-        }
-
-        const secondResponse = await openai.chat.completions.create({
-          model: 'gpt-4',
-          messages: [
-            systemMessage,
-            ...messages.map(msg => ({
-              role: msg.sender === 'user' ? 'user' : 'assistant',
-              content: msg.text,
-            })),
-            { role: 'user', content: input },
-            message,
-            { role: 'tool', content: serviceResponse, tool_call_id: message.tool_calls[0].id },
-          ],
-        });
-
-        res.status(200).json({ content: secondResponse.choices[0].message.content, type: 'chat' });
-      } else {
-        res.status(200).json({ content: message.content, type: 'chat' });
-      }
+      const botMessage = { sender: 'bot', text: response.data.content };
+      setMessages([botMessage]);
     } catch (error) {
-      console.error('Error:', error.message);
-      res.status(500).json({ error: 'Error processing request', message: error.message });
+      console.error('Error fetching initial response:', error);
+      setMessages([{ sender: 'bot', text: "Hello! I'm Maggy, Magnus Inc's AI assistant. How can I help you today?" }]);
+    } finally {
+      setIsLoading(false);
+      inputRef.current?.focus();
     }
-  });
+  };
+
+  const handleSend = async () => {
+    if (!input.trim() || input === 'Reply to Maggy...') return;
+
+    const userMessage = { sender: 'user', text: input };
+    setMessages(prevMessages => [...prevMessages, userMessage]);
+    setInput('');
+    setIsLoading(true);
+
+    try {
+      const response = await axios.post('https://magnusinc-magnus1000team.vercel.app/api/chatbot', {
+        input,
+        messages
+      });
+
+      const botMessage = { sender: 'bot', text: response.data.content };
+      setMessages(prevMessages => [...prevMessages, botMessage]);
+      
+      setInput('Reply to Maggy...');
+    } catch (error) {
+      console.error('Error fetching response from serverless function:', error);
+      setMessages(prevMessages => [...prevMessages, { sender: 'bot', text: 'Sorry, an error occurred.' }]);
+    } finally {
+      setIsLoading(false);
+      inputRef.current?.focus();
+    }
+  };
+
+  const handleClearChat = () => {
+    setMessages([]);
+    setInput('Reply to Maggy...');
+  };
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    if (value === 'Reply to Maggy...') {
+      setInput('');
+    } else {
+      setInput(value);
+    }
+  };
+
+  const handleInputFocus = () => {
+    if (input === 'Reply to Maggy...') {
+      setInput('');
+    }
+  };
+
+  const handleInputBlur = () => {
+    if (input === '') {
+      setInput('Reply to Maggy...');
+    }
+  };
+
+  return (
+    <div className="chatbot">
+      <div className="chatbot-messages">
+        {messages.map((message, index) => (
+          <div key={index} className={`chatbot-message ${message.sender}`}>
+            {message.text}
+          </div>
+        ))}
+        {isLoading && <div className="chatbot-message loading">Maggy is typing...</div>}
+        <div ref={messagesEndRef} />
+      </div>
+      <div className="chatbot-input">
+        <input
+          ref={inputRef}
+          type="text"
+          value={input}
+          onChange={handleInputChange}
+          onFocus={handleInputFocus}
+          onBlur={handleInputBlur}
+          onKeyPress={(e) => e.key === 'Enter' ? handleSend() : null}
+          disabled={isLoading}
+          className="chat-input"
+        />
+        <div className="chat-button-wrapper">
+          <button onClick={handleSend} disabled={isLoading} className="send-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+              <path fill="currentColor" d="M209 50.2l-17-17-17 17L21.4 203.8l-17 17 33.9 33.9 17-17L168 125.1V456v24h48V456 125.1L328.6 237.8l17 17 33.9-33.9-17-17L209 50.2z"/>
+            </svg>
+          </button>
+          <button onClick={handleClearChat} className="clear-chat-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+              <path fill="currentColor" d="M345 137l17-17L328 86.1l-17 17-119 119L73 103l-17-17L22.1 120l17 17 119 119L39 375l-17 17L56 425.9l17-17 119-119L311 409l17 17L361.9 392l-17-17-119-119L345 137z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
 };
+
+ReactDOM.render(<Chatbot />, document.getElementById('chatbot'));
