@@ -32,9 +32,8 @@ const ConversionService = () => {
               label: 'Event Count',
               data: dataset,
               fill: true,
-              borderColor: 'rgba(75, 192, 192, 1)',
-              backgroundColor: 'rgb(75, 192, 192)',
-              borderColor: 'rgba(75, 192, 192, 0.2)',
+              borderColor: 'rgba(3, 112, 179, 1)',
+              backgroundColor: 'rgba(3, 112, 179, 0.2)',
               tension: 0.1 // Smoothen the curve
             }],
           });
