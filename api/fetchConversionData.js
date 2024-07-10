@@ -1,4 +1,4 @@
-// /api/fetchClosestResults.js
+// /api/fetchConversionData.js
 const cors = require('cors')();
 const { createClient } = require('@supabase/supabase-js');
 
@@ -30,9 +30,7 @@ module.exports = (req, res) => {
 
       // Calculate the percentage of users for each event type
       const eventTypePercentages = Object.keys(eventTypeCounts).reduce((acc, eventType) => {
-        if (eventType !== 'page_view') {
-          acc[eventType] = (eventTypeCounts[eventType] / totalUsers) * 100;
-        }
+        acc[eventType] = (eventTypeCounts[eventType] / totalUsers) * 100;
         return acc;
       }, {});
 
