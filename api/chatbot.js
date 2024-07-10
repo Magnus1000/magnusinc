@@ -4,12 +4,10 @@ const cors = require('cors');
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
-  apiVersion: 'v1',
 });
 
 const corsHandler = cors();
 
-// Function to fetch services from the external API
 async function fetchServices() {
   try {
     const response = await axios.get('https://magnusinc-magnus1000team.vercel.app/api/fetchServicesForChatbot');
@@ -46,7 +44,7 @@ module.exports = async (req, res) => {
 
     try {
       const completion = await openai.chat.completions.create({
-        model: 'gpt-4',
+        model: 'gpt-4o',
         messages: [
           systemMessage,
           ...messages.map(msg => ({
@@ -85,56 +83,44 @@ module.exports = async (req, res) => {
       const message = completion.choices[0].message;
 
       if (message.tool_calls) {
-        const toolCall = message.tool_calls[0];
-        
-        if (toolCall.function.name === "get_company_services") {
-          const services = await fetchServices();
-          let serviceResponse;
-          
-          if (services && services.length > 0) {
-            serviceResponse = `Magnus Inc offers the following services:\n${services.map(s => `- ${s.name}: ${s.description}`).join('\n')}`;
-          } else {
-            serviceResponse = `I apologize, but I'm currently unable to retrieve our service information. Please check our website or contact our sales team for the most up-to-date list of services.`;
+        const toolResponses = await Promise.all(message.tool_calls.map(async (toolCall) => {
+          if (toolCall.function.name === "get_company_services") {
+            const services = await fetchServices();
+            let serviceResponse;
+            
+            if (services && services.length > 0) {
+              serviceResponse = `Magnus Inc offers the following services:\n${services.map(s => `- ${s.name}: ${s.description}`).join('\n')}`;
+            } else {
+              serviceResponse = `I apologize, but I'm currently unable to retrieve our service information. Please check our website or contact our sales team for the most up-to-date list of services.`;
+            }
+            
+            return { tool_call_id: toolCall.id, role: 'tool', content: serviceResponse };
+          } else if (toolCall.function.name === "book_consultation") {
+            const consultationResponse = `Certainly! I'd be happy to help you book a consultation. You can schedule your appointment right away by clicking here: <a href="#bookConsultation" class="consultation-link">Book Your Consultation</a>. Is there anything specific you'd like to discuss during the consultation?`;
+            
+            return { tool_call_id: toolCall.id, role: 'tool', content: consultationResponse };
           }
+        }));
 
-          const secondResponse = await openai.chat.completions.create({
-            model: 'gpt-4',
-            messages: [
-              systemMessage,
-              ...messages.map(msg => ({
-                role: msg.sender === 'user' ? 'user' : 'assistant',
-                content: msg.text,
-              })),
-              { role: 'user', content: input },
-              message,
-              { role: 'function', content: serviceResponse, name: 'get_company_services' },
-            ],
-          });
+        const secondResponse = await openai.chat.completions.create({
+          model: 'gpt-4',
+          messages: [
+            systemMessage,
+            ...messages.map(msg => ({
+              role: msg.sender === 'user' ? 'user' : 'assistant',
+              content: msg.text,
+            })),
+            { role: 'user', content: input },
+            message,
+            ...toolResponses,
+          ],
+        });
 
-          res.status(200).json({ content: secondResponse.choices[0].message.content, type: 'chat' });
-        } else if (toolCall.function.name === "book_consultation") {
-          const consultationResponse = `Certainly! I'd be happy to help you book a consultation. You can schedule your appointment right away by clicking here: <a href="#bookConsultation" class="consultation-link">Book Your Consultation</a>. Is there anything specific you'd like to discuss during the consultation?`;
-          
-          const secondResponse = await openai.chat.completions.create({
-            model: 'gpt-4',
-            messages: [
-              systemMessage,
-              ...messages.map(msg => ({
-                role: msg.sender === 'user' ? 'user' : 'assistant',
-                content: msg.text,
-              })),
-              { role: 'user', content: input },
-              message,
-              { role: 'function', content: consultationResponse, name: 'book_consultation' },
-            ],
-          });
-
-          res.status(200).json({ 
-            content: secondResponse.choices[0].message.content, 
-            type: 'chat',
-            tool: 'consultation_link'
-          });
-        }
+        res.status(200).json({ 
+          content: secondResponse.choices[0].message.content, 
+          type: 'chat',
+          tool: toolResponses.some(r => r.content.includes('book a consultation')) ? 'consultation_link' : null
+        });
       } else {
         res.status(200).json({ content: message.content, type: 'chat' });
       }
