@@ -3,17 +3,22 @@ const Chatbot = () => {
   const [input, setInput] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
   const chatbotRef = React.useRef(null);
+  const inputRef = React.useRef(null);
+  const messagesEndRef = React.useRef(null);
 
   React.useEffect(() => {
     setInput('Reply to Maggy...');
-
     const hasShownInitialMessage = localStorage.getItem('hasShownInitialMessage');
+    
+    if (!hasShownInitialMessage) {
+      handleInitialMessage();
+      localStorage.setItem('hasShownInitialMessage', 'true');
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && messages.length === 0 && !hasShownInitialMessage) {
-          handleInitialMessage();
-          localStorage.setItem('hasShownInitialMessage', 'true');
+        if (entries[0].isIntersecting) {
+          observer.unobserve(chatbotRef.current);
         }
       },
       { threshold: 0.1 }
@@ -28,7 +33,15 @@ const Chatbot = () => {
         observer.unobserve(chatbotRef.current);
       }
     };
+  }, []);
+
+  React.useEffect(() => {
+    scrollToBottom();
   }, [messages]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const handleInitialMessage = async () => {
     setIsLoading(true);
@@ -45,6 +58,7 @@ const Chatbot = () => {
       setMessages([{ sender: 'bot', text: "Hello! I'm Maggy, Magnus Inc's AI assistant. How can I help you today?" }]);
     } finally {
       setIsLoading(false);
+      inputRef.current?.focus();
     }
   };
 
@@ -71,6 +85,7 @@ const Chatbot = () => {
       setMessages(prevMessages => [...prevMessages, { sender: 'bot', text: 'Sorry, an error occurred.' }]);
     } finally {
       setIsLoading(false);
+      inputRef.current?.focus();
     }
   };
 
@@ -110,9 +125,11 @@ const Chatbot = () => {
           </div>
         ))}
         {isLoading && <div className="chatbot-message loading">Maggy is typing...</div>}
+        <div ref={messagesEndRef} />
       </div>
       <div className="chatbot-input">
         <input
+          ref={inputRef}
           type="text"
           value={input}
           onChange={handleInputChange}
