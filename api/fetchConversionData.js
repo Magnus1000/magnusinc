@@ -39,6 +39,9 @@ module.exports = (req, res) => {
         eventTypePercentages[eventType] = (eventTypeCounts[eventType] / totalUsers) * 100;
       });
 
+      // Ensure page_view is always 100%
+      eventTypePercentages['page_view'] = (eventTypeCounts['page_view'] / eventTypeCounts['page_view']) * 100;
+
       res.json(eventTypePercentages);
     } catch (error) {
       console.error(`An error occurred: ${error.message}`);
