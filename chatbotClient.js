@@ -1,7 +1,8 @@
 const Chatbot = () => {
   const [messages, setMessages] = React.useState([]);
-  const [input, setInput] = React.useState('Reply to Maggy...');
+  const [input, setInput] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
+  const [isFirstKeystroke, setIsFirstKeystroke] = React.useState(true);
   const inputRef = React.useRef(null);
   const messagesEndRef = React.useRef(null);
 
@@ -18,19 +19,20 @@ const Chatbot = () => {
   };
 
   const handleInitialMessage = () => {
-    const welcomeMessage = "Yo!";
+    const welcomeMessage = "Hello! How can I assist you today?";
     setMessages([{ sender: 'bot', text: welcomeMessage }]);
     setIsLoading(false);
     inputRef.current?.focus();
   };
 
   const handleSend = async () => {
-    if (!input.trim() || input === 'Reply to Maggy...') return;
+    if (!input.trim()) return;
 
     const userMessage = { sender: 'user', text: input };
     setMessages(prevMessages => [...prevMessages, userMessage]);
     setInput('');
     setIsLoading(true);
+    setIsFirstKeystroke(true);
 
     try {
       const response = await axios.post('https://magnusinc-magnus1000team.vercel.app/api/chatbot', {
@@ -40,8 +42,6 @@ const Chatbot = () => {
 
       const botMessage = { sender: 'bot', text: response.data.content };
       setMessages(prevMessages => [...prevMessages, botMessage]);
-      
-      setInput('Reply to Maggy...');
     } catch (error) {
       console.error('Error fetching response from serverless function:', error);
       setMessages(prevMessages => [...prevMessages, { sender: 'bot', text: 'Sorry, an error occurred.' }]);
@@ -53,27 +53,23 @@ const Chatbot = () => {
 
   const handleClearChat = () => {
     setMessages([]);
-    setInput('Reply to Maggy...');
+    setInput('');
+    setIsFirstKeystroke(true);
+    handleInitialMessage();
   };
 
   const handleInputChange = (e) => {
-    const value = e.target.value;
-    if (value === 'Reply to Maggy...') {
-      setInput('');
+    if (isFirstKeystroke) {
+      setInput(e.target.value);
+      setIsFirstKeystroke(false);
     } else {
-      setInput(value);
+      setInput(e.target.value);
     }
   };
 
-  const handleInputFocus = () => {
-    if (input === 'Reply to Maggy...') {
-      setInput('');
-    }
-  };
-
-  const handleInputBlur = () => {
-    if (input === '') {
-      setInput('Reply to Maggy...');
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleSend();
     }
   };
 
@@ -94,9 +90,8 @@ const Chatbot = () => {
           type="text"
           value={input}
           onChange={handleInputChange}
-          onFocus={handleInputFocus}
-          onBlur={handleInputBlur}
-          onKeyPress={(e) => e.key === 'Enter' ? handleSend() : null}
+          onKeyPress={handleKeyPress}
+          placeholder="Reply to Maggy..."
           disabled={isLoading}
           className="chat-input"
         />
