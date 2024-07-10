@@ -3,7 +3,6 @@ const Chatbot = () => {
   const [input, setInput] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
   const [isFirstKeystroke, setIsFirstKeystroke] = React.useState(true);
-  const [showConsultationButton, setShowConsultationButton] = React.useState(false);
   const inputRef = React.useRef(null);
   const messagesEndRef = React.useRef(null);
 
@@ -21,7 +20,7 @@ const Chatbot = () => {
 
   const handleInitialMessage = () => {
     const welcomeMessage = "Hello! I'm Maggy, Magnus Inc's AI assistant. How can I help you today?";
-    setMessages([{ sender: 'bot', text: welcomeMessage }]);
+    setMessages([{ sender: 'bot', text: welcomeMessage, showConsultationButton: false }]);
     setIsLoading(false);
     inputRef.current?.focus();
   };
@@ -29,7 +28,7 @@ const Chatbot = () => {
   const handleSend = async () => {
     if (!input.trim()) return;
 
-    const userMessage = { sender: 'user', text: input };
+    const userMessage = { sender: 'user', text: input, showConsultationButton: false };
     setMessages(prevMessages => [...prevMessages, userMessage]);
     setInput('');
     setIsLoading(true);
@@ -42,22 +41,21 @@ const Chatbot = () => {
       });
 
       let botMessageContent = response.data.content;
+      let showConsultationButton = false;
 
       if (response.data.tool === 'consultation_link') {
-        setShowConsultationButton(true);
         botMessageContent = botMessageContent.replace(
           /<a href="#bookConsultation"[^>]*>([^<]+)<\/a>/,
           '[Book Consultation]'
         );
-      } else {
-        setShowConsultationButton(false);
+        showConsultationButton = true;
       }
 
-      const botMessage = { sender: 'bot', text: botMessageContent };
+      const botMessage = { sender: 'bot', text: botMessageContent, showConsultationButton };
       setMessages(prevMessages => [...prevMessages, botMessage]);
     } catch (error) {
       console.error('Error fetching response from serverless function:', error);
-      setMessages(prevMessages => [...prevMessages, { sender: 'bot', text: 'Sorry, an error occurred.' }]);
+      setMessages(prevMessages => [...prevMessages, { sender: 'bot', text: 'Sorry, an error occurred.', showConsultationButton: false }]);
     } finally {
       setIsLoading(false);
       inputRef.current?.focus();
@@ -68,7 +66,6 @@ const Chatbot = () => {
     setMessages([]);
     setInput('');
     setIsFirstKeystroke(true);
-    setShowConsultationButton(false);
     handleInitialMessage();
   };
 
@@ -96,7 +93,12 @@ const Chatbot = () => {
       <div className="chatbot-messages">
         {messages.map((message, index) => (
           <div key={index} className={`chatbot-message ${message.sender}`}>
-            {message.text}
+            <div>{message.text}</div>
+            {message.showConsultationButton && (
+              <button onClick={handleBookConsultation} className="consultation-button">
+                Book Consultation
+              </button>
+            )}
           </div>
         ))}
         {isLoading && <div className="chatbot-message loading">Maggy is typing...</div>}
@@ -124,11 +126,6 @@ const Chatbot = () => {
               <path fill="currentColor" d="M345 137l17-17L328 86.1l-17 17-119 119L73 103l-17-17L22.1 120l17 17 119 119L39 375l-17 17L56 425.9l17-17 119-119L311 409l17 17L361.9 392l-17-17-119-119L345 137z"/>
             </svg>
           </button>
-          {showConsultationButton && (
-            <button onClick={handleBookConsultation} className="consultation-button">
-              Book Consultation
-            </button>
-          )}
         </div>
       </div>
     </div>
