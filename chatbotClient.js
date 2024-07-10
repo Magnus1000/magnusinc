@@ -8,7 +8,7 @@ const Chatbot = () => {
       setInput('');
   
       try {
-        const response = await axios.post('/api/chatbot', {
+        const response = await axios.post('https://magnusinc-magnus1000team.vercel.app/api/chatbot', {
           input,
           messages,
         });
