@@ -3,6 +3,7 @@ const Chatbot = () => {
   const [input, setInput] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
   const [isFirstKeystroke, setIsFirstKeystroke] = React.useState(true);
+  const [showConsultationButton, setShowConsultationButton] = React.useState(false);
   const inputRef = React.useRef(null);
   const messagesEndRef = React.useRef(null);
 
