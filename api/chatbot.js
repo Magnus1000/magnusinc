@@ -20,6 +20,11 @@ async function fetchServices() {
   }
 }
 
+const systemMessage = {
+  role: 'system', 
+  content: 'You are Maggy, an AI assistant for Magnus Inc. When asked about our services, always use the get_company_services function to retrieve the most up-to-date information. Never say you\'re part of OpenAI or any other company.'
+};
+
 module.exports = async (req, res) => {
   corsHandler(req, res, async () => {
     if (req.method !== 'POST') {
@@ -36,7 +41,7 @@ module.exports = async (req, res) => {
       const completion = await openai.chat.completions.create({
         model: 'gpt-4',
         messages: [
-          { role: 'system', content: 'You are a helpful assistant for our company. When asked about our services, use the get_company_services function to retrieve the most up-to-date information.' },
+          systemMessage,
           ...messages.map(msg => ({
             role: msg.sender === 'user' ? 'user' : 'assistant',
             content: msg.text,
@@ -46,7 +51,7 @@ module.exports = async (req, res) => {
         functions: [
           {
             name: "get_company_services",
-            description: "Get the services provided by our company",
+            description: "Get the services provided by Magnus Inc",
             parameters: {
               type: "object",
               properties: {},
@@ -63,14 +68,15 @@ module.exports = async (req, res) => {
         let serviceResponse;
         
         if (services && services.length > 0) {
-          serviceResponse = `Our company provides the following services:\n${services.map(s => `- ${s}`).join('\n')}`;
+          serviceResponse = `Magnus Inc offers the following services:\n${services.map(s => `- ${s}`).join('\n')}`;
         } else {
-          serviceResponse = `I'm sorry, I couldn't retrieve our company's services at the moment.`;
+          serviceResponse = `I apologize, but I'm currently unable to retrieve our service information. Please check our website or contact our sales team for the most up-to-date list of services.`;
         }
 
         const secondResponse = await openai.chat.completions.create({
           model: 'gpt-4',
           messages: [
+            systemMessage,
             ...messages.map(msg => ({
               role: msg.sender === 'user' ? 'user' : 'assistant',
               content: msg.text,
