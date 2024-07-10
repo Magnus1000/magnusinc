@@ -6,34 +6,18 @@ const Chatbot = () => {
   const messagesEndRef = React.useRef(null);
 
   React.useEffect(() => {
-    handleInitialMessage();
+    console.log("Component mounted");
+    setMessages([{ sender: 'bot', text: "Hello! I'm Maggy, Magnus Inc's AI assistant. How can I help you today?" }]);
+    setIsLoading(false);
   }, []);
 
   React.useEffect(() => {
+    console.log("Messages updated:", messages);
     scrollToBottom();
   }, [messages]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  const handleInitialMessage = async () => {
-    setIsLoading(true);
-    try {
-      const response = await axios.post('https://magnusinc-magnus1000team.vercel.app/api/chatbot', {
-        input: 'Hello',
-        messages: []
-      });
-
-      const botMessage = { sender: 'bot', text: response.data.content };
-      setMessages([botMessage]);
-    } catch (error) {
-      console.error('Error fetching initial response:', error);
-      setMessages([{ sender: 'bot', text: "Hello! I'm Maggy, Magnus Inc's AI assistant. How can I help you today?" }]);
-    } finally {
-      setIsLoading(false);
-      inputRef.current?.focus();
-    }
   };
 
   const handleSend = async () => {
@@ -70,11 +54,7 @@ const Chatbot = () => {
 
   const handleInputChange = (e) => {
     const value = e.target.value;
-    if (value === 'Reply to Maggy...') {
-      setInput('');
-    } else {
-      setInput(value);
-    }
+    setInput(value === 'Reply to Maggy...' ? '' : value);
   };
 
   const handleInputFocus = () => {
@@ -88,6 +68,8 @@ const Chatbot = () => {
       setInput('Reply to Maggy...');
     }
   };
+
+  console.log("Rendering chatbot, messages:", messages);
 
   return (
     <div className="chatbot">
