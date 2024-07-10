@@ -209,7 +209,7 @@ const LocationService = () => {
             <button className={`toggle-class ${view === 'backend' ? 'active' : ''}`} onClick={() => setView('backend')}>Backend</button>
         </div>
         <div className="service-inner-row">
-          <div className={`column ${view === 'frontend' ? 'active' : ''}`} style={{ position: 'absolute', width: '100%', transition: 'opacity 0.5s', opacity: view === 'frontend' ? 1 : 0 }}>
+          <div className={`column ${view === 'frontend' ? 'active' : ''}`}>
             <div className="column-left">
               <div className="column-left-header-row">
                 <div className="column-header-wrapper">
