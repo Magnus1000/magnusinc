@@ -20,27 +20,33 @@ module.exports = (req, res) => {
 
       console.log(`Received response from Supabase: ${JSON.stringify(data)}`);
 
-      // Aggregate the data by uuid and event_type
-      const uniqueEvents = new Set(data.map(record => `${record.uuid}_${record.event_type}`));
-
-      // Count unique events by event_type
+      // Count unique events by uuid and event_type
       const eventTypeCounts = {};
-      uniqueEvents.forEach(key => {
+      data.forEach(record => {
+        const key = `${record.uuid}_${record.event_type}`;
+        if (!eventTypeCounts[key]) {
+          eventTypeCounts[key] = 1;
+        }
+      });
+
+      // Aggregate the counts by event_type
+      const aggregatedEventTypeCounts = {};
+      Object.keys(eventTypeCounts).forEach(key => {
         const eventType = key.split('_')[1];
-        eventTypeCounts[eventType] = (eventTypeCounts[eventType] || 0) + 1;
+        aggregatedEventTypeCounts[eventType] = (aggregatedEventTypeCounts[eventType] || 0) + 1;
       });
 
       // Calculate the total number of unique users (page_view count)
-      const totalUsers = eventTypeCounts['page_view'] || 1; // Default to 1 to avoid division by zero
+      const totalUsers = aggregatedEventTypeCounts['page_view'] || 1; // Default to 1 to avoid division by zero
 
       // Calculate the percentage of users for each event type
       const eventTypePercentages = {};
-      Object.keys(eventTypeCounts).forEach(eventType => {
-        eventTypePercentages[eventType] = (eventTypeCounts[eventType] / totalUsers) * 100;
+      Object.keys(aggregatedEventTypeCounts).forEach(eventType => {
+        eventTypePercentages[eventType] = (aggregatedEventTypeCounts[eventType] / totalUsers) * 100;
       });
 
       // Ensure page_view is always 100%
-      eventTypePercentages['page_view'] = (eventTypeCounts['page_view'] / eventTypeCounts['page_view']) * 100;
+      eventTypePercentages['page_view'] = 100;
 
       res.json(eventTypePercentages);
     } catch (error) {
