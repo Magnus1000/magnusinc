@@ -103,7 +103,7 @@ module.exports = async (req, res) => {
         }));
 
         const secondResponse = await openai.chat.completions.create({
-          model: 'gpt-4',
+          model: 'gpt-4o',
           messages: [
             systemMessage,
             ...messages.map(msg => ({
