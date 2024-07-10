@@ -13,7 +13,10 @@ const corsHandler = cors();
 async function fetchServices() {
   try {
     const response = await axios.get('https://magnusinc-magnus1000team.vercel.app/api/fetchServicesForChatbot');
-    return response.data;
+    return response.data.map(service => ({
+      name: service.service_name,
+      description: service.service_description
+    }));
   } catch (error) {
     console.error('Error fetching services:', error);
     return null;
@@ -48,27 +51,30 @@ module.exports = async (req, res) => {
           })),
           { role: 'user', content: input },
         ],
-        functions: [
+        tools: [
           {
-            name: "get_company_services",
-            description: "Get the services provided by Magnus Inc",
-            parameters: {
-              type: "object",
-              properties: {},
+            type: "function",
+            function: {
+              name: "get_company_services",
+              description: "Get the services provided by Magnus Inc",
+              parameters: {
+                type: "object",
+                properties: {},
+              },
             },
           },
         ],
-        function_call: "auto",
+        tool_choice: "auto",
       });
 
       const message = completion.choices[0].message;
 
-      if (message.function_call && message.function_call.name === "get_company_services") {
+      if (message.tool_calls && message.tool_calls[0].function.name === "get_company_services") {
         const services = await fetchServices();
         let serviceResponse;
         
         if (services && services.length > 0) {
-          serviceResponse = `Magnus Inc offers the following services:\n${services.map(s => `- ${s}`).join('\n')}`;
+          serviceResponse = `Magnus Inc offers the following services:\n${services.map(s => `- ${s.name}: ${s.description}`).join('\n')}`;
         } else {
           serviceResponse = `I apologize, but I'm currently unable to retrieve our service information. Please check our website or contact our sales team for the most up-to-date list of services.`;
         }
@@ -83,7 +89,7 @@ module.exports = async (req, res) => {
             })),
             { role: 'user', content: input },
             message,
-            { role: 'function', name: "get_company_services", content: serviceResponse },
+            { role: 'tool', content: serviceResponse, tool_call_id: message.tool_calls[0].id },
           ],
         });
 
