@@ -3,14 +3,15 @@ const Chatbot = () => {
   const [input, setInput] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
   const [isFirstKeystroke, setIsFirstKeystroke] = React.useState(true);
+  const [threadId, setThreadId] = React.useState(null);
   const inputRef = React.useRef(null);
   const messagesEndRef = React.useRef(null);
 
-  React.useEffect(() => {
+  useEffect(() => {
     handleInitialMessage();
   }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
@@ -18,11 +19,19 @@ const Chatbot = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleInitialMessage = () => {
-    const welcomeMessage = "Hello! I'm Maggy, Magnus Inc's AI assistant. How can I help you today?";
-    setMessages([{ sender: 'bot', text: welcomeMessage, showConsultationButton: false }]);
-    setIsLoading(false);
-    inputRef.current?.focus();
+  const handleInitialMessage = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.post('https://magnusinc-magnus1000team.vercel.app/api/chatbot', {});
+      setThreadId(response.data.threadId);
+      setMessages(response.data.messages);
+    } catch (error) {
+      console.error('Error initializing thread:', error);
+      setMessages([{ sender: 'bot', text: 'Sorry, an error occurred. Please try again later.' }]);
+    } finally {
+      setIsLoading(false);
+      inputRef.current?.focus();
+    }
   };
 
   const handleSend = async () => {
@@ -37,7 +46,8 @@ const Chatbot = () => {
     try {
       const response = await axios.post('https://magnusinc-magnus1000team.vercel.app/api/chatbot', {
         input,
-        messages
+        messages: [...messages, userMessage],
+        threadId
       });
 
       let botMessageContent = response.data.content;
@@ -66,6 +76,7 @@ const Chatbot = () => {
     setMessages([]);
     setInput('');
     setIsFirstKeystroke(true);
+    setThreadId(null);
     handleInitialMessage();
   };
 
