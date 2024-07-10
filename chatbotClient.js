@@ -44,6 +44,9 @@ const Chatbot = () => {
       let botMessageContent = response.data.content;
       let showConsultationButton = false;
 
+      // Log the data back from the serverless function
+      console.log(response.data);
+
       if (response.data.tool === 'consultation_button') {
         setShowConsultationButton(true);
       } else {
