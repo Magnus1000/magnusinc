@@ -278,7 +278,7 @@ const LocationService = () => {
               </div>
             </div>
           </div>
-          <div className={`column ${view === 'backend' ? 'active' : ''}`} style={{ position: 'absolute', width: '100%', transition: 'opacity 0.5s', opacity: view === 'backend' ? 1 : 0 }}>
+          <div className={`column ${view === 'backend' ? 'active' : ''}`}>
             <div className="column-right">
               <div className="column-right-header-row">
                 <div className="column-header-wrapper">
