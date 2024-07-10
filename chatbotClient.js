@@ -19,7 +19,7 @@ const Chatbot = () => {
   };
 
   const handleInitialMessage = () => {
-    const welcomeMessage = "Hello! How can I assist you today?";
+    const welcomeMessage = "Hello! I'm Maggy, Magnus Inc's AI assistant. How can I help you today?";
     setMessages([{ sender: 'bot', text: welcomeMessage }]);
     setIsLoading(false);
     inputRef.current?.focus();
