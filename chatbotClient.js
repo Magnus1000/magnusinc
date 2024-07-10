@@ -2,11 +2,51 @@ const Chatbot = () => {
   const [messages, setMessages] = React.useState([]);
   const [input, setInput] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
+  const chatbotRef = React.useRef(null);
 
   React.useEffect(() => {
-    // Set initial placeholder text
     setInput('Reply to Maggy...');
+
+    const hasShownInitialMessage = localStorage.getItem('hasShownInitialMessage');
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && messages.length === 0 && !hasShownInitialMessage) {
+          handleInitialMessage();
+          localStorage.setItem('hasShownInitialMessage', 'true');
+        }
+      },
+      { threshold: 0.1 } // Trigger when 10% of the element is visible
+    );
+
+    if (chatbotRef.current) {
+      observer.observe(chatbotRef.current);
+    }
+
+    return () => {
+      if (chatbotRef.current) {
+        observer.unobserve(chatbotRef.current);
+      }
+    };
   }, []);
+
+  const handleInitialMessage = async () => {
+    setIsLoading(true);
+    try {
+      const response = await axios.post('https://magnusinc-magnus1000team.vercel.app/api/chatbot', {
+        input: 'Hello',
+        messages: [],
+      });
+
+      const botMessage = { sender: 'bot', text: response.data.content };
+      setMessages([botMessage]);
+    } catch (error) {
+      console.error('Error fetching initial response:', error);
+      setMessages([{ sender: 'bot', text: 'Hello! I'm Maggy, Magnus Inc's AI assistant. How can I help you today?' }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSend = async () => {
     if (!input.trim() || input === 'Reply to Maggy...') return;
@@ -25,7 +65,6 @@ const Chatbot = () => {
       const botMessage = { sender: 'bot', text: response.data.content };
       setMessages(prevMessages => [...prevMessages, botMessage]);
       
-      // Set the input field to "Reply to Maggy..." after bot response
       setInput('Reply to Maggy...');
     } catch (error) {
       console.error('Error fetching response from serverless function:', error);
@@ -38,6 +77,7 @@ const Chatbot = () => {
   const handleClearChat = () => {
     setMessages([]);
     setInput('Reply to Maggy...');
+    localStorage.removeItem('hasShownInitialMessage');
   };
 
   const handleInputChange = (e) => {
@@ -62,7 +102,7 @@ const Chatbot = () => {
   };
 
   return (
-    <div className="chatbot">
+    <div ref={chatbotRef} className="chatbot">
       <div className="chatbot-messages">
         {messages.map((message, index) => (
           <div key={index} className={`chatbot-message ${message.sender}`}>
