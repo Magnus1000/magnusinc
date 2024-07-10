@@ -5,35 +5,46 @@ const Chatbot = () => {
   const chatbotRef = React.useRef(null);
   const inputRef = React.useRef(null);
   const messagesEndRef = React.useRef(null);
+  const [isInitialized, setIsInitialized] = React.useState(false);
 
   React.useEffect(() => {
-    setInput('Reply to Maggy...');
-    const hasShownInitialMessage = localStorage.getItem('hasShownInitialMessage');
-    
-    if (!hasShownInitialMessage) {
-      handleInitialMessage();
-      localStorage.setItem('hasShownInitialMessage', 'true');
-    }
+    const initializeChat = async () => {
+      setInput('Reply to Maggy...');
+      const hasShownInitialMessage = localStorage.getItem('hasShownInitialMessage');
+      
+      if (!hasShownInitialMessage) {
+        await handleInitialMessage();
+        localStorage.setItem('hasShownInitialMessage', 'true');
+      }
+      setIsInitialized(true);
+    };
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (entries[0].isIntersecting) {
+    initializeChat();
+  }, []);
+
+  React.useEffect(() => {
+    if (isInitialized) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting) {
+            observer.unobserve(chatbotRef.current);
+            inputRef.current?.focus();
+          }
+        },
+        { threshold: 0.1 }
+      );
+
+      if (chatbotRef.current) {
+        observer.observe(chatbotRef.current);
+      }
+
+      return () => {
+        if (chatbotRef.current) {
           observer.unobserve(chatbotRef.current);
         }
-      },
-      { threshold: 0.1 }
-    );
-
-    if (chatbotRef.current) {
-      observer.observe(chatbotRef.current);
+      };
     }
-
-    return () => {
-      if (chatbotRef.current) {
-        observer.unobserve(chatbotRef.current);
-      }
-    };
-  }, []);
+  }, [isInitialized]);
 
   React.useEffect(() => {
     scrollToBottom();
@@ -58,7 +69,6 @@ const Chatbot = () => {
       setMessages([{ sender: 'bot', text: "Hello! I'm Maggy, Magnus Inc's AI assistant. How can I help you today?" }]);
     } finally {
       setIsLoading(false);
-      inputRef.current?.focus();
     }
   };
 
