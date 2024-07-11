@@ -105,17 +105,17 @@ const Booking = () => {
             </div>
             <div className="personal-info-div">
                 <h2 className="booking-h2">Enter Your Details</h2>
-                <div className="email-input-div">
+                <div className="name-input-div">
                     <input
                     className="default-input"
                     type="email"
                     id="email"
                     value={email}
-                    placeholder="Enter email..."
+                    placeholder="Enter name..."
                     onChange={(e) => setEmail(e.target.value)}
                     />
                 </div>
-                <div className="name-input-div">
+                <div className="email-input-div">
                     <input
                     className="default-input"
                     type="email"
