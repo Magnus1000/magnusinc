@@ -96,6 +96,7 @@ const Booking = () => {
     const WebsitePreview = ({ url, loading }) => {
       return (
           <div className="website-preview" style={{
+              maxHeight: url || loading ? 'none' : '0',
               overflow: 'hidden',
               transition: 'max-height 0.5s ease-in-out',
               position: 'relative'
