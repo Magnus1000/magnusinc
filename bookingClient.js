@@ -51,8 +51,12 @@ const Booking = () => {
   
     return (
       <div className="booking-div">
+        <div className="try-me-div">
+            <div className="try-me-text">BOOK CONSULTATION</div>
+        </div>
         <div className="booking-services-div">
           <h2 className="booking-h2">Select Services</h2>
+          <p className="booking-subheader">Select the services you are interested in:</p>
           <div className="booking-services-grid">
             {services.map((service, index) => (
               <div
@@ -68,6 +72,7 @@ const Booking = () => {
         </div>
         <div className="booking-slots-div">
           <h2 className="booking-h2">Select Consultation Time</h2>
+          <p className="booking-subheader">Select a consultation time:</p>
           <div className="booking-slots-grid">
             {bookingSlots.map((slot, index) => (
               <div
