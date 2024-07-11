@@ -91,6 +91,7 @@ const Booking = () => {
               type="text"
               id="website"
               value={website}
+              placeholder="Enter website..."
               onChange={(e) => setWebsite(e.target.value)}
             />
           </div>
@@ -100,6 +101,7 @@ const Booking = () => {
               type="email"
               id="email"
               value={email}
+              placeholder="Enter email..."
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
