@@ -52,17 +52,20 @@ const Booking = () => {
         <h2 className="booking-h2">Available Services</h2>
         <div className="booking-services-grid">
             {services.map((service, index) => (
-            <div key={index}>
-                <input
-                type="checkbox"
-                id={`service-${index}`}
-                name="services"
-                value={service.service_name}
-                onChange={() => handleServiceSelection(service.service_name)}
-                />
-                <label htmlFor={`service-${index}`}>{service.service_name}</label>
-                <p>{service.service_description}</p>
-            </div>
+                <div
+                    key={index}
+                    className={`service-item ${selectedServices.includes(service.service_name) ? 'selected' : ''}`}
+                    >
+                    <input
+                        type="checkbox"
+                        id={`service-${index}`}
+                        name="services"
+                        value={service.service_name}
+                        onChange={() => handleServiceSelection(service.service_name)}
+                    />
+                    <label htmlFor={`service-${index}`}>{service.service_name}</label>
+                    <p>{service.service_description}</p>
+                </div>
             ))}
         </div>
       </div>
