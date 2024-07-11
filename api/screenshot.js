@@ -23,8 +23,6 @@ module.exports = (req, res) => {
             'api_key': apiKey,
             'url': url,
             'screenshot': 'true',
-            'width': '1024',
-            'height': '768'
           },
           responseType: 'arraybuffer'
         });
