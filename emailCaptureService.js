@@ -110,7 +110,7 @@ const EmailSignupService = () => {
           <button className={`toggle-class ${view === 'frontend' ? 'active' : ''}`} onClick={() => setView('frontend')}>Frontend</button>
           <button className={`toggle-class ${view === 'backend' ? 'active' : ''}`} onClick={() => setView('backend')}>Backend</button>
         </div>
-        <div className="service-inner-row">
+        <div className="service-inner-row email">
           <div className={`column ${view === 'frontend' ? 'active' : ''}`}>
             <div className="column-left">
               <div className="email-form-div">

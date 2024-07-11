@@ -85,7 +85,7 @@ function EventLogs() {
 
   return (
     <div className="service-row">
-      <div className="service-inner-row">
+      <div className="service-inner-row code">
         <div className="column-right">
           <div className="column-right-header-row">
               <div className="column-header-wrapper">
