@@ -67,7 +67,7 @@ const ConversionService = () => {
   console.log('Rendering component...');
   return (
     <div className="service-row">
-      <div className="service-inner-row">
+      <div className="service-inner-row conversion">
         <div className="column-right">
           <div className="column-right-header-row">
             <div className="column-header-wrapper">
