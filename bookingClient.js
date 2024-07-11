@@ -97,8 +97,8 @@ const Booking = () => {
       </div>
       <div className="booking-form">
         <div className="website-input-div">
-          <label htmlFor="website">Website:</label>
           <input
+            className="default-input"
             type="text"
             id="website"
             value={website}
@@ -106,15 +106,15 @@ const Booking = () => {
           />
         </div>
         <div className="email-input-div">
-          <label htmlFor="email">Email:</label>
           <input
+            className="default-input"
             type="email"
             id="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
-        <button className="primary-button" onClick={submitBooking}>Submit Booking</button>
+        <button className="submit-button" onClick={submitBooking}>Submit Booking</button>
       </div>
     </div>
   );
