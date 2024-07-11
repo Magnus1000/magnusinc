@@ -65,39 +65,33 @@ const Booking = () => {
       }
     };
 
-    const handleWebsiteChange = React.useCallback(
-        React.useMemo(
-            () =>
-                debounce(async (url) => {
-                    if (url) {
-                        setScreenshotLoading(true);
-                        try {
-                            const apiKey = 'RYSHBF2460F91AWLAH49IB27ISRB2GNFJ6322Z6XG1ZNZGLDCLKL8GL21JG25YJC29AH140W2CLOGOZ3';
-                            const encodedUrl = encodeURIComponent(url);
-                            const screenshotUrl = `https://app.scrapingbee.com/api/v1/screenshot?api_key=${apiKey}&url=${encodedUrl}&width=1024&height=768`;
-                            
-                            const response = await fetch(screenshotUrl);
-                            if (response.ok) {
-                                const blob = await response.blob();
-                                const objectUrl = URL.createObjectURL(blob);
-                                setScreenshot(objectUrl);
-                            } else {
-                                console.error('Failed to fetch screenshot');
-                                setScreenshot('');
-                            }
-                        } catch (error) {
-                            console.error('Error fetching screenshot:', error);
-                            setScreenshot('');
-                        }
-                        setScreenshotLoading(false);
-                    } else {
-                        setScreenshot('');
-                    }
-                }, 500),
-            []
-        ),
-        []
-    );
+    const fetchScreenshot = async () => {
+        if (website) {
+            setScreenshotLoading(true);
+            try {
+                const response = await fetch('/api/screenshot', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url: website }),
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const objectUrl = URL.createObjectURL(blob);
+                    setScreenshot(objectUrl);
+                } else {
+                    console.error('Failed to fetch screenshot');
+                    setScreenshot('');
+                }
+            } catch (error) {
+                console.error('Error fetching screenshot:', error);
+                setScreenshot('');
+            }
+            setScreenshotLoading(false);
+        }
+    };
 
     const WebsitePreview = ({ url, loading }) => {
         return (
@@ -177,11 +171,15 @@ const Booking = () => {
                             id="website"
                             value={website}
                             placeholder="Enter website..."
-                            onChange={(e) => {
-                                setWebsite(e.target.value);
-                                handleWebsiteChange(e.target.value);
-                            }}
+                            onChange={(e) => setWebsite(e.target.value)}
                         />
+                        <button 
+                            className="confirm-button" 
+                            onClick={fetchScreenshot}
+                            disabled={!website}
+                        >
+                            Confirm
+                        </button>
                     </div>
                     <WebsitePreview url={screenshot} loading={screenshotLoading} />
                 </div>
@@ -240,18 +238,5 @@ const Booking = () => {
       </div>
     );
 };
-
-// Debounce function
-function debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-        const later = () => {
-            clearTimeout(timeout);
-            func(...args);
-        };
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-    };
-}
 
 ReactDOM.render(<Booking />, document.getElementById('booking'));
