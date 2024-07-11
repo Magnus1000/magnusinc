@@ -1,11 +1,13 @@
 import axios from 'axios';
 const cors = require('cors');
 
-const corsHandler = cors;
+const corsHandler = cors();
 
 module.exports = (req, res) => {
   corsHandler(req, res, async () => {
 	const { website, email, selectedServices, selectedBookingSlot } = req.body;
+
+	console.log('Received booking request:', req.body);
 
 	try {
 	  const response = await axios.post('https://hook.us1.make.com/y6c61clds14yvapchy7y8lfd5f0m4t8u', {
