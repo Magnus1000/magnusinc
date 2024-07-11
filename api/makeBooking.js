@@ -1,8 +1,10 @@
 import axios from 'axios';
-import cors from 'cors';
+const cors = require('cors');
+
+const corsHandler = cors;
 
 module.exports = (req, res) => {
-  cors(req, res, async () => {
+  corsHandler(req, res, async () => {
 	const { website, email, selectedServices, selectedBookingSlot } = req.body;
 
 	try {
