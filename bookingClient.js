@@ -2,7 +2,7 @@ const Booking = () => {
   const [services, setServices] = React.useState([]);
   const [bookingSlots, setBookingSlots] = React.useState([]);
 
-  useEffect(() => {
+  React.useEffect(() => {
 	const fetchData = async () => {
 	  try {
 		const response = await axios.post('https://magnusinc-magnus1000team.vercel.app/api/booking');
