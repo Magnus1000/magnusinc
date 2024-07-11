@@ -121,9 +121,6 @@ const Booking = () => {
 
     return (
       <div className="booking-div">
-        <div className="try-me-div">
-            <div className="try-me-text">BOOK CONSULTATION</div>
-        </div>
         {!bookingConfirmed ? (
           <>
             <div className="booking-services-div">
