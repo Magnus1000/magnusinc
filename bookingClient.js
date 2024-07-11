@@ -1,8 +1,8 @@
 const Booking = () => {
   const [services, setServices] = React.useState([]);
   const [bookingSlots, setBookingSlots] = React.useState([]);
-  const [website, setWebsite] = useState('');
-  const [email, setEmail] = useState('');
+  const [website, setWebsite] = React.useState('');
+  const [email, setEmail] = React.useState('');
 
   React.useEffect(() => {
 	const fetchData = async () => {
