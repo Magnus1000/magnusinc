@@ -90,26 +90,42 @@ const Booking = () => {
           </div>
         </div>
         <div className="booking-form">
-          <div className="website-input-div">
-            <input
-              className="default-input"
-              type="text"
-              id="website"
-              value={website}
-              placeholder="Enter website..."
-              onChange={(e) => setWebsite(e.target.value)}
-            />
-          </div>
-          <div className="email-input-div">
-            <input
-              className="default-input"
-              type="email"
-              id="email"
-              value={email}
-              placeholder="Enter email..."
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
+            <div className="business-info-div">
+                <h2 className="booking-h2">Enter Business Website</h2>
+                <div className="website-input-div">
+                    <input
+                    className="default-input"
+                    type="text"
+                    id="website"
+                    value={website}
+                    placeholder="Enter website..."
+                    onChange={(e) => setWebsite(e.target.value)}
+                    />
+                </div>
+            </div>
+            <div className="personal-info-div">
+                <h2 className="booking-h2">Enter Your Details</h2>
+                <div className="email-input-div">
+                    <input
+                    className="default-input"
+                    type="email"
+                    id="email"
+                    value={email}
+                    placeholder="Enter email..."
+                    onChange={(e) => setEmail(e.target.value)}
+                    />
+                </div>
+                <div className="name-input-div">
+                    <input
+                    className="default-input"
+                    type="email"
+                    id="email"
+                    value={email}
+                    placeholder="Enter email..."
+                    onChange={(e) => setEmail(e.target.value)}
+                    />
+                </div>
+            </div>
           <button className="submit-button" onClick={submitBooking}>Submit Booking</button>
         </div>
       </div>
