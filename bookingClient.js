@@ -3,8 +3,10 @@ const Booking = () => {
     const [bookingSlots, setBookingSlots] = React.useState([]);
     const [website, setWebsite] = React.useState('');
     const [email, setEmail] = React.useState('');
+    const [name, setName] = React.useState('');
     const [selectedServices, setSelectedServices] = React.useState([]);
     const [selectedBookingSlot, setSelectedBookingSlot] = React.useState('');
+    const [isLoading, setIsLoading] = React.useState(true);
   
     React.useEffect(() => {
       const fetchData = async () => {
@@ -15,8 +17,10 @@ const Booking = () => {
           });
           setServices(response.data.services);
           setBookingSlots(response.data.bookingSlots);
+          setIsLoading(false);
         } catch (error) {
           console.error('Error fetching data:', error);
+          setIsLoading(false);
         }
       };
     
@@ -40,6 +44,7 @@ const Booking = () => {
         const response = await axios.post('https://magnusinc-magnus1000team.vercel.app/api/makeBooking', {
           website,
           email,
+          name,
           selectedServices,
           selectedBookingSlot,
         });
@@ -48,7 +53,17 @@ const Booking = () => {
         console.error('Error submitting booking:', error);
       }
     };
+
+    const isFormValid = email && name && selectedBookingSlot && selectedServices.length > 0;
   
+    if (isLoading) {
+      return (
+        <div className="loading-div">
+          <p>Loading...</p>
+        </div>
+      );
+    }
+
     return (
       <div className="booking-div">
         <div className="try-me-div">
@@ -108,11 +123,11 @@ const Booking = () => {
                 <div className="name-input-div">
                     <input
                     className="default-input"
-                    type="email"
-                    id="email"
-                    value={email}
+                    type="text"
+                    id="name"
+                    value={name}
                     placeholder="Enter name..."
-                    onChange={(e) => setEmail(e.target.value)}
+                    onChange={(e) => setName(e.target.value)}
                     />
                 </div>
                 <div className="email-input-div">
@@ -126,7 +141,9 @@ const Booking = () => {
                     />
                 </div>
             </div>
-          <button className="submit-button" onClick={submitBooking}>Submit Booking</button>
+          <button className="submit-button" onClick={submitBooking} disabled={!isFormValid}>
+            Submit Booking
+          </button>
         </div>
       </div>
     );
