@@ -69,7 +69,7 @@ const Booking = () => {
         if (website) {
             setScreenshotLoading(true);
             try {
-                const response = await fetch('/api/screenshot', {
+                const response = await fetch('https://magnusinc-magnus1000team.vercel.app/api/screenshot', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
