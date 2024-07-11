@@ -122,7 +122,7 @@ const EmailSignupService = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter your email"
                     required
-                    className="email-input"
+                    className="default-input"
                   />
                   <button className="submit-button" type="submit">Sign Up</button>
                 </form>
