@@ -94,19 +94,21 @@ const Booking = () => {
     };
 
     const WebsitePreview = ({ url, loading }) => {
-        return (
-            <div className="website-preview" style={{
-                maxHeight: url || loading ? '300px' : '0',
-                overflow: 'hidden',
-                transition: 'max-height 0.5s ease-in-out'
-            }}>
-                {loading ? (
-                    <div className="screenshot-loading">Loading preview...</div>
-                ) : url ? (
-                    <img src={url} alt="Website preview" style={{ width: '100%' }} />
-                ) : null}
-            </div>
-        );
+      return (
+          <div className="website-preview" style={{
+              overflow: 'hidden',
+              transition: 'max-height 0.5s ease-in-out',
+              position: 'relative'
+          }}>
+              {loading ? (
+                  <div className="screenshot-loading">
+                      <div className="fuzzy-line"></div>
+                  </div>
+              ) : url ? (
+                  <img src={url} alt="Website preview" style={{ width: '100%' }} />
+              ) : null}
+          </div>
+      );
     };
 
     const isFormValid = email && name && selectedBookingSlot && selectedServices.length > 0;
