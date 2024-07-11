@@ -24,6 +24,14 @@ const Booking = () => {
     setSelectedBookingSlot(slot);
   };
 
+  const handleServiceSelection = (service) => {
+    setSelectedServices((prevSelectedServices) =>
+      prevSelectedServices.includes(service)
+        ? prevSelectedServices.filter((s) => s !== service)
+        : [...prevSelectedServices, service]
+    );
+  };
+
   const submitBooking = async () => {
     try {
       const response = await axios.post('https://magnusinc-magnus1000team.vercel.app/api/makeBooking', {
