@@ -1,44 +1,63 @@
 // /api/fetchClosestResults.js
-const axios = require('axios');
+const Airtable = require('airtable');
 const cors = require('cors')();
 
 module.exports = (req, res) => {
   cors(req, res, async () => {
-    const { lat, lng } = req.query;
+    const { date } = req.body;
 
     try {
-      // First API call to fetch services
-      const servicesResponse = await axios.get(`https://api.airtable.com/v0/${process.env.AIRTABLE_APP_ID}/${process.env.AIRTABLE_SERVICES_TABLE}`, {
-        headers: {
-          'Authorization': `Bearer ${process.env.AIRTABLE_API_KEY}`
-        }
+      Airtable.configure({
+        endpointUrl: 'https://api.airtable.com',
+        apiKey: process.env.AIRTABLE_API_KEY
+      });
+      const base = Airtable.base(process.env.AIRTABLE_APP_ID);
+
+      // Fetch services
+      const services = await new Promise((resolve, reject) => {
+        let allServices = [];
+        base(process.env.AIRTABLE_SERVICES_TABLE).select({
+          fields: ['service_name', 'service_description']
+        }).eachPage((records, fetchNextPage) => {
+          allServices = allServices.concat(records.map(record => ({
+            service_name: record.get('service_name'),
+            service_description: record.get('service_description'),
+          })));
+          fetchNextPage();
+        }, (err) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(allServices);
+          }
+        });
       });
 
-      console.log(`Received response from Airtable (Services): ${JSON.stringify(servicesResponse.data)}`);
+      console.log(`Fetched services: ${JSON.stringify(services)}`);
 
-      const services = servicesResponse.data.records.map(record => ({
-        service_name: record.fields.service_name,
-        service_description: record.fields.service_description,
-      }));
-
-      console.log(`Mapped services: ${JSON.stringify(services)}`);
-
-      // Second API call to fetch booking slots
-      const slotsResponse = await axios.get(`https://api.airtable.com/v0/${process.env.AIRTABLE_APP_ID}/${process.env.AIRTABLE_CALENDAR_TABLE}`, {
-        headers: {
-          'Authorization': `Bearer ${process.env.AIRTABLE_API_KEY}`
-        }
+      // Fetch and filter booking slots
+      const bookingSlots = await new Promise((resolve, reject) => {
+        let allSlots = [];
+        base(process.env.AIRTABLE_CALENDAR_TABLE).select({
+          fields: ['slot_name', 'slot_date_time', 'slot_availability'],
+          filterByFormula: `IS_AFTER({slot_date_time}, '${date}')`
+        }).eachPage((records, fetchNextPage) => {
+          allSlots = allSlots.concat(records.map(record => ({
+            slot_name: record.get('slot_name'),
+            slot_date_time: record.get('slot_date_time'),
+            slot_availability: record.get('slot_availability'),
+          })));
+          fetchNextPage();
+        }, (err) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(allSlots);
+          }
+        });
       });
 
-      console.log(`Received response from Airtable (Slots): ${JSON.stringify(slotsResponse.data)}`);
-
-      const bookingSlots = slotsResponse.data.records.map(record => ({
-        slot_name: record.fields.slot_name,
-        slot_date_time: record.fields.slot_date_time,
-        slot_availability: record.fields.slot_availability,
-      }));
-
-      console.log(`Mapped booking slots: ${JSON.stringify(bookingSlots)}`);
+      console.log(`Fetched and filtered booking slots: ${JSON.stringify(bookingSlots)}`);
 
       // Combine the results
       res.json({ services, bookingSlots });

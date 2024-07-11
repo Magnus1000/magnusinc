@@ -9,14 +9,17 @@ const Booking = () => {
     React.useEffect(() => {
       const fetchData = async () => {
         try {
-          const response = await axios.post('https://magnusinc-magnus1000team.vercel.app/api/booking');
+          const currentDate = new Date().toISOString();
+          const response = await axios.post('https://magnusinc-magnus1000team.vercel.app/api/booking', {
+            date: currentDate,
+          });
           setServices(response.data.services);
           setBookingSlots(response.data.bookingSlots);
         } catch (error) {
           console.error('Error fetching data:', error);
         }
       };
-  
+    
       fetchData();
     }, []);
   
@@ -73,7 +76,9 @@ const Booking = () => {
                 onClick={() => handleSlotSelection(slot.slot_name)}
               >
                 <p className="slot-name">{slot.slot_name}</p>
-                <p className="slot-date">{slot.slot_date_time}</p>
+                <p className="slot-date">
+                  {new Date(slot.slot_date_time).toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'short' })}
+                </p>
                 <p className="slot-availability">{slot.slot_availability}</p>
               </div>
             ))}
