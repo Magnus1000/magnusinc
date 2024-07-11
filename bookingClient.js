@@ -52,7 +52,7 @@ const Booking = () => {
     return (
       <div className="booking-div">
         <div className="booking-services-div">
-          <h2 className="booking-h2">Available Services</h2>
+          <h2 className="booking-h2">Select Services</h2>
           <div className="booking-services-grid">
             {services.map((service, index) => (
               <div
@@ -60,14 +60,14 @@ const Booking = () => {
                 className={`service-item ${selectedServices.includes(service.service_name) ? 'selected' : ''}`}
                 onClick={() => handleServiceSelection(service.service_name)}
               >
-                <h3>{service.service_name}</h3>
-                <p>{service.service_description}</p>
+                <h3 className="service-name-h3">{service.service_name}</h3>
+                <p className="service-description">{service.service_description}</p>
               </div>
             ))}
           </div>
         </div>
         <div className="booking-slots-div">
-          <h2 className="booking-h2">Available Booking Slots</h2>
+          <h2 className="booking-h2">Select Consultation Time</h2>
           <div className="booking-slots-grid">
             {bookingSlots.map((slot, index) => (
               <div
