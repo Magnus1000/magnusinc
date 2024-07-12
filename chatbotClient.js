@@ -4,6 +4,7 @@ const Chatbot = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [isFirstKeystroke, setIsFirstKeystroke] = React.useState(true);
   const [showConsultationButton, setShowConsultationButton] = React.useState(false);
+  const [isFirstMessage, setIsFirstMessage] = React.useState(true);
   const inputRef = React.useRef(null);
   const messagesEndRef = React.useRef(null);
 
@@ -35,7 +36,16 @@ const Chatbot = () => {
     setIsLoading(true);
     setIsFirstKeystroke(true);
 
-    // Log the input and messages before sending the request
+    // Create event for first message
+    if (isFirstMessage) {
+      // Check uuid from cookies
+      let userUuid = Cookies.get('uuid');
+      if (userUuid) {
+        createEvent(userUuid, 'First message sent', 'chat_start');
+        setIsFirstMessage(false);
+      }
+    }
+
     console.log('Sending to OpenAI:', { input, messages });
 
     try {
@@ -47,13 +57,11 @@ const Chatbot = () => {
       let botMessageContent = response.data.content;
       let showConsultationButton = response.data.tool === 'consultation_button';
 
-      // Log the data back from the serverless function
       console.log(response.data);
 
       const botMessage = { sender: 'bot', text: botMessageContent, showConsultationButton };
       setMessages(prevMessages => [...prevMessages, botMessage]);
 
-      // Update the state for showing the consultation button
       setShowConsultationButton(showConsultationButton);
 
       if (showConsultationButton) {
@@ -74,6 +82,7 @@ const Chatbot = () => {
     setMessages([]);
     setInput('');
     setIsFirstKeystroke(true);
+    setIsFirstMessage(true);
     handleInitialMessage();
   };
 
@@ -92,9 +101,29 @@ const Chatbot = () => {
     }
   };
 
-  const handleBookConsultation = () => {
-    window.location.href = '#bookConsultation';
-  };
+  function createEvent(uuid, event_content, event_type) {
+    const event_page = '/services';
+
+    const eventData = {
+      uuid,
+      event_content,
+      event_type,
+      event_page
+    };
+
+    console.log('Event data:', eventData);
+
+    fetch('https://magnusinc-magnus1000team.vercel.app/api/createEventSB.js', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(eventData),
+    })
+      .then(response => response.json())
+      .then(data => console.log('Success:', data))
+      .catch((error) => console.error('Error:', error));
+  }
 
   return (
     <div className="chatbot">
