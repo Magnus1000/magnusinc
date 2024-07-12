@@ -229,6 +229,21 @@ const LocationService = () => {
       <div className="service-inner-row">
         <div className={`column ${view === 'frontend' ? 'active' : ''}`}>
           <div className="column-left">
+            <div className="column-left-header-row">
+              <div className="location-header">Select vehicle</div>
+            </div>
+            <div className="car-filter-options">
+              {carOptions.map((car) => (
+                <div 
+                  key={car.make_model} 
+                  className={`car-filter-option ${selectedCar === car.make_model ? 'selected' : ''}`}
+                  onClick={() => handleCarClick(car.make_model)}
+                >
+                  <img src={car.image} alt={car.make_model} className="car-filter-image" />
+                  <div className="car-filter-name">{car.make_model}</div>
+                </div>
+              ))}
+            </div>
             <div className="column-left-button-row">
               <div className="call-to-action-text">Find nearest dealership</div>
               <button className="button-primary w-inline-block" onClick={handleGetLocation}>
@@ -248,18 +263,6 @@ const LocationService = () => {
                   )}
                 </div>
               </button>
-            </div>
-            <div className="car-filter-options">
-              {carOptions.map((car) => (
-                <div 
-                  key={car.make_model} 
-                  className={`car-filter-option ${selectedCar === car.make_model ? 'selected' : ''}`}
-                  onClick={() => handleCarClick(car.make_model)}
-                >
-                  <img src={car.image} alt={car.make_model} className="car-filter-image" />
-                  <div className="car-filter-name">{car.make_model}</div>
-                </div>
-              ))}
             </div>
             <div className="column-left-header-row">
               <div className="location-result-grid">
