@@ -11,6 +11,7 @@ const Booking = () => {
   const [bookingConfirmed, setBookingConfirmed] = React.useState(false);
   const [screenshot, setScreenshot] = React.useState('');
   const [screenshotLoading, setScreenshotLoading] = React.useState(false);
+  const [isWebsiteValid, setIsWebsiteValid] = React.useState(false);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -88,6 +89,15 @@ const Booking = () => {
     } catch (error) {
       console.error('Error submitting booking:', error);
       setIsSubmitting(false);
+    }
+  };
+
+  const isValidUrl = (url) => {
+    try {
+      new URL(url);
+      return true;
+    } catch (e) {
+      return false;
     }
   };
 
