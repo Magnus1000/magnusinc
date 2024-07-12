@@ -24,7 +24,6 @@ const Chatbot = () => {
     const welcomeMessage = "Hello! I'm Maggy, Magnus Inc's AI assistant. How can I help you today?";
     setMessages([{ sender: 'bot', text: welcomeMessage, showConsultationButton: false }]);
     setIsLoading(false);
-    inputRef.current?.focus();
   };
 
   const handleSend = async () => {
