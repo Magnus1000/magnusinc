@@ -200,11 +200,11 @@ const Booking = () => {
             <p className="booking-subheader">Select a consultation time:</p>
             <div className="booking-slots-grid">
               {bookingSlots.map((slot, index) => (
-                <div
-                  key={index}
-                  className={`booking-slot ${selectedBookingSlot === slot.slot_name ? 'selected' : ''}`}
-                  onClick={() => handleSlotSelection(slot.slot_name)}
-                >
+                  <div
+                    key={index}
+                    className={`booking-slot ${selectedBookingSlot === slot.slot_name ? 'selected' : ''}`}
+                    onClick={() => handleSlotSelection(slot.slot_name)}
+                  >
                   <p className="slot-date">
                     {new Date(slot.slot_date_time).toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'short' })}
                   </p>
