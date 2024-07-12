@@ -11,7 +11,7 @@ const Booking = () => {
   const [bookingConfirmed, setBookingConfirmed] = React.useState(false);
   const [screenshot, setScreenshot] = React.useState('');
   const [screenshotLoading, setScreenshotLoading] = React.useState(false);
-  const [isWebsiteValid, setIsWebsiteValid] = React.useState(false);
+  const [websiteError, setWebsiteError] = React.useState('');
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -157,7 +157,14 @@ const Booking = () => {
   const handleWebsiteChange = (e) => {
     const value = e.target.value;
     setWebsite(value);
-    setIsWebsiteValid(isValidUrl(value));
+    
+    // Simple validation
+    if (value && !value.includes('.')) {
+      setWebsiteError('Please enter a valid domain (e.g., google.com)');
+    } else {
+      setWebsiteError('');
+    }
+  
     createEvent(`${e.target.id} input changed`, 'booking_form_interaction');
   };
 
@@ -230,6 +237,7 @@ const Booking = () => {
                         Confirm
                       </button>
                   </div>
+                  {websiteError && <p className="error-message">{websiteError}</p>}
                   <WebsitePreview url={screenshot} loading={screenshotLoading} />
               </div>
               <div className="personal-info-div">
