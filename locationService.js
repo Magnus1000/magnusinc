@@ -211,12 +211,6 @@ const LocationService = () => {
         <div className="service-inner-row">
           <div className={`column ${view === 'frontend' ? 'active' : ''}`}>
             <div className="column-left">
-              <div className="column-left-header-row">
-                <div className="column-header-wrapper">
-                  <div className="column-header-text">FRONTEND</div>
-                  <div className="column-subheader-text">What your users see</div>
-                </div>
-              </div>
               <div className="column-left-button-row">
                 <div className="call-to-action-text">Find nearest dealership</div>
                 <button className="button-primary w-inline-block" onClick={handleGetLocation}>
@@ -280,12 +274,6 @@ const LocationService = () => {
           </div>
           <div className={`column ${view === 'backend' ? 'active' : ''}`}>
             <div className="column-right">
-              <div className="column-right-header-row">
-                <div className="column-header-wrapper">
-                  <div className="column-header-text light">BACKEND</div>
-                  <div className="column-subheader-text light">What you see</div>
-                </div>
-              </div>
               <pre contenteditable="false" className="code-block-examples w-code-block" style={{ display: 'block', overflowX: 'auto', background: '#2b2b2b', color: '#f8f8f2', padding: '0.5em' }}>
                 <code className="language-javascript" style={{ whiteSpace: 'pre' }}>{log}</code>
               </pre>
