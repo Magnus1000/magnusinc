@@ -3,21 +3,26 @@ const EmailSignupService = () => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isSubmitted, setIsSubmitted] = React.useState(false);
   const [view, setView] = React.useState('frontend');
+  const [logs, setLogs] = React.useState([]);
   const emailRef = React.useRef(null);
+
+  const addLog = (message) => {
+    setLogs(prevLogs => [...prevLogs, { timestamp: new Date().toISOString(), message }]);
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (email && email.includes('@')) {
       setIsSubmitting(true);
-      console.log(`Email submitted: ${email}`);
+      addLog(`Email submitted: ${email}`);
 
       let uuid = Cookies.get('uuid');
       if (uuid) {
-        console.log(`UUID fetched from cookies: ${uuid}`);
+        addLog(`UUID fetched from cookies: ${uuid}`);
       } else {
         uuid = generateUUID();
         Cookies.set('uuid', uuid);
-        console.log(`UUID not found in cookies. New UUID generated and set: ${uuid}`);
+        addLog(`UUID not found in cookies. New UUID generated and set: ${uuid}`);
       }
 
       const event_content = JSON.stringify({ email });
@@ -34,6 +39,7 @@ const EmailSignupService = () => {
       };
 
       try {
+        addLog('Sending email to server...');
         const responseSendEmail = await fetch('https://magnusinc-magnus1000team.vercel.app/api/sendEmail.js', {
           method: 'POST',
           headers: {
@@ -43,8 +49,9 @@ const EmailSignupService = () => {
         });
 
         if (responseSendEmail.ok) {
-          console.log('Email successfully sent to the server (sendEmail)');
+          addLog('Email successfully sent to the server (sendEmail)');
 
+          addLog('Creating user event...');
           const responseCreateUserEvent = await fetch('https://magnusinc-magnus1000team.vercel.app/api/createEventSB.js', {
             method: 'POST',
             headers: {
@@ -54,21 +61,22 @@ const EmailSignupService = () => {
           });
 
           if (responseCreateUserEvent.ok) {
-            console.log('Email successfully sent to the server (createUserEvent)');
+            addLog('User event created successfully (createUserEvent)');
             setTimeout(() => {
               setIsSubmitting(false);
               setIsSubmitted(true);
+              addLog('Email submission process completed');
             }, 1500);
           } else {
-            console.error('Failed to send email to the server (createUserEvent)');
+            addLog('Failed to create user event (createUserEvent)');
             setIsSubmitting(false);
           }
         } else {
-          console.error('Failed to send email to the server (sendEmail)');
+          addLog('Failed to send email to the server (sendEmail)');
           setIsSubmitting(false);
         }
       } catch (error) {
-        console.error('An error occurred:', error);
+        addLog(`An error occurred: ${error.message}`);
         setIsSubmitting(false);
       }
     }
@@ -81,14 +89,14 @@ const EmailSignupService = () => {
   }, [isSubmitted]);
 
   React.useEffect(() => {
-    console.log('EmailSignupService component mounted.');
+    addLog('EmailSignupService component mounted.');
   }, []);
 
   function generateUUID() {
     // ... (keep the existing generateUUID function)
   }
 
-  console.log('Rendering EmailSignupService component...');
+  addLog('Rendering EmailSignupService component...');
   return (
     <div className="service-row">
       <div className="try-me-div">
@@ -132,13 +140,22 @@ const EmailSignupService = () => {
                   <h2 className="success-h2">Email Submitted!</h2>
                   <p className="success-text">Thank you for submitting your email. We've sent a confirmation to {email}.</p>
                   <p className="success-text">You'll receive updates and news about our services.</p>
-                  </div>
+                </div>
               </div>
             )}
           </div>
         </div>
         <div className={`column ${view === 'backend' ? 'active' : ''}`}>
           <div className="column-right">
+            <pre contentEditable="false" className="code-block-examples w-code-block" style={{ display: 'block', overflowX: 'auto', background: '#2b2b2b', color: '#f8f8f2', padding: '0.5em' }}>
+                <code className="language-javascript" style={{ whiteSpace: 'pre' }}>
+                  {logs.map((log, index) => (
+                    <div key={index} className="event-log">
+                      <span className="code-line-number">{index + 1}</span> {JSON.stringify(log)}
+                    </div>
+                  ))}
+                </code>
+            </pre>
           </div>
         </div>
       </div>
