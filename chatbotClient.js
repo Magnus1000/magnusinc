@@ -117,7 +117,29 @@ const Chatbot = () => {
       <div className="chatbot-messages">
         {messages.map((message, index) => (
           <div key={index} className={`chatbot-message ${message.sender}`}>
-            <div>{message.text}</div>
+            <ReactMarkdown
+              components={{
+                code({node, inline, className, children, ...props}) {
+                  const match = /language-(\w+)/.exec(className || '')
+                  return !inline && match ? (
+                    <Prism
+                      style={Prism.languages.js}
+                      language={match[1]}
+                      PreTag="div"
+                      {...props}
+                    >
+                      {String(children).replace(/\n$/, '')}
+                    </Prism>
+                  ) : (
+                    <code className={className} {...props}>
+                      {children}
+                    </code>
+                  )
+                }
+              }}
+            >
+              {message.text}
+            </ReactMarkdown>
             {message.showConsultationButton && (
               <button onClick={handleBookConsultation} className="consultation-button">
                 Book Consultation
