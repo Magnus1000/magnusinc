@@ -71,8 +71,7 @@ const ConversionService = () => {
         <div className="column-right">
           <div className="column-right-header-row">
             <div className="column-header-wrapper">
-              <div className="column-header-text light">BACKEND</div>
-              <div className="column-subheader-text light">What you see</div>
+              <div className="column-header-text light">CUSTOMER FUNNEL</div>
             </div>
           </div>
           <div className="chart-wrapper">
