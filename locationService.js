@@ -21,7 +21,7 @@ const LocationService = () => {
       image: 'https://uploads-ssl.webflow.com/66622a9748f9ccb21e21b57e/666636aaa04eecfc857244b1_cybertruck.webp'
     },
     {
-      make_model: 'Rivian R1T',
+      make_model: 'Rivian',
       image: 'https://uploads-ssl.webflow.com/66622a9748f9ccb21e21b57e/666636aaf8c5104598400baa_rivian.webp'
     },
     {
