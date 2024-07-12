@@ -5,22 +5,6 @@ const Chatbot = () => {
   const [isFirstKeystroke, setIsFirstKeystroke] = React.useState(true);
   const [showConsultationButton, setShowConsultationButton] = React.useState(false);
   const [isFirstMessage, setIsFirstMessage] = React.useState(true);
-  const messagesEndRef = useRef(null);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  React.useEffect(() => {
-    if (messages.length > 0) {
-      scrollToBottom();
-    }
-  }, [messages]);
-
-  React.seEffect(() => {
-    // Prevent scrolling to input on page load
-    window.scrollTo(0, 0);
-  }, []);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -77,6 +61,7 @@ const Chatbot = () => {
     setInput('');
     setIsFirstKeystroke(true);
     setIsFirstMessage(true);
+    handleInitialMessage();
   };
 
   const handleInputChange = (e) => {
@@ -132,7 +117,6 @@ const Chatbot = () => {
           </div>
         ))}
         {isLoading && <div className="chatbot-message loading">Maggy is typing...</div>}
-        <div ref={messagesEndRef} />
       </div>
       <div className="chatbot-input">
         <input
