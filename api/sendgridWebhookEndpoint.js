@@ -60,7 +60,7 @@ module.exports = async (req, res) => {
           .select('uuid')
           .eq('event_type', 'email_capture')
           .eq('event_content', JSON.stringify({ email }))
-          .order('created_at', { ascending: false })
+          .order('event_id', { ascending: false })
           .limit(1);
 
         if (error) {
