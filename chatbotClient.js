@@ -12,18 +12,19 @@ const Chatbot = () => {
     handleInitialMessage();
   }, []);
 
-  React.useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  // React.useEffect(() => {
+  //     scrollToBottom();
+  //   }, [messages]);
+  
+  // const scrollToBottom = () => {
+  //     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  // };
 
   const handleInitialMessage = () => {
     const welcomeMessage = "Hello! I'm Maggy, Magnus Inc's AI assistant. How can I help you today?";
     setMessages([{ sender: 'bot', text: welcomeMessage, showConsultationButton: false }]);
     setIsLoading(false);
+    inputRef.current?.focus();
   };
 
   const handleSend = async () => {
@@ -138,7 +139,7 @@ const Chatbot = () => {
           </div>
         ))}
         {isLoading && <div className="chatbot-message loading">Maggy is typing...</div>}
-        <div ref={messagesEndRef} />
+        {/* <div ref={messagesEndRef} /> */}
       </div>
       <div className="chatbot-input">
         <input
