@@ -5,27 +5,6 @@ const Chatbot = () => {
   const [isFirstKeystroke, setIsFirstKeystroke] = React.useState(true);
   const [showConsultationButton, setShowConsultationButton] = React.useState(false);
   const [isFirstMessage, setIsFirstMessage] = React.useState(true);
-  const inputRef = React.useRef(null);
-  const messagesEndRef = React.useRef(null);
-
-  //React.useEffect(() => {
-  //  handleInitialMessage();
-  //}, []);
-
-  React.useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-  
-  const scrollToBottom = () => {
-     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
-  // const handleInitialMessage = () => {
-     // const welcomeMessage = "Hello! I'm Maggy, Magnus Inc's AI assistant. How can I help you today?";
-     // setMessages([{ sender: 'bot', text: welcomeMessage, showConsultationButton: false }]);
-     // setIsLoading(false);
-    //inputRef.current?.focus();
-   // };
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -74,7 +53,6 @@ const Chatbot = () => {
       setMessages(prevMessages => [...prevMessages, { sender: 'bot', text: 'Sorry, an error occurred.', showConsultationButton: false }]);
     } finally {
       setIsLoading(false);
-      inputRef.current?.focus();
     }
   };
 
@@ -139,11 +117,9 @@ const Chatbot = () => {
           </div>
         ))}
         {isLoading && <div className="chatbot-message loading">Maggy is typing...</div>}
-        <div ref={messagesEndRef} />
       </div>
       <div className="chatbot-input">
         <input
-          ref={inputRef}
           type="text"
           value={input}
           onChange={handleInputChange}
