@@ -232,7 +232,7 @@ const Booking = () => {
                       <button 
                         className="confirm-button" 
                         onClick={fetchScreenshot}
-                        disabled={!isWebsiteValid}
+                        disabled={!website || websiteError}
                       >
                         Confirm
                       </button>
