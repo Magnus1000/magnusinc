@@ -17,7 +17,10 @@ const Chatbot = () => {
   }, [messages]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    const chatbotContainer = document.querySelector('.chatbot');
+    if (chatbotContainer) {
+      chatbotContainer.scrollTop = chatbotContainer.scrollHeight;
+    }
   };
 
   const handleInitialMessage = () => {
@@ -139,7 +142,6 @@ const Chatbot = () => {
           </div>
         ))}
         {isLoading && <div className="chatbot-message loading">Maggy is typing...</div>}
-        <div ref={messagesEndRef} />
       </div>
       <div className="chatbot-input">
         <input
