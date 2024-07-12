@@ -280,15 +280,15 @@ const Booking = () => {
         </>
       ) : (
         <div className="booking-confirmation-div">
-          <h2>Booking Confirmed!</h2>
-          <p>Thank you for your booking, {name}. We've sent a confirmation email to {email}.</p>
-          <p>Selected services:</p>
+          <h2 className="success-h2">Booking Confirmed!</h2>
+          <p className="success-text">Thank you for your booking, {name}. We've sent a confirmation email to {email}.</p>
+          <p className="success-text">Selected services:</p>
           <ul>
             {selectedServices.map((service, index) => (
               <li key={index}>{service}</li>
             ))}
           </ul>
-          <p>Your consultation is scheduled for: {selectedBookingSlot}</p>
+          <p className="success-text">Your consultation is scheduled for: {selectedBookingSlot}</p>
         </div>
       )}
     </div>
