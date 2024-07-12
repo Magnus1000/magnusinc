@@ -279,7 +279,7 @@ const Booking = () => {
           </div>
         </>
       ) : (
-        <div className="booking-confirmation-div">
+        <div className="confirmation-div">
           <h2 className="success-h2">Booking Confirmed!</h2>
           <p className="success-text">Thank you for your booking, {name}. We've sent a confirmation email to {email}.</p>
           <p className="success-text">Selected services:</p>
