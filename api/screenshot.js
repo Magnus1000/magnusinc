@@ -52,7 +52,12 @@ module.exports = (req, res) => {
 
       const createUrlVariations = (inputUrl) => {
         let parsedUrl = new URL(inputUrl);
-        let variations = [inputUrl];
+        let variations = [
+          inputUrl,
+          inputUrl.replace(/^https?:\/\//, ''),
+          `http://${inputUrl.replace(/^https?:\/\//, '')}`,
+          `https://${inputUrl.replace(/^https?:\/\//, '')}`
+        ];
         
         if (parsedUrl.protocol === 'https:') {
           variations.push(inputUrl.replace('https://', 'http://'));
@@ -64,7 +69,7 @@ module.exports = (req, res) => {
           variations.push(inputUrl.replace('://', '://www.'));
         }
 
-        return variations;
+        return [...new Set(variations)]; // Remove duplicates
       };
 
       const urlVariations = createUrlVariations(url);
@@ -77,13 +82,14 @@ module.exports = (req, res) => {
               'url': currentUrl,
               'screenshot': 'true',
             },
-            responseType: 'arraybuffer'
+            responseType: 'arraybuffer',
+            timeout: 30000 // 30 seconds timeout
           });
 
           res.setHeader('Content-Type', 'image/png');
           return res.status(200).send(response.data);
         } catch (error) {
-          console.error(`Error fetching screenshot for ${currentUrl}:`, error.message);
+          console.error(`Error fetching screenshot for ${currentUrl}:`, error);
           if (error.response) {
             console.error('ScrapingBee API response:', error.response.status, error.response.data.toString());
           }
