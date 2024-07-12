@@ -9,10 +9,11 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 module.exports = (req, res) => {
   cors(req, res, async () => {
     try {
-      // Fetch data from Supabase
+      // Fetch data from Supabase with specific event types
       const { data, error } = await supabase
         .from('event_logs') // Replace with your actual table name
-        .select('uuid, event_type');
+        .select('uuid, event_type')
+        .in('event_type', ['page_view', 'location_service', 'email_capture', 'chat_start', 'booking_form_interaction', 'booking_submitted']); // Add desired event types here
 
       if (error) {
         throw error;
