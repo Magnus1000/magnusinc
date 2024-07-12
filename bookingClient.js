@@ -144,6 +144,13 @@ const Booking = () => {
     createEvent(`${e.target.id} input changed`, 'booking_form_interaction');
   };
 
+  const handleWebsiteChange = (e) => {
+    const value = e.target.value;
+    setWebsite(value);
+    setIsWebsiteValid(isValidUrl(value));
+    createEvent(`${e.target.id} input changed`, 'booking_form_interaction');
+  };
+
   const isFormValid = email && name && selectedBookingSlot && selectedServices.length > 0;
 
   if (isLoading) {
@@ -203,14 +210,14 @@ const Booking = () => {
                           id="website"
                           value={website}
                           placeholder="Enter website..."
-                          onChange={(e) => handleInputChange(e, setWebsite)}
+                          onChange={handleWebsiteChange}
                       />
                       <button 
-                          className="confirm-button" 
-                          onClick={fetchScreenshot}
-                          disabled={!website}
+                        className="confirm-button" 
+                        onClick={fetchScreenshot}
+                        disabled={!isWebsiteValid}
                       >
-                          Confirm
+                        Confirm
                       </button>
                   </div>
                   <WebsitePreview url={screenshot} loading={screenshotLoading} />
