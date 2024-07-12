@@ -245,7 +245,7 @@ const LocationService = () => {
               ))}
             </div>
             <div className="column-left-button-row">
-              <div className="call-to-action-text">Find nearest dealership</div>
+              <div className="location-header">Find nearest dealership</div>
               <button className="button-primary w-inline-block" onClick={handleGetLocation}>
                 <div className="button-text">
                   {isFetching ? "Fetching..." : "Get Location"}
