@@ -202,7 +202,7 @@ const Booking = () => {
               {bookingSlots.map((slot, index) => (
                   <div
                     key={index}
-                    className={`booking-slot ${selectedBookingSlot === slot.slot_name ? 'selected' : ''}`}
+                    className={`booking-slot ${selectedBookingSlot === slot.slot_name ? 'selected' : ''} ${slot.slot_availability === 'unavailable' ? 'unavailable' : ''}`}
                     onClick={() => handleSlotSelection(slot.slot_name)}
                   >
                   <p className="slot-date">
@@ -212,7 +212,6 @@ const Booking = () => {
                     {new Date(slot.slot_date_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' })}
                   </p>
                   <p className="slot-length">30 mins</p>
-                  <p className="slot-availability">{slot.slot_availability}</p>
                 </div>
               ))}
             </div>
