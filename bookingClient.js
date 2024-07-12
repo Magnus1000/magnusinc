@@ -12,6 +12,7 @@ const Booking = () => {
   const [screenshot, setScreenshot] = React.useState('');
   const [screenshotLoading, setScreenshotLoading] = React.useState(false);
   const [websiteError, setWebsiteError] = React.useState('');
+  const [formInteracted, setFormInteracted] = React.useState(false);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -55,9 +56,16 @@ const Booking = () => {
     }
   };
 
+  const handleFormInteraction = () => {
+    if (!formInteracted) {
+      setFormInteracted(true);
+      createEvent('User interacted with booking form', 'booking_form_interaction');
+    }
+  };
+
   const handleSlotSelection = (slot) => {
     setSelectedBookingSlot(slot);
-    createEvent('Booking slot selected', 'booking_form_interaction');
+    handleFormInteraction();
   };
 
   const handleServiceSelection = (service) => {
@@ -66,7 +74,7 @@ const Booking = () => {
         ? prevSelectedServices.filter((s) => s !== service)
         : [...prevSelectedServices, service]
     );
-    createEvent('Service selected', 'booking_form_interaction');
+    handleFormInteraction();
   };
 
   const submitBooking = async () => {
@@ -92,66 +100,56 @@ const Booking = () => {
     }
   };
 
-  const isValidUrl = (url) => {
-    try {
-      new URL(url);
-      return true;
-    } catch (e) {
-      return false;
-    }
-  };
-
   const fetchScreenshot = async () => {
-      if (website) {
-          setScreenshotLoading(true);
-          try {
-              const response = await fetch('https://magnusinc-magnus1000team.vercel.app/api/screenshot', {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json',
-                  },
-                  body: JSON.stringify({ url: website }),
-              });
-              
-              if (response.ok) {
-                  const blob = await response.blob();
-                  const objectUrl = URL.createObjectURL(blob);
-                  setScreenshot(objectUrl);
-                  createEvent('Screenshot fetched', 'booking_form_interaction');
-              } else {
-                  console.error('Failed to fetch screenshot');
-                  setScreenshot('');
-              }
-          } catch (error) {
-              console.error('Error fetching screenshot:', error);
-              setScreenshot('');
-          }
-          setScreenshotLoading(false);
+    if (website) {
+      setScreenshotLoading(true);
+      try {
+        const response = await fetch('https://magnusinc-magnus1000team.vercel.app/api/screenshot', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ url: website }),
+        });
+        
+        if (response.ok) {
+          const blob = await response.blob();
+          const objectUrl = URL.createObjectURL(blob);
+          setScreenshot(objectUrl);
+        } else {
+          console.error('Failed to fetch screenshot');
+          setScreenshot('');
+        }
+      } catch (error) {
+        console.error('Error fetching screenshot:', error);
+        setScreenshot('');
       }
+      setScreenshotLoading(false);
+    }
   };
 
   const WebsitePreview = ({ url, loading }) => {
     return (
-        <div className="website-preview" style={{
-            maxHeight: url || loading ? 'none' : '0',
-            overflow: 'hidden',
-            transition: 'max-height 0.5s ease-in-out',
-            position: 'relative'
-        }}>
-            {loading ? (
-                <div className="screenshot-loading">
-                    <div className="fuzzy-line"></div>
-                </div>
-            ) : url ? (
-                <img src={url} alt="Website preview" style={{ width: '100%' }} />
-            ) : null}
-        </div>
+      <div className="website-preview" style={{
+        maxHeight: url || loading ? 'none' : '0',
+        overflow: 'hidden',
+        transition: 'max-height 0.5s ease-in-out',
+        position: 'relative'
+      }}>
+        {loading ? (
+          <div className="screenshot-loading">
+            <div className="fuzzy-line"></div>
+          </div>
+        ) : url ? (
+          <img src={url} alt="Website preview" style={{ width: '100%' }} />
+        ) : null}
+      </div>
     );
   };
 
   const handleInputChange = (e, setter) => {
     setter(e.target.value);
-    createEvent(`${e.target.id} input changed`, 'booking_form_interaction');
+    handleFormInteraction();
   };
 
   const handleWebsiteChange = (e) => {
@@ -164,8 +162,7 @@ const Booking = () => {
     } else {
       setWebsiteError('');
     }
-  
-    createEvent(`${e.target.id} input changed`, 'booking_form_interaction');
+    handleFormInteraction();
   };
 
   const isFormValid = email && name && selectedBookingSlot && selectedServices.length > 0;
@@ -218,51 +215,51 @@ const Booking = () => {
             </div>
           </div>
           <div className="booking-form">
-              <div className="business-info-div">
-                  <h2 className="booking-h2">Enter Business Website</h2>
-                  <div className="website-input-div">
-                      <input
-                          className="default-input"
-                          type="text"
-                          id="website"
-                          value={website}
-                          placeholder="Enter website..."
-                          onChange={handleWebsiteChange}
-                      />
-                      <button 
-                        className="confirm-button" 
-                        onClick={fetchScreenshot}
-                        disabled={!website || websiteError}
-                      >
-                        Submit
-                      </button>
-                  </div>
-                  {websiteError && <p className="error-message">{websiteError}</p>}
-                  <WebsitePreview url={screenshot} loading={screenshotLoading} />
+            <div className="business-info-div">
+              <h2 className="booking-h2">Enter Business Website</h2>
+              <div className="website-input-div">
+                <input
+                  className="default-input"
+                  type="text"
+                  id="website"
+                  value={website}
+                  placeholder="Enter website..."
+                  onChange={handleWebsiteChange}
+                />
+                <button 
+                  className="confirm-button" 
+                  onClick={fetchScreenshot}
+                  disabled={!website || websiteError}
+                >
+                  Submit
+                </button>
               </div>
-              <div className="personal-info-div">
-                  <h2 className="booking-h2">Enter Your Details</h2>
-                  <div className="name-input-div">
-                      <input
-                      className="default-input"
-                      type="text"
-                      id="name"
-                      value={name}
-                      placeholder="Enter name..."
-                      onChange={(e) => handleInputChange(e, setName)}
-                      />
-                  </div>
-                  <div className="email-input-div">
-                      <input
-                      className="default-input"
-                      type="email"
-                      id="email"
-                      value={email}
-                      placeholder="Enter email..."
-                      onChange={(e) => handleInputChange(e, setEmail)}
-                      />
-                  </div>
+              {websiteError && <p className="error-message">{websiteError}</p>}
+              <WebsitePreview url={screenshot} loading={screenshotLoading} />
+            </div>
+            <div className="personal-info-div">
+              <h2 className="booking-h2">Enter Your Details</h2>
+              <div className="name-input-div">
+                <input
+                  className="default-input"
+                  type="text"
+                  id="name"
+                  value={name}
+                  placeholder="Enter name..."
+                  onChange={(e) => handleInputChange(e, setName)}
+                />
               </div>
+              <div className="email-input-div">
+                <input
+                  className="default-input"
+                  type="email"
+                  id="email"
+                  value={email}
+                  placeholder="Enter email..."
+                  onChange={(e) => handleInputChange(e, setEmail)}
+                />
+              </div>
+            </div>
             <button 
               className="submit-form-button" 
               onClick={submitBooking} 
