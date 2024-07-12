@@ -8,9 +8,9 @@ const Chatbot = () => {
   const inputRef = React.useRef(null);
   const messagesEndRef = React.useRef(null);
 
-  React.useEffect(() => {
-    handleInitialMessage();
-  }, []);
+  //React.useEffect(() => {
+  //  handleInitialMessage();
+  //}, []);
 
   // React.useEffect(() => {
   //     scrollToBottom();
@@ -24,7 +24,7 @@ const Chatbot = () => {
     const welcomeMessage = "Hello! I'm Maggy, Magnus Inc's AI assistant. How can I help you today?";
     setMessages([{ sender: 'bot', text: welcomeMessage, showConsultationButton: false }]);
     setIsLoading(false);
-    inputRef.current?.focus();
+    //inputRef.current?.focus();
   };
 
   const handleSend = async () => {
