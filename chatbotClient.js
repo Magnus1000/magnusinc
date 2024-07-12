@@ -116,14 +116,14 @@ const Chatbot = () => {
     <div className="chatbot">
       <div className="chatbot-messages">
         {messages.map((message, index) => (
-          <div key={index} className={`chatbot-message ${message.sender}`}>
-            <ReactMarkdown>{message.text}</ReactMarkdown>
-            {message.showConsultationButton && (
-              <button onClick={handleBookConsultation} className="consultation-button">
-                Book Consultation
-              </button>
-            )}
-          </div>
+              <div key={index} className={`chatbot-message ${message.sender}`}>
+              <div dangerouslySetInnerHTML={{ __html: marked(message.text) }} />
+              {message.showConsultationButton && (
+                <button onClick={() => alert('Book Consultation')} className="consultation-button">
+                  Book Consultation
+                </button>
+              )}
+            </div>
         ))}
         {isLoading && <div className="chatbot-message loading">Maggy is typing...</div>}
         <div ref={messagesEndRef} />
