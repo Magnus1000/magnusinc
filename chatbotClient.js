@@ -5,6 +5,15 @@ const Chatbot = () => {
   const [isFirstKeystroke, setIsFirstKeystroke] = React.useState(true);
   const [showConsultationButton, setShowConsultationButton] = React.useState(false);
   const [isFirstMessage, setIsFirstMessage] = React.useState(true);
+  const messagesEndRef = React.useRef(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  React.useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -117,6 +126,7 @@ const Chatbot = () => {
           </div>
         ))}
         {isLoading && <div className="chatbot-message loading">Maggy is typing...</div>}
+        <div ref={messagesEndRef} />
       </div>
       <div className="chatbot-input">
         <input
