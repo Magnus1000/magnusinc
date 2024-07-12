@@ -5,10 +5,13 @@ const Chatbot = () => {
   const [isFirstKeystroke, setIsFirstKeystroke] = React.useState(true);
   const [showConsultationButton, setShowConsultationButton] = React.useState(false);
   const [isFirstMessage, setIsFirstMessage] = React.useState(true);
-  const messagesEndRef = React.useRef(null);
+  const chatContainerRef = React.useRef(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (chatContainerRef.current) {
+      const { scrollHeight, clientHeight } = chatContainerRef.current;
+      chatContainerRef.current.scrollTop = scrollHeight - clientHeight;
+    }
   };
 
   React.useEffect(() => {
@@ -114,7 +117,7 @@ const Chatbot = () => {
 
   return (
     <div className="chatbot">
-      <div className="chatbot-messages">
+      <div className="chatbot-messages" ref={chatContainerRef}>
         {messages.map((message, index) => (
           <div key={index} className={`chatbot-message ${message.sender}`}>
             <div>{message.text}</div>
@@ -126,7 +129,6 @@ const Chatbot = () => {
           </div>
         ))}
         {isLoading && <div className="chatbot-message loading">Maggy is typing...</div>}
-        <div ref={messagesEndRef} />
       </div>
       <div className="chatbot-input">
         <input
