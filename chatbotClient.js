@@ -117,7 +117,7 @@ const Chatbot = () => {
       <div className="chatbot-messages">
         {messages.map((message, index) => (
           <div key={index} className={`chatbot-message ${message.sender}`}>
-            <div>{message.text}</div>
+            <ReactMarkdown>{message.text}</ReactMarkdown>
             {message.showConsultationButton && (
               <button onClick={handleBookConsultation} className="consultation-button">
                 Book Consultation
