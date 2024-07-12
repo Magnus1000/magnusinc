@@ -239,7 +239,7 @@ const Booking = () => {
                   </div>
               </div>
             <button 
-              className="submit-button" 
+              className="submit-form-button" 
               onClick={submitBooking} 
               disabled={!isFormValid || isSubmitting}
             >
