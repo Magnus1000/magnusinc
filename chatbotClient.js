@@ -12,6 +12,29 @@ const Chatbot = () => {
   };
 
   React.useEffect(() => {
+    const handleScroll = () => {
+      const chatInputElement = document.getElementById('chatAnchor1');
+      if (chatInputElement) {
+        const rect = chatInputElement.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const triggerPoint = viewportHeight * 0.7; // 70% of viewport height
+  
+        if (rect.top <= triggerPoint) {
+          setShowPointer(true);
+        } else {
+          setShowPointer(false);
+        }
+      }
+    };
+  
+    window.addEventListener('scroll', handleScroll);
+    // Call handleScroll once to set initial state
+    handleScroll();
+  
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  React.useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
@@ -114,6 +137,16 @@ const Chatbot = () => {
 
   return (
     <div className="chatbot">
+      {showPointer && (
+          <div 
+            className="hand-pointer chatbot"
+          >
+            <img 
+              src="https://uploads-ssl.webflow.com/66622a9748f9ccb21e21b57e/66927db8a5ae60cac4f6c1f2_hand-pointer.svg" 
+              alt="Pointer" 
+            />
+          </div>
+      )}
       <div className="chatbot-messages">
         {messages.map((message, index) => (
           <div key={index} className={`chatbot-message ${message.sender}`}>
@@ -136,6 +169,7 @@ const Chatbot = () => {
           onKeyPress={handleKeyPress}
           placeholder="Reply to Maggy..."
           disabled={isLoading}
+          id="chatAnchor1"
           className="chat-input"
         />
         <div className="chat-button-wrapper">
