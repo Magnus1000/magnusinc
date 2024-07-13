@@ -8,7 +8,6 @@ const Chatbot = () => {
   const messagesEndRef = React.useRef(null);
   const [showPointer, setShowPointer] = React.useState(false);
   const [initialMessageSent, setInitialMessageSent] = React.useState(false);
-  const [markedLoaded, setMarkedLoaded] = React.useState(false);
 
   const sendInitialMessage = () => {
     if (!initialMessageSent) {
@@ -25,21 +24,6 @@ const Chatbot = () => {
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
-
-  React.useEffect(() => {
-    if (!window.marked) {
-      const script = document.createElement('script');
-      script.src = 'https://cdn.jsdelivr.net/npm/marked/marked.min.js';
-      script.async = true;
-      script.onload = () => {
-        console.log('Marked library loaded');
-        setMarkedLoaded(true);
-      };
-      document.body.appendChild(script);
-    } else {
-      setMarkedLoaded(true);
-    }
-  }, []);
 
   React.useEffect(() => {
     const handleScroll = () => {
@@ -165,14 +149,7 @@ const Chatbot = () => {
   }
 
   const renderMessage = (message) => {
-    if (markedLoaded && window.marked) {
-      return (
-        <div dangerouslySetInnerHTML={{ 
-          __html: window.DOMPurify.sanitize(window.marked(message.text)) 
-        }} />
-      );
-    }
-    return <div>{message.text}</div>;
+    return <div dangerouslySetInnerHTML={{ __html: message.text }} />;
   };
 
   return (

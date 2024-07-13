@@ -1,6 +1,12 @@
 const OpenAI = require("openai");
 const axios = require("axios");
 const cors = require('cors');
+const marked = require('marked');
+const createDOMPurify = require('dompurify');
+const { JSDOM } = require('jsdom');
+
+const window = new JSDOM('').window;
+const DOMPurify = createDOMPurify(window);
 
 // Initialize OpenAI with API key
 const openai = new OpenAI({
@@ -37,6 +43,11 @@ const systemMessage = {
   8. If you're still unsure, apologize and encourage the user to email us at jack@magnucinc.co`
 };
 
+function renderMarkdown(text) {
+  const rawHtml = marked.parse(text);
+  return DOMPurify.sanitize(rawHtml);
+}
+
 // Main handler for incoming requests
 module.exports = async (req, res) => {
   corsHandler(req, res, async () => {
@@ -55,13 +66,11 @@ module.exports = async (req, res) => {
     try {
       // Initial OpenAI completion request
       const completion = await openai.chat.completions.create({
-        model: 'gpt-4o',
+        model: 'gpt-4',
         messages: [
-          // Include the system message at the beginning
           systemMessage,
-          // Include previous messages
-          ...messages.map(msg => ({ // Map user messages to 'user' and bot messages to 'assistant'
-            role: msg.sender === 'user' ? 'user' : 'assistant', // Map 'bot' to 'assistant' if role isn't 'user'
+          ...messages.map(msg => ({
+            role: msg.sender === 'user' ? 'user' : 'assistant',
             content: msg.text,
           })),
           { role: 'user', content: input },
@@ -130,13 +139,16 @@ module.exports = async (req, res) => {
           ],
         });
 
+        const sanitizedContent = renderMarkdown(secondResponse.choices[0].message.content);
+
         res.status(200).json({
-          content: secondResponse.choices[0].message.content,
+          content: sanitizedContent,
           type: 'chat',
           tool: toolResponses.some(r => r.content.includes('book a consultation')) ? 'consultation_button' : null
         });
       } else {
-        res.status(200).json({ content: message.content, type: 'chat' });
+        const sanitizedContent = renderMarkdown(message.content);
+        res.status(200).json({ content: sanitizedContent, type: 'chat' });
       }
     } catch (error) {
       console.error('Error:', error.message);
