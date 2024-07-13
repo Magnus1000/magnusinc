@@ -245,10 +245,6 @@ const LocationService = () => {
         {showPointer && (
             <div 
               className="hand-pointer"
-              style={{
-                position: 'absolute',
-                transition: 'top 0.3s ease-in-out'
-              }}
             >
               <img 
                 src="https://uploads-ssl.webflow.com/66622a9748f9ccb21e21b57e/66927db8a5ae60cac4f6c1f2_hand-pointer.svg" 
