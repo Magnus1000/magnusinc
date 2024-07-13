@@ -61,7 +61,7 @@ const LocationService = () => {
 
   React.useEffect(() => {
     const handleScroll = () => {
-      const selectVehicleElement = document.querySelector('.column-left-header-row');
+      const selectVehicleElement = document.getElementById('locationAnchor1');
       if (selectVehicleElement) {
         const rect = selectVehicleElement.getBoundingClientRect();
         const viewportHeight = window.innerHeight;

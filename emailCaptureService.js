@@ -5,6 +5,7 @@ const EmailSignupService = () => {
   const [view, setView] = React.useState('frontend');
   const [logs, setLogs] = React.useState([]);
   const emailRef = React.useRef(null);
+  const [showPointer, setShowPointer] = React.useState(false);
 
   const addLog = (message) => {
     setLogs(prevLogs => [...prevLogs, { timestamp: new Date().toISOString(), message }]);
@@ -92,6 +93,29 @@ const EmailSignupService = () => {
     addLog('EmailSignupService component mounted.');
   }, []);
 
+  React.useEffect(() => {
+    const handleScroll = () => {
+      const emailInputElement = document.getElementById('emailAnchor1');
+      if (emailInputElement) {
+        const rect = emailInputElement.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const triggerPoint = viewportHeight * 0.7; // 70% of viewport height
+  
+        if (rect.top <= triggerPoint) {
+          setShowPointer(true);
+        } else {
+          setShowPointer(false);
+        }
+      }
+    };
+  
+    window.addEventListener('scroll', handleScroll);
+    // Call handleScroll once to set initial state
+    handleScroll();
+  
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   function generateUUID() { // Public Domain/MIT
     var d = new Date().getTime();//Timestamp
     var d2 = (performance && performance.now && (performance.now() * 1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
@@ -122,6 +146,16 @@ const EmailSignupService = () => {
         <button className={`toggle-class ${view === 'backend' ? 'active' : ''}`} onClick={() => setView('backend')}>Backend</button>
       </div>
       <div className="service-inner-row email">
+      {showPointer && (
+            <div 
+              className="hand-pointer email"
+            >
+              <img 
+                src="https://uploads-ssl.webflow.com/66622a9748f9ccb21e21b57e/66927db8a5ae60cac4f6c1f2_hand-pointer.svg" 
+                alt="Pointer" 
+              />
+            </div>
+        )}
         <div className={`column ${view === 'frontend' ? 'active' : ''}`}>
           <div className="column-left">
             {!isSubmitted ? (
