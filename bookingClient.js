@@ -13,6 +13,7 @@ const Booking = () => {
   const [screenshotLoading, setScreenshotLoading] = React.useState(false);
   const [websiteError, setWebsiteError] = React.useState('');
   const [formInteracted, setFormInteracted] = React.useState(false);
+  const [showPointer, setShowPointer] = React.useState(false);
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -32,6 +33,22 @@ const Booking = () => {
   
     fetchData();
   }, []);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      const bookingElement = document.getElementById('bookingAnchor1');
+      if (bookingElement) {
+        const rect = bookingElement.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const triggerPoint = viewportHeight * 0.7; // 70% of viewport height
+  
+        if (rect.top <= triggerPoint) {
+          setShowPointer(true);
+        } else {
+          setShowPointer(false);
+        }
+      }
+  };
 
   const createEvent = (event_content, event_type) => {
     const uuid = Cookies.get('uuid');
@@ -175,10 +192,20 @@ const Booking = () => {
 
   return (
     <div className="booking-div">
+      {showPointer && (
+          <div 
+            className={`hand-pointer ${selectedCar ? 'fetch-location' : 'select-vehicle'}`}
+          >
+            <img 
+              src="https://uploads-ssl.webflow.com/66622a9748f9ccb21e21b57e/66927db8a5ae60cac4f6c1f2_hand-pointer.svg" 
+              alt="Pointer" 
+            />
+          </div>
+      )}
       {!bookingConfirmed ? (
         <>
           <div className="booking-services-div">
-            <h2 className="booking-h2">Select Services</h2>
+            <h2 className="booking-h2" id="bookingAnchor1">Select Services</h2>
             <p className="booking-subheader">Select the services you are interested in:</p>
             <div className="booking-services-grid">
               {services.map((service, index) => (
@@ -194,7 +221,7 @@ const Booking = () => {
             </div>
           </div>
           <div className="booking-slots-div">
-            <h2 className="booking-h2">Select Consultation Time</h2>
+            <h2 className="booking-h2" id="bookingAnchor2">Select Consultation Time</h2>
             <p className="booking-subheader">Select a consultation time:</p>
             <div className="booking-slots-grid">
               {bookingSlots.map((slot, index) => (
@@ -216,7 +243,7 @@ const Booking = () => {
           </div>
           <div className="booking-form">
             <div className="business-info-div">
-              <h2 className="booking-h2">Enter Business Website</h2>
+              <h2 className="booking-h2" id="bookingAnchor3">Enter Business Website</h2>
               <div className="website-input-div">
                 <input
                   className="default-input"
@@ -250,7 +277,7 @@ const Booking = () => {
               <WebsitePreview url={screenshot} loading={screenshotLoading} />
             </div>
             <div className="personal-info-div">
-              <h2 className="booking-h2">Enter Your Details</h2>
+              <h2 className="booking-h2" id="bookingAnchor4">Enter Your Details</h2>
               <div className="name-input-div">
                 <input
                   className="default-input"
