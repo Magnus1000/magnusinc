@@ -7,6 +7,19 @@ const Chatbot = () => {
   const [isFirstMessage, setIsFirstMessage] = React.useState(true);
   const messagesEndRef = React.useRef(null);
   const [showPointer, setShowPointer] = React.useState(false);
+  const [initialMessageSent, setInitialMessageSent] = React.useState(false);
+
+  const sendInitialMessage = () => {
+    if (!initialMessageSent) {
+      const initialBotMessage = {
+        sender: 'bot',
+        text: "Hello! I'm Maggy, your AI assistant. How can I help you today?",
+        showConsultationButton: false
+      };
+      setMessages([initialBotMessage]);
+      setInitialMessageSent(true);
+    }
+  };
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -22,6 +35,10 @@ const Chatbot = () => {
   
         if (rect.top <= triggerPoint) {
           setShowPointer(true);
+          // Focus the input field when the pointer becomes visible
+          chatInputElement.focus();
+          // Send the initial message if it hasn't been sent yet
+          sendInitialMessage();
         } else {
           setShowPointer(false);
         }
@@ -33,7 +50,7 @@ const Chatbot = () => {
     handleScroll();
   
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [initialMessageSent]); // Add initialMessageSent to the dependency array
 
   React.useEffect(() => {
     scrollToBottom();
@@ -94,7 +111,7 @@ const Chatbot = () => {
     setInput('');
     setIsFirstKeystroke(true);
     setIsFirstMessage(true);
-    handleInitialMessage();
+    setInitialMessageSent(false); // Reset the initial message state
   };
 
   const handleInputChange = (e) => {
@@ -149,7 +166,7 @@ const Chatbot = () => {
           </div>
       )}
       <div className="chatbot-messages">
-        {messages.map((message, index) => (
+        {initialMessageSent && messages.map((message, index) => (
           <div key={index} className={`chatbot-message ${message.sender}`}>
             <div>{message.text}</div>
             {message.showConsultationButton && (
