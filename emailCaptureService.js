@@ -103,6 +103,8 @@ const EmailSignupService = () => {
   
         if (rect.top <= triggerPoint) {
           setShowPointer(true);
+          // Focus the input field when the pointer becomes visible
+          emailInputElement.focus();
         } else {
           setShowPointer(false);
         }
