@@ -169,6 +169,7 @@ const EmailSignupService = () => {
                     placeholder="Enter your email"
                     required
                     className="default-input"
+                    id="emailAnchor1"
                     disabled={isSubmitting}
                   />
                   <button className="submit-button" type="submit" disabled={isSubmitting}>
