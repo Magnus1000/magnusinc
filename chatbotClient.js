@@ -6,6 +6,7 @@ const Chatbot = () => {
   const [showConsultationButton, setShowConsultationButton] = React.useState(false);
   const [isFirstMessage, setIsFirstMessage] = React.useState(true);
   const messagesEndRef = React.useRef(null);
+  const [showPointer, setShowPointer] = React.useState(false);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
