@@ -168,7 +168,7 @@ const Chatbot = () => {
       <div className="chatbot-messages">
         {initialMessageSent && messages.map((message, index) => (
           <div key={index} className={`chatbot-message ${message.sender}`}>
-            <div dangerouslySetInnerHTML={{ __html: window.DOMPurify.sanitize(window.marked(message.text)) }}></div>
+            <div dangerouslySetInnerHTML={{ __html: window.DOMPurify.sanitize(marked(message.text)) }}></div>
             {message.showConsultationButton && (
               <button onClick={handleBookConsultation} className="consultation-button">
                 Book Consultation
