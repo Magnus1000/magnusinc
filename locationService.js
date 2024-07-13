@@ -241,21 +241,21 @@ const LocationService = () => {
         <button className={`toggle-class ${view === 'frontend' ? 'active' : ''}`} onClick={() => setView('frontend')}>Frontend</button>
         <button className={`toggle-class ${view === 'backend' ? 'active' : ''}`} onClick={() => setView('backend')}>Backend</button>
       </div>
-      {showPointer && (
-          <div 
-            className="hand-pointer"
-            style={{
-              position: 'absolute',
-              transition: 'top 0.3s ease-in-out'
-            }}
-          >
-            <img 
-              src="https://uploads-ssl.webflow.com/66622a9748f9ccb21e21b57e/66927db8a5ae60cac4f6c1f2_hand-pointer.svg" 
-              alt="Pointer" 
-            />
-          </div>
-      )}
       <div className="service-inner-row">
+        {showPointer && (
+            <div 
+              className="hand-pointer"
+              style={{
+                position: 'absolute',
+                transition: 'top 0.3s ease-in-out'
+              }}
+            >
+              <img 
+                src="https://uploads-ssl.webflow.com/66622a9748f9ccb21e21b57e/66927db8a5ae60cac4f6c1f2_hand-pointer.svg" 
+                alt="Pointer" 
+              />
+            </div>
+        )}
         <div className={`column ${view === 'frontend' ? 'active' : ''}`}>
           <div className="column-left">
             <div className="column-left-header-row">
