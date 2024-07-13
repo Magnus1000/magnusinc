@@ -242,7 +242,7 @@ const LocationService = () => {
         <button className={`toggle-class ${view === 'backend' ? 'active' : ''}`} onClick={() => setView('backend')}>Backend</button>
       </div>
       <div className="service-inner-row">
-        {showPointer && (
+        {showPointer && view === 'frontend' && (
             <div 
               className={`hand-pointer ${selectedCar ? 'fetch-location' : 'select-vehicle'}`}
             >
