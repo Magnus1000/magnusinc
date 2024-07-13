@@ -10,6 +10,8 @@ const LocationService = () => {
   const [selectedResultIndex, setSelectedResultIndex] = React.useState(null);
   const [view, setView] = React.useState('frontend');
   const [selectedCar, setSelectedCar] = React.useState(null);
+  const [showPointer, setShowPointer] = React.useState(false);
+  const [pointerPosition, setPointerPosition] = React.useState('select');
 
   const carOptions = [
     {
@@ -47,7 +49,6 @@ const LocationService = () => {
         const { latitude: lat, longitude: lon, city, country_name: country } = data;
         setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Approx location via IP:\n[${new Date().toISOString()}] Lat: ${lat}, Lng: ${lon}\n[${new Date().toISOString()}] City: ${city}\n[${new Date().toISOString()}] Country: ${country}`);
 
-        // Send page load event    
         if (!pageLoadRecorded) {
           createEvent(uuid, `Page loaded in ${city}, ${country}`, 'page_view');
           setPageLoadRecorded(true);
@@ -58,15 +59,32 @@ const LocationService = () => {
       });
   }, []);
 
-  function generateUUID() { // Public Domain/MIT
-    var d = new Date().getTime();//Timestamp
-    var d2 = (performance && performance.now && (performance.now() * 1000)) || 0;//Time in microseconds since page-load or 0 if unsupported
+  React.useEffect(() => {
+    const handleScroll = () => {
+      const selectVehicleElement = document.querySelector('.column-left-header-row');
+      if (selectVehicleElement) {
+        const rect = selectVehicleElement.getBoundingClientRect();
+        if (rect.top <= 100) {  // Adjust this value as needed
+          setShowPointer(true);
+        } else {
+          setShowPointer(false);
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  function generateUUID() {
+    var d = new Date().getTime();
+    var d2 = (performance && performance.now && (performance.now() * 1000)) || 0;
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-      var r = Math.random() * 16;//random number between 0 and 16
-      if (d > 0) {//Use timestamp until depleted
+      var r = Math.random() * 16;
+      if (d > 0) {
         r = (d + r) % 16 | 0;
         d = Math.floor(d / 16);
-      } else {//Use microseconds since page-load if supported
+      } else {
         r = (d2 + r) % 16 | 0;
         d2 = Math.floor(d2 / 16);
       }
@@ -75,20 +93,14 @@ const LocationService = () => {
   }
 
   function createEvent(uuid, event_content, event_type) {
-    const event_page = url; // Add the URL to the event data
-
-    // Define the event data
+    const event_page = url;
     const eventData = {
       uuid,
       event_content,
       event_type,
       event_page
     };
-
-    // Log the event data
     console.log('Event data:', eventData);
-
-    // Send a POST request to the endpoint
     fetch('https://magnusinc-magnus1000team.vercel.app/api/createEventSB.js', {
       method: 'POST',
       headers: {
@@ -124,11 +136,11 @@ const LocationService = () => {
     if (results.length > 0) {
       fetchFilteredResults(make_model);
     }
+    setPointerPosition('find');
   };
 
   const fetchFilteredResults = (make_model) => {
     setIsFetching(true);
-    // Assume we have the last used latitude and longitude
     const lastLat = results[0]?.latitude;
     const lastLng = results[0]?.longitude;
     
@@ -142,7 +154,7 @@ const LocationService = () => {
       .then(response => response.json())
       .then(data => {
         setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Filtered results fetched for ${make_model}.`);
-        setResults(data.slice(0, 4)); // Limit to 4 results
+        setResults(data.slice(0, 4));
         setIsFetching(false);
       })
       .catch((error) => {
@@ -153,7 +165,6 @@ const LocationService = () => {
 
   const handleGetLocation = () => {
     setIsFetching(true);
-
     setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Button clicked.`);
     if (navigator.geolocation) {
       setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Permission granted.`);
@@ -187,7 +198,7 @@ const LocationService = () => {
             .then(response => response.json())
             .then(data => {
               setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Closest results fetched.`);
-              setResults(data.slice(0, 4)); // Limit to 4 results
+              setResults(data.slice(0, 4));
               setIsFetching(false);
             })
             .catch((error) => {
@@ -207,12 +218,10 @@ const LocationService = () => {
   };
 
   const convertDistance = (distance, country) => {
-    distance = distance / 1000; // Convert distance from meters to kilometers
+    distance = distance / 1000;
     if (country === 'United States') {
-      // Convert distance to miles if the country is United States
       return `${(distance * 0.621371).toFixed(2)} mi away`;
     } else {
-      // The distance is in kilometers for other countries
       return `${distance.toFixed(2)} km away`;
     }
   }
@@ -229,6 +238,18 @@ const LocationService = () => {
       <div className="service-inner-row">
         <div className={`column ${view === 'frontend' ? 'active' : ''}`}>
           <div className="column-left">
+            {showPointer && (
+              <img 
+                src="https://uploads-ssl.webflow.com/66622a9748f9ccb21e21b57e/66927db8a5ae60cac4f6c1f2_hand-pointer.svg" 
+                alt="Pointer" 
+                style={{
+                  position: 'absolute',
+                  left: '-50px',
+                  top: pointerPosition === 'select' ? '100px' : '200px',
+                  transition: 'top 0.3s ease-in-out'
+                }}
+              />
+            )}
             <div className="column-left-header-row">
               <div className="location-header">Select vehicle</div>
             </div>
@@ -318,4 +339,3 @@ const LocationService = () => {
 };
 
 ReactDOM.render(<LocationService />, document.getElementById('locationService'));
-  
