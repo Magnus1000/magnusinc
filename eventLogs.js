@@ -4,32 +4,38 @@ function EventLogs() {
   const [supabase, setSupabase] = React.useState(null);
 
   React.useEffect(() => {
-    // Function to load Supabase script
-    const loadSupabaseScript = () => {
-      return new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-        script.async = true;
-        script.onload = () => resolve();
-        script.onerror = () => reject(new Error('Failed to load Supabase script'));
-        document.body.appendChild(script);
-      });
-    };
-
     // Function to initialize Supabase client
     const initializeSupabase = () => {
-      const supabaseUrl = 'https://lbrtnalayoyzwrnthdse.supabase.co';
-      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxicnRuYWxheW95endybnRoZHNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTk1ODgyMjEsImV4cCI6MjAzNTE2NDIyMX0.H16NPoL9OS-7l_GoaoJ-2xKQZ-CdJ4Mo9QXpM-6YRfY';
-      const supabaseInstance = supabase.createClient(supabaseUrl, supabaseKey);
-      setSupabase(supabaseInstance);
+      if (window.supabase) {
+        const supabaseUrl = 'https://lbrtnalayoyzwrnthdse.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxicnRuYWxheW95endybnRoZHNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTk1ODgyMjEsImV4cCI6MjAzNTE2NDIyMX0.H16NPoL9OS-7l_GoaoJ-2xKQZ-CdJ4Mo9QXpM-6YRfY';
+        const supabaseInstance = window.supabase.createClient(supabaseUrl, supabaseKey);
+        setSupabase(supabaseInstance);
+      } else {
+        console.error('Supabase is not loaded');
+      }
     };
 
-    // Load Supabase script and initialize client
-    loadSupabaseScript()
-      .then(() => {
-        initializeSupabase();
-      })
-      .catch((error) => console.error('Error loading Supabase:', error));
+    // Check if Supabase is already loaded
+    if (window.supabase) {
+      initializeSupabase();
+    } else {
+      // If not, set up a MutationObserver to watch for the script being added
+      const observer = new MutationObserver((mutations) => {
+        if (window.supabase) {
+          observer.disconnect();
+          initializeSupabase();
+        }
+      });
+
+      observer.observe(document.body, {
+        childList: true,
+        subtree: true
+      });
+
+      // Cleanup function to disconnect the observer
+      return () => observer.disconnect();
+    }
   }, []);
 
   React.useEffect(() => {
