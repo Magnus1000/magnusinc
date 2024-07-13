@@ -255,7 +255,7 @@ const LocationService = () => {
         <div className={`column ${view === 'frontend' ? 'active' : ''}`}>
           <div className="column-left">
             <div className="column-left-header-row">
-              <div className="location-header">Select vehicle</div>
+              <div className="location-header" id="anchor1">Select vehicle</div>
             </div>
             <div className="car-filter-options">
               {carOptions.map((car) => (
@@ -270,7 +270,7 @@ const LocationService = () => {
               ))}
             </div>
             <div className="column-left-button-row">
-              <div className="location-header">Find nearest dealership</div>
+              <div className="location-header" id="anchor2">Find nearest dealership</div>
               <button className="button-primary w-inline-block" onClick={handleGetLocation}>
                 <div className="button-text">
                   {isFetching ? "Fetching..." : "Get Location"}
