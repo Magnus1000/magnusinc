@@ -64,7 +64,7 @@ const LocationService = () => {
       const selectVehicleElement = document.querySelector('.column-left-header-row');
       if (selectVehicleElement) {
         const rect = selectVehicleElement.getBoundingClientRect();
-        if (rect.top <= 100) {  // Adjust this value as needed
+        if (rect.top <= 500) {  // Adjust this value as needed
           setShowPointer(true);
         } else {
           setShowPointer(false);
