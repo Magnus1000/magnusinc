@@ -240,7 +240,6 @@ const LocationService = () => {
             className="hand-pointer"
             style={{
               position: 'absolute',
-              left: '-80px', // Adjust this value to position it outside the service-inner-row
               transition: 'top 0.3s ease-in-out'
             }}
           >
