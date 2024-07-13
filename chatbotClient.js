@@ -9,6 +9,14 @@ const Chatbot = () => {
   const [showPointer, setShowPointer] = React.useState(false);
   const [initialMessageSent, setInitialMessageSent] = React.useState(false);
 
+  // Scroll to the consultation booking section
+  const handleBookConsultation = () => {
+    const element = document.getElementById('bookConsultation');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   const sendInitialMessage = () => {
     if (!initialMessageSent) {
       const initialBotMessage = {
