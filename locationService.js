@@ -64,15 +64,21 @@ const LocationService = () => {
       const selectVehicleElement = document.querySelector('.column-left-header-row');
       if (selectVehicleElement) {
         const rect = selectVehicleElement.getBoundingClientRect();
-        if (rect.top <= 500) {  // Adjust this value as needed
+        const viewportHeight = window.innerHeight;
+        const triggerPoint = viewportHeight * 0.7; // 70% of viewport height
+  
+        if (rect.top <= triggerPoint) {
           setShowPointer(true);
         } else {
           setShowPointer(false);
         }
       }
     };
-
+  
     window.addEventListener('scroll', handleScroll);
+    // Call handleScroll once to set initial state
+    handleScroll();
+  
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
