@@ -40,17 +40,20 @@ const LocationService = () => {
     } else {
       uuid = generateUUID();
       Cookies.set('uuid', uuid);
-      setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] UUID not found in cookies. New UUID generated and set: ${uuid}.`);
+      setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] UUID not found in cookies. New UUID generated and set: ${uuid}.`]);
       setUuid(uuid);
     }
     fetch('https://ipapi.co/json')
       .then(response => response.json())
       .then(data => {
         const { latitude: lat, longitude: lon, city, country_name: country } = data;
-        setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Approx location via IP:`]);
-        setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Lat: ${lat}, Lng: ${lon}`]);
-        setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] City: ${city}`]);
-        setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Country: ${country}`]);
+        setLogs(prevLogs => [
+          ...prevLogs,
+          `[${new Date().toISOString()}] Approx location via IP:`,
+          `[${new Date().toISOString()}] Lat: ${lat}, Lng: ${lon}`,
+          `[${new Date().toISOString()}] City: ${city}`,
+          `[${new Date().toISOString()}] Country: ${country}`
+        ]);
 
         if (!pageLoadRecorded) {
           createEvent(uuid, `Page loaded in ${city}, ${country}`, 'page_view');
@@ -58,7 +61,7 @@ const LocationService = () => {
         }
       })
       .catch((error) => {
-        setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error getting location via IP: ${error.message}`);
+        setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Error getting location via IP: ${error.message}`]);
       });
   }, []);
 
@@ -124,18 +127,29 @@ const LocationService = () => {
 
   const handleResultClick = (result, index) => {
     setSelectedResultIndex(index);
-    setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Result clicked: ${index + 1}\n[${new Date().toISOString()}] Dealer: ${result.dealer}\n[${new Date().toISOString()}] Make/Model: ${result.make_model}\n[${new Date().toISOString()}] Value: ${result.value}\n[${new Date().toISOString()}] Distance: ${result.distance}`);
+    setLogs(prevLogs => [
+      ...prevLogs,
+      `[${new Date().toISOString()}] Result clicked: ${index + 1}`,
+      `[${new Date().toISOString()}] Dealer: ${result.dealer}`,
+      `[${new Date().toISOString()}] Make/Model: ${result.make_model}`,
+      `[${new Date().toISOString()}] Value: ${result.value}`,
+      `[${new Date().toISOString()}] Distance: ${result.distance}`
+    ]);
   };
 
   const fetchLocationString = (lat, lng) => {
     fetch(`https://magnusinc-magnus1000team.vercel.app/api/getLocationString?lat=${lat}&lng=${lng}`)
       .then(response => response.json())
       .then(data => {
-        setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Obtained address from coordinates.\n[${new Date().toISOString()}] ${data.address}`);
+        setLogs(prevLogs => [
+          ...prevLogs,
+          `[${new Date().toISOString()}] Obtained address from coordinates.`,
+          `[${new Date().toISOString()}] Address: ${data.address}`
+        ]);
         setCountry(data.country);
       })
       .catch((error) => {
-        setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error fetching location string: ${error.message}`);
+        setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Error fetching location string: ${error.message}`]);
       });
   };
 
@@ -154,7 +168,7 @@ const LocationService = () => {
     const lastLng = results[0]?.longitude;
     
     if (!lastLat || !lastLng) {
-      setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error: No location data available.`);
+      setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Error: No location data available.`]);
       setIsFetching(false);
       return;
     }
@@ -162,12 +176,12 @@ const LocationService = () => {
     fetch(`https://magnusinc-magnus1000team.vercel.app/api/fetchClosestResults?lat=${lastLat}&lng=${lastLng}&make_model=${make_model}`)
       .then(response => response.json())
       .then(data => {
-        setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Filtered results fetched for ${make_model}.`);
+        setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Filtered results fetched for ${make_model}.`]);
         setResults(data.slice(0, 4));
         setIsFetching(false);
       })
       .catch((error) => {
-        setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error fetching filtered results: ${error.message}`);
+        setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Error fetching filtered results: ${error.message}`]);
         setIsFetching(false);
       });
   };
@@ -228,6 +242,7 @@ const LocationService = () => {
       setIsFetching(false);
     }
   };
+
   const convertDistance = (distance, country) => {
     distance = distance / 1000;
     if (country === 'United States') {
