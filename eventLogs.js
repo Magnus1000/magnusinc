@@ -1,13 +1,40 @@
-// Initialize Supabase client
-const supabaseUrl = 'https://lbrtnalayoyzwrnthdse.supabase.co';
-const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxicnRuYWxheW95endybnRoZHNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTk1ODgyMjEsImV4cCI6MjAzNTE2NDIyMX0.H16NPoL9OS-7l_GoaoJ-2xKQZ-CdJ4Mo9QXpM-6YRfY';
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
 function EventLogs() {
   const [logs, setLogs] = React.useState([]);
   const [uuid, setUuid] = React.useState('');
+  const [supabase, setSupabase] = React.useState(null);
 
   React.useEffect(() => {
+    // Function to load Supabase script
+    const loadSupabaseScript = () => {
+      return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
+        script.async = true;
+        script.onload = () => resolve();
+        script.onerror = () => reject(new Error('Failed to load Supabase script'));
+        document.body.appendChild(script);
+      });
+    };
+
+    // Function to initialize Supabase client
+    const initializeSupabase = () => {
+      const supabaseUrl = 'https://lbrtnalayoyzwrnthdse.supabase.co';
+      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxicnRuYWxheW95endybnRoZHNlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTk1ODgyMjEsImV4cCI6MjAzNTE2NDIyMX0.H16NPoL9OS-7l_GoaoJ-2xKQZ-CdJ4Mo9QXpM-6YRfY';
+      const supabaseInstance = supabase.createClient(supabaseUrl, supabaseKey);
+      setSupabase(supabaseInstance);
+    };
+
+    // Load Supabase script and initialize client
+    loadSupabaseScript()
+      .then(() => {
+        initializeSupabase();
+      })
+      .catch((error) => console.error('Error loading Supabase:', error));
+  }, []);
+
+  React.useEffect(() => {
+    if (!supabase) return; // Exit if Supabase is not initialized
+
     // Fetch the last 100 event logs
     const fetchLogs = async () => {
       const { data, error } = await supabase
@@ -58,7 +85,7 @@ function EventLogs() {
     return () => {
       supabase.removeSubscription(subscription);
     };
-  }, []);
+  }, [supabase]);
 
   React.useEffect(() => {
     // Function to get uuid from cookies
@@ -81,7 +108,6 @@ function EventLogs() {
       return () => clearInterval(interval);
     }
   }, [uuid, logs]);
-  
 
   return (
     <div className="service-row">
