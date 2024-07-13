@@ -1,5 +1,5 @@
 const LocationService = () => {
-  const [log, setLog] = React.useState('// event_logs');
+  const [logs, setLogs] = React.useState([]);
   const [isFetching, setIsFetching] = React.useState(false);
   const [country, setCountry] = React.useState('United States');
   const [uuid, setUuid] = React.useState(null);
@@ -35,7 +35,7 @@ const LocationService = () => {
   React.useEffect(() => {
     let uuid = Cookies.get('uuid');
     if (uuid) {
-      setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] UUID fetched from cookies: ${uuid}.`);
+      setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] UUID fetched from cookies: ${uuid}.`]);
       setUuid(uuid);
     } else {
       uuid = generateUUID();
@@ -47,7 +47,10 @@ const LocationService = () => {
       .then(response => response.json())
       .then(data => {
         const { latitude: lat, longitude: lon, city, country_name: country } = data;
-        setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Approx location via IP:\n[${new Date().toISOString()}] Lat: ${lat}, Lng: ${lon}\n[${new Date().toISOString()}] City: ${city}\n[${new Date().toISOString()}] Country: ${country}`);
+        setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Approx location via IP:`]);
+        setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Lat: ${lat}, Lng: ${lon}`]);
+        setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] City: ${city}`]);
+        setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Country: ${country}`]);
 
         if (!pageLoadRecorded) {
           createEvent(uuid, `Page loaded in ${city}, ${country}`, 'page_view');
@@ -332,8 +335,14 @@ const LocationService = () => {
         </div>
         <div className={`column ${view === 'backend' ? 'active' : ''}`}>
           <div className="column-right">
-            <pre contenteditable="false" className="code-block-examples w-code-block" style={{ display: 'block', overflowX: 'auto', background: '#2b2b2b', color: '#f8f8f2', padding: '0.5em' }}>
-              <code className="language-javascript" style={{ whiteSpace: 'pre' }}>{log}</code>
+            <pre contentEditable="false" className="code-block-examples w-code-block" style={{ display: 'block', overflowX: 'auto', background: '#2b2b2b', color: '#f8f8f2', padding: '0.5em' }}>
+                <code className="language-javascript" style={{ whiteSpace: 'pre' }}>
+                  {logs.map((log, index) => (
+                    <div key={index} className="event-log">
+                      <span className="code-line-number">{index + 1}</span> {JSON.stringify(log)}
+                    </div>
+                  ))}
+                </code>
             </pre>
           </div>
         </div>
