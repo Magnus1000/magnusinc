@@ -9,6 +9,10 @@ const Chatbot = () => {
   const [showPointer, setShowPointer] = React.useState(false);
   const [initialMessageSent, setInitialMessageSent] = React.useState(false);
 
+  React.useEffect(() => {
+    console.log('Marked library in component:', typeof window.marked);
+  }, []);
+
   const sendInitialMessage = () => {
     if (!initialMessageSent) {
       const initialBotMessage = {
