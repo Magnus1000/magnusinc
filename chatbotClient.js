@@ -8,10 +8,7 @@ const Chatbot = () => {
   const messagesEndRef = React.useRef(null);
   const [showPointer, setShowPointer] = React.useState(false);
   const [initialMessageSent, setInitialMessageSent] = React.useState(false);
-
-  React.useEffect(() => {
-    console.log('Marked library in component:', typeof window.marked);
-  }, []);
+  const [markedLoaded, setMarkedLoaded] = React.useState(false);
 
   const sendInitialMessage = () => {
     if (!initialMessageSent) {
@@ -30,6 +27,21 @@ const Chatbot = () => {
   };
 
   React.useEffect(() => {
+    if (!window.marked) {
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/marked/marked.min.js';
+      script.async = true;
+      script.onload = () => {
+        console.log('Marked library loaded');
+        setMarkedLoaded(true);
+      };
+      document.body.appendChild(script);
+    } else {
+      setMarkedLoaded(true);
+    }
+  }, []);
+
+  React.useEffect(() => {
     const handleScroll = () => {
       const chatInputElement = document.getElementById('chatAnchor1');
       if (chatInputElement) {
@@ -39,9 +51,7 @@ const Chatbot = () => {
 
         if (rect.top <= triggerPoint) {
           setShowPointer(true);
-          // Focus the input field when the pointer becomes visible
           chatInputElement.focus();
-          // Send the initial message if it hasn't been sent yet
           sendInitialMessage();
         } else {
           setShowPointer(false);
@@ -50,11 +60,10 @@ const Chatbot = () => {
     };
 
     window.addEventListener('scroll', handleScroll);
-    // Call handleScroll once to set initial state
     handleScroll();
 
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [initialMessageSent]); // Add initialMessageSent to the dependency array
+  }, [initialMessageSent]);
 
   React.useEffect(() => {
     scrollToBottom();
@@ -69,9 +78,7 @@ const Chatbot = () => {
     setIsLoading(true);
     setIsFirstKeystroke(true);
 
-    // Create event for first message
     if (isFirstMessage) {
-      // Check uuid from cookies
       let userUuid = Cookies.get('uuid');
       if (userUuid) {
         createEvent(userUuid, 'First message sent', 'chat_start');
@@ -115,7 +122,7 @@ const Chatbot = () => {
     setInput('');
     setIsFirstKeystroke(true);
     setIsFirstMessage(true);
-    setInitialMessageSent(false); // Reset the initial message state
+    setInitialMessageSent(false);
   };
 
   const handleInputChange = (e) => {
@@ -157,22 +164,31 @@ const Chatbot = () => {
       .catch((error) => console.error('Error:', error));
   }
 
+  const renderMessage = (message) => {
+    if (markedLoaded && window.marked) {
+      return (
+        <div dangerouslySetInnerHTML={{ 
+          __html: window.DOMPurify.sanitize(window.marked(message.text)) 
+        }} />
+      );
+    }
+    return <div>{message.text}</div>;
+  };
+
   return (
     <div className="chatbot">
       {showPointer && (
-          <div 
-            className="hand-pointer chatbot"
-          >
-            <img 
-              src="https://uploads-ssl.webflow.com/66622a9748f9ccb21e21b57e/66927db8a5ae60cac4f6c1f2_hand-pointer.svg" 
-              alt="Pointer" 
-            />
-          </div>
+        <div className="hand-pointer chatbot">
+          <img 
+            src="https://uploads-ssl.webflow.com/66622a9748f9ccb21e21b57e/66927db8a5ae60cac4f6c1f2_hand-pointer.svg" 
+            alt="Pointer" 
+          />
+        </div>
       )}
       <div className="chatbot-messages">
         {initialMessageSent && messages.map((message, index) => (
           <div key={index} className={`chatbot-message ${message.sender}`}>
-            <div dangerouslySetInnerHTML={{ __html: window.DOMPurify.sanitize(marked(message.text)) }}></div>
+            {renderMessage(message)}
             {message.showConsultationButton && (
               <button onClick={handleBookConsultation} className="consultation-button">
                 Book Consultation
