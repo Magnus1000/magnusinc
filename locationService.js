@@ -141,7 +141,7 @@ const LocationService = () => {
 
   const handleCarClick = (make_model) => {
     setSelectedCar(make_model);
-    setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Car filter selected: ${make_model}`);
+    setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Car filter selected: ${make_model}`]);
     if (results.length > 0) {
       fetchFilteredResults(make_model);
     }
@@ -174,58 +174,60 @@ const LocationService = () => {
 
   const handleGetLocation = () => {
     setIsFetching(true);
-    setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Button clicked.`);
+    setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Button clicked.`]);
     if (navigator.geolocation) {
-      setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Permission granted.`);
+      setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Permission granted.`]);
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Precise location via Browser:`);
-          setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Lat: ${latitude}, Lng: ${longitude}.`);
-
+          setLogs(prevLogs => [
+            ...prevLogs,
+            `[${new Date().toISOString()}] Precise location via Browser:`,
+            `[${new Date().toISOString()}] Lat: ${latitude}, Lng: ${longitude}.`
+          ]);
+  
           fetchLocationString(latitude, longitude);
-
+  
           let userUuid = uuid || Cookies.get('uuid');
-
+  
           console.log('userUuid:', userUuid);
-
+  
           if (!userUuid) {
             userUuid = generateUUID();
             Cookies.set('uuid', userUuid);
-            setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] UUID not found in state or cookies. New UUID generated and set: ${userUuid}.`);
+            setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] UUID not found in state or cookies. New UUID generated and set: ${userUuid}.`]);
             setUuid(userUuid);
           } else {
-            setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] UUID fetched from ${uuid ? 'state' : 'cookies'}: ${userUuid}.`);
+            setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] UUID fetched from ${uuid ? 'state' : 'cookies'}: ${userUuid}.`]);
           }
-
+  
           if (!locationServiceRecorded) {
             createEvent(userUuid, `Location: ${latitude}, ${longitude}`, 'location_service');
             setLocationServiceRecorded(true);
           }
-
+  
           fetch(`https://magnusinc-magnus1000team.vercel.app/api/fetchClosestResults?lat=${latitude}&lng=${longitude}${selectedCar ? `&make_model=${selectedCar}` : ''}`)
             .then(response => response.json())
             .then(data => {
-              setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Closest results fetched.`);
+              setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Closest results fetched.`]);
               setResults(data.slice(0, 4));
               setIsFetching(false);
             })
             .catch((error) => {
-              setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error fetching closest results: ${error.message}`);
+              setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Error fetching closest results: ${error.message}`]);
               setIsFetching(false);
             });
         },
         (error) => {
-          setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Error getting location: ${error.message}`);
+          setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Error getting location: ${error.message}`]);
           setIsFetching(false);
         }
       );
     } else {
-      setLog((prevLog) => `${prevLog}\n[${new Date().toISOString()}] Geolocation not supported by this browser.`);
+      setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Geolocation not supported by this browser.`]);
       setIsFetching(false);
     }
   };
-
   const convertDistance = (distance, country) => {
     distance = distance / 1000;
     if (country === 'United States') {
