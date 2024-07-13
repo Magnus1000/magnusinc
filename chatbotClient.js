@@ -11,7 +11,7 @@ const Chatbot = () => {
 
   // Scroll to the consultation booking section
   const handleBookConsultation = () => {
-    const element = document.getElementById('bookConsultation');
+    const element = document.getElementById('booking');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
     }
