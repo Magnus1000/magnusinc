@@ -235,21 +235,24 @@ const LocationService = () => {
         <button className={`toggle-class ${view === 'frontend' ? 'active' : ''}`} onClick={() => setView('frontend')}>Frontend</button>
         <button className={`toggle-class ${view === 'backend' ? 'active' : ''}`} onClick={() => setView('backend')}>Backend</button>
       </div>
+      {showPointer && (
+          <div 
+            className="hand-pointer"
+            style={{
+              position: 'absolute',
+              left: '-80px', // Adjust this value to position it outside the service-inner-row
+              transition: 'top 0.3s ease-in-out'
+            }}
+          >
+            <img 
+              src="https://uploads-ssl.webflow.com/66622a9748f9ccb21e21b57e/66927db8a5ae60cac4f6c1f2_hand-pointer.svg" 
+              alt="Pointer" 
+            />
+          </div>
+      )}
       <div className="service-inner-row">
         <div className={`column ${view === 'frontend' ? 'active' : ''}`}>
           <div className="column-left">
-            {showPointer && (
-              <img 
-                src="https://uploads-ssl.webflow.com/66622a9748f9ccb21e21b57e/66927db8a5ae60cac4f6c1f2_hand-pointer.svg" 
-                alt="Pointer" 
-                style={{
-                  position: 'absolute',
-                  left: '-50px',
-                  top: pointerPosition === 'select' ? '100px' : '200px',
-                  transition: 'top 0.3s ease-in-out'
-                }}
-              />
-            )}
             <div className="column-left-header-row">
               <div className="location-header">Select vehicle</div>
             </div>
