@@ -14,6 +14,7 @@ const Chatbot = () => {
     const element = document.getElementById('booking');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
+      console.log('Scrolling to booking section');
     }
   };
 
