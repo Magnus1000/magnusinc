@@ -20,28 +20,30 @@ module.exports = (req, res) => {
 
       // Function to normalize the URL
       const normalizeUrl = (inputUrl) => {
+        // Remove leading/trailing whitespace
+        inputUrl = inputUrl.trim();
+
         // Handle localhost and IP addresses
         if (inputUrl.startsWith('localhost') || /^(\d{1,3}\.){3}\d{1,3}/.test(inputUrl)) {
           return `http://${inputUrl}`;
         }
 
+        // Add protocol if missing
+        if (!/^https?:\/\//i.test(inputUrl)) {
+          inputUrl = `https://${inputUrl}`;
+        }
+
         try {
-          // Parse the URL
           let parsedUrl = new URL(inputUrl);
-          
-          // If protocol is missing, add https://
-          if (!parsedUrl.protocol) {
-            parsedUrl = new URL(`https://${inputUrl}`);
+
+          // Remove unnecessary 'www.' if present
+          if (parsedUrl.hostname.startsWith('www.')) {
+            parsedUrl.hostname = parsedUrl.hostname.slice(4);
           }
 
-          // Add www. only if it's not already there and not a subdomain
-          if (!parsedUrl.hostname.startsWith('www.') && parsedUrl.hostname.split('.').length === 2) {
-            parsedUrl.hostname = `www.${parsedUrl.hostname}`;
-          }
-
-          return parsedUrl.toString();
+          // Remove trailing slash
+          return parsedUrl.toString().replace(/\/$/, '');
         } catch (error) {
-          // If URL parsing fails, return the original input
           console.error('Error parsing URL:', error);
           return inputUrl;
         }
@@ -51,23 +53,29 @@ module.exports = (req, res) => {
       url = normalizeUrl(url);
 
       const createUrlVariations = (inputUrl) => {
-        let parsedUrl = new URL(inputUrl);
+        let parsedUrl;
+        try {
+          parsedUrl = new URL(inputUrl);
+        } catch (error) {
+          console.error('Error parsing URL:', error);
+          return [inputUrl];
+        }
+
         let variations = [
           inputUrl,
           inputUrl.replace(/^https?:\/\//, ''),
           `http://${inputUrl.replace(/^https?:\/\//, '')}`,
           `https://${inputUrl.replace(/^https?:\/\//, '')}`
         ];
-        
-        if (parsedUrl.protocol === 'https:') {
-          variations.push(inputUrl.replace('https://', 'http://'));
-        }
 
-        if (parsedUrl.hostname.startsWith('www.')) {
-          variations.push(inputUrl.replace('www.', ''));
-        } else if (parsedUrl.hostname.split('.').length === 2) {
-          variations.push(inputUrl.replace('://', '://www.'));
-        }
+        // Add www. variation
+        variations.push(`${parsedUrl.protocol}//www.${parsedUrl.hostname}${parsedUrl.pathname}${parsedUrl.search}`);
+
+        // Add variation without www.
+        variations.push(`${parsedUrl.protocol}//${parsedUrl.hostname.replace(/^www\./, '')}${parsedUrl.pathname}${parsedUrl.search}`);
+
+        // Add variations with and without trailing slash
+        variations = variations.flatMap(v => [v, v.endsWith('/') ? v.slice(0, -1) : `${v}/`]);
 
         return [...new Set(variations)]; // Remove duplicates
       };
