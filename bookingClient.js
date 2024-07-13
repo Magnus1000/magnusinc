@@ -48,7 +48,14 @@ const Booking = () => {
           setShowPointer(false);
         }
       }
-  };
+    };
+  
+    window.addEventListener('scroll', handleScroll);
+    // Call handleScroll once to set initial state
+    handleScroll();
+  
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const createEvent = (event_content, event_type) => {
     const uuid = Cookies.get('uuid');
