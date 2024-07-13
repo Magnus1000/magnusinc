@@ -244,7 +244,7 @@ const LocationService = () => {
       <div className="service-inner-row">
         {showPointer && (
             <div 
-              className="hand-pointer"
+              className={`hand-pointer ${selectedCar ? 'fetch-location' : 'select-vehicle'}`}
             >
               <img 
                 src="https://uploads-ssl.webflow.com/66622a9748f9ccb21e21b57e/66927db8a5ae60cac4f6c1f2_hand-pointer.svg" 
