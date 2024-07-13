@@ -36,11 +36,6 @@ module.exports = (req, res) => {
         try {
           let parsedUrl = new URL(inputUrl);
 
-          // Remove unnecessary 'www.' if present
-          if (parsedUrl.hostname.startsWith('www.')) {
-            parsedUrl.hostname = parsedUrl.hostname.slice(4);
-          }
-
           // Remove trailing slash
           return parsedUrl.toString().replace(/\/$/, '');
         } catch (error) {
@@ -61,18 +56,17 @@ module.exports = (req, res) => {
           return [inputUrl];
         }
 
+        const baseUrl = parsedUrl.hostname + parsedUrl.pathname + parsedUrl.search;
+        const wwwBaseUrl = 'www.' + baseUrl.replace(/^www\./, '');
+
         let variations = [
+          `https://${wwwBaseUrl}`,
+          `https://${baseUrl}`,
+          `http://${wwwBaseUrl}`,
+          `http://${baseUrl}`,
           inputUrl,
-          inputUrl.replace(/^https?:\/\//, ''),
-          `http://${inputUrl.replace(/^https?:\/\//, '')}`,
-          `https://${inputUrl.replace(/^https?:\/\//, '')}`
+          baseUrl
         ];
-
-        // Add www. variation
-        variations.push(`${parsedUrl.protocol}//www.${parsedUrl.hostname}${parsedUrl.pathname}${parsedUrl.search}`);
-
-        // Add variation without www.
-        variations.push(`${parsedUrl.protocol}//${parsedUrl.hostname.replace(/^www\./, '')}${parsedUrl.pathname}${parsedUrl.search}`);
 
         // Add variations with and without trailing slash
         variations = variations.flatMap(v => [v, v.endsWith('/') ? v.slice(0, -1) : `${v}/`]);
@@ -91,7 +85,7 @@ module.exports = (req, res) => {
               'screenshot': 'true',
             },
             responseType: 'arraybuffer',
-            timeout: 30000 // 30 seconds timeout
+            timeout: 60000 // Increased to 60 seconds
           });
 
           res.setHeader('Content-Type', 'image/png');
