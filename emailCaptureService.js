@@ -146,7 +146,7 @@ const EmailSignupService = () => {
         <button className={`toggle-class ${view === 'backend' ? 'active' : ''}`} onClick={() => setView('backend')}>Backend</button>
       </div>
       <div className="service-inner-row email">
-      {showPointer && (
+      {showPointer && view === 'frontend' && (
             <div 
               className="hand-pointer email"
             >
