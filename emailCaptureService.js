@@ -99,14 +99,15 @@ const EmailSignupService = () => {
       if (emailInputElement) {
         const rect = emailInputElement.getBoundingClientRect();
         const viewportHeight = window.innerHeight;
-        const triggerPoint = viewportHeight * 0.7; // 70% of viewport height
+        const topTriggerPoint = viewportHeight * 0.3; // 30% of viewport height
+        const bottomTriggerPoint = viewportHeight * 0.7; // 70% of viewport height
   
-        if (rect.top <= triggerPoint) {
+        if (rect.top > topTriggerPoint && rect.top <= bottomTriggerPoint) {
           setShowPointer(true);
-          // Focus the input field when the pointer becomes visible
           emailInputElement.focus();
         } else {
           setShowPointer(false);
+          emailInputElement.blur(); // Remove focus when outside the range
         }
       }
     };
