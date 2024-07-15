@@ -1,4 +1,13 @@
 document.addEventListener("DOMContentLoaded", (event) => {
+
+    // Smooth scrolling setup
+    const smoother = ScrollSmoother.create({
+        wrapper: ".smooth-wrapper",
+        content: ".smooth-content",
+        smooth: 1.5,
+        effects: true
+    });
+
     console.log("DOM fully loaded and parsed");
   
     // Register the SplitText and ScrollTrigger plugins
@@ -82,10 +91,67 @@ document.addEventListener("DOMContentLoaded", (event) => {
           overwrite: true
         }),
         onLeaveBack: (batch) => gsap.set(batch, { autoAlpha: 0, overwrite: true }),
-        markers: true
       });
     }
     addBatch();
-  
-    console.log("Script initialization complete");
+
+    // Draw Boxes around elements
+    const subserviceItems = document.querySelectorAll('.service-template-subservice-item');
+    
+    if (subserviceItems.length > 0) {
+        subserviceItems.forEach(item => {
+            // Create border elements
+            const topBorder = document.createElement('div');
+            const rightBorder = document.createElement('div');
+            const bottomBorder = document.createElement('div');
+            const leftBorder = document.createElement('div');
+            
+            // Add classes to border elements
+            topBorder.classList.add('border', 'top');
+            rightBorder.classList.add('border', 'right');
+            bottomBorder.classList.add('border', 'bottom');
+            leftBorder.classList.add('border', 'left');
+            
+            // Append border elements to item
+            item.appendChild(topBorder);
+            item.appendChild(rightBorder);
+            item.appendChild(bottomBorder);
+            item.appendChild(leftBorder);
+        });
+
+        let tl = gsap.timeline({
+            scrollTrigger: {
+                trigger: ".service-template-subservice-wrapper",
+                start: "top 80%",
+                end: "bottom 20%",
+                scrub: true
+            }
+        });
+
+        subserviceItems.forEach((item, index) => {
+            tl.to(item.querySelector('.border.top'), {
+                width: "100%",
+                duration: 0.25
+            })
+            .to(item.querySelector('.border.right'), {
+                height: "100%",
+                duration: 0.25
+            })
+            .to(item.querySelector('.border.bottom'), {
+                width: "100%",
+                duration: 0.25
+            })
+            .to(item.querySelector('.border.left'), {
+                height: "100%",
+                duration: 0.25
+            });
+
+            // Add a small pause between items
+            if (index < subserviceItems.length - 1) {
+                tl.to({}, {duration: 0.2});
+            }
+        });
+    } else {
+        console.warn("No .service-template-subservice-item elements found");
+    }
 });
