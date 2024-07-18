@@ -149,7 +149,7 @@ function EventLogs() {
                 const { uuid: logUuid, ...logWithoutUuid } = log; // Remove uuid from log
                 const isCurrentUser = logUuid === uuid;
                 return (
-                  <div key={index} className={`event-log ${isCurrentUser ? 'light-blue' : ''}`}>
+                  <div key={index} className={`event-log ${isCurrentUser ? 'uuid' : ''}`}>
                     <span className="code-line-number">{index + 1}</span> 
                     <span className={isCurrentUser ? 'lime-green' : ''}>{JSON.stringify(logWithoutUuid)}</span>
                   </div>
