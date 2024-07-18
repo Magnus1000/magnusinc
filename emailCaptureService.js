@@ -3,13 +3,8 @@ const EmailSignupService = () => {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [isSubmitted, setIsSubmitted] = React.useState(false);
   const [view, setView] = React.useState('frontend');
-  const [logs, setLogs] = React.useState([]);
   const emailRef = React.useRef(null);
   const [showPointer, setShowPointer] = React.useState(false);
-
-  const addLog = (message) => {
-    setLogs(prevLogs => [...prevLogs, { timestamp: new Date().toISOString(), message }]);
-  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -90,10 +85,6 @@ const EmailSignupService = () => {
   }, [isSubmitted]);
 
   React.useEffect(() => {
-    addLog('EmailSignupService component mounted.');
-  }, []);
-
-  React.useEffect(() => {
     const handleScroll = () => {
       const emailInputElement = document.getElementById('emailAnchor1');
       if (emailInputElement) {
@@ -135,9 +126,6 @@ const EmailSignupService = () => {
     });
   }
 
-  React.useEffect(() => {
-    addLog('Rendering EmailSignupService component...');
-  }, []);
 
   return (
     <div className="service-row">
@@ -201,12 +189,7 @@ const EmailSignupService = () => {
         <div className={`column ${view === 'backend' ? 'active' : ''}`}>
           <div className="column-right">
             <pre contentEditable="false" className="code-block-examples w-code-block" style={{ display: 'block', overflowX: 'auto', background: '#2b2b2b', color: '#f8f8f2', padding: '0.5em' }}>
-                <code className="language-javascript" style={{ whiteSpace: 'pre' }}>
-                  {logs.map((log, index) => (
-                    <div key={index} className="event-log">
-                      <span className="code-line-number">{index + 1}</span> {JSON.stringify(log)}
-                    </div>
-                  ))}
+                <code className="language-javascript" id="emailLogs" style={{ whiteSpace: 'pre' }}>
                 </code>
             </pre>
           </div>
