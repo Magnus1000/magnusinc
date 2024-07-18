@@ -356,7 +356,8 @@ const LocationService = () => {
                 <code className="language-javascript" style={{ whiteSpace: 'pre' }}>
                   {logs.map((log, index) => (
                     <div key={index} className="event-log">
-                      <span className="code-line-number">{index + 1}</span> {JSON.stringify(log)}
+                      <span className="code-line-number">{index + 1}</span> 
+                      {JSON.stringify({ event_id, event_time: new Date(event_time).toISOString().split('.')[0], event_type, event_page }).replace(/^\s+|\s+$/g, '')}
                     </div>
                   ))}
                 </code>
