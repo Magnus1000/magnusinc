@@ -3,6 +3,7 @@
     const REPO_NAME = 'magnusinc';
     const SCRIPTS = [
       '/service_template/stacker.js',
+      '/gsap/serviceTemplate.js'
     ];
     const CACHE_DURATION = 3600000; // 1 hour in milliseconds
   
