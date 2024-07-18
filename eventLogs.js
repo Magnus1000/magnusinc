@@ -182,7 +182,7 @@ function EventLogs() {
                 return (
                   <div key={index} className={`event-log ${isCurrentUser ? 'uuid' : ''}`}>
                     <span className="code-line-number">{index + 1}</span> 
-                    <span className={isCurrentUser ? 'lime-green' : ''}>{JSON.stringify(logWithoutUuid)}</span>
+                    <span className={isCurrentUser ? 'uuid' : ''}>{JSON.stringify(logWithoutUuid)}</span>
                   </div>
                 );
               })}
