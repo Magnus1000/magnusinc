@@ -21,7 +21,7 @@ module.exports = (req, res) => {
         }).eachPage((records, fetchNextPage) => {
           allServices = allServices.concat(records.map(record => ({
             service_name: record.get('service_name'),
-            service_description: record.get('service_description'),
+            service_description: record.get('header_3'),
           })));
           fetchNextPage();
         }, (err) => {
