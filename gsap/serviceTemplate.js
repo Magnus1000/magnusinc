@@ -40,10 +40,11 @@ function executeServiceTemplateScript() {
   document.querySelectorAll("[letters-fade-in]").forEach((element, index) => {
       console.log(`Setting up letters-fade-in animation for element ${index}`);
       let tl = gsap.timeline({ paused: true });
-      tl.from(element.querySelectorAll(".char"), { opacity: 0, duration: 0.5, ease: "power1.out", stagger: { amount: 0.8 } });
+      tl.from(element.querySelectorAll(".char"), { opacity: 0, duration: 0.2, ease: "power1.out", stagger: { amount: 0.8 } });
       createScrollTrigger(element, tl);
   });
 
+  // Letters fade-in random animations
   document.querySelectorAll("[letters-fade-in-random]").forEach((element, index) => {
       console.log(`Setting up letters-fade-in-random animation for element ${index}`);
       let tl = gsap.timeline({ paused: true });
@@ -58,7 +59,7 @@ function executeServiceTemplateScript() {
           scrollTrigger: {
               trigger: element,
               start: "top 90%",
-              end: "top center",
+              end: "bottom center",
               scrub: true,
               onEnter: () => console.log("Entering scrub-each-word trigger"),
               onLeave: () => console.log("Leaving scrub-each-word trigger"),
