@@ -52,9 +52,10 @@ function EventLogs() {
       if (error) {
         console.error('Error fetching logs:', error);
       } else {
-        // Filter out the unwanted properties
+        // Filter out the unwanted properties and format the time
         const cleanedData = data.map(log => {
           const { event_order, event_content, ...cleanedLog } = log;
+          cleanedLog.event_time = new Date(cleanedLog.event_time).toISOString().split('.')[0];
           return cleanedLog;
         });
         setLogs(cleanedData);
@@ -69,6 +70,7 @@ function EventLogs() {
       // Check if the event type is an INSERT to add new logs
       if (payload.eventType === 'INSERT') {
         const { event_order, event_content, ...newLog } = payload.new;
+        newLog.event_time = new Date(newLog.event_time).toISOString().split('.')[0];
         setLogs((currentLogs) => [newLog, ...currentLogs]);
       }
     };
