@@ -112,34 +112,28 @@ function EventLogs() {
 
   const fetchEmailCaptureLogs = async () => {
     if (!supabase || !uuid) return;
-
+  
     const { data, error } = await supabase
       .from('event_logs')
       .select('*')
       .eq('event_type', 'email_capture')
       .eq('uuid', uuid);
-
+  
     if (error) {
       console.error('Error fetching email capture logs:', error);
     } else {
       const formattedData = data.map((log, index) => {
         const { event_id, event_time, event_type, event_page } = log;
-        return `<div class="event-log uuid">
-          <span class="code-line-number">${index + 1}</span>
-          <span class="lime-green">
-            ${JSON.stringify({ event_id, event_time: new Date(event_time).toISOString().split('.')[0], event_type, event_page })}
-          </span>
-        </div>`;
+        return `
+  <div class="event-log uuid">
+    <span class="code-line-number">${index + 1}</span>
+    <span class="lime-green">${JSON.stringify({ event_id, event_time: new Date(event_time).toISOString().split('.')[0], event_type, event_page })}</span>
+  </div>`;
       }).join('');
-
-      const emailLogsDiv = document.getElementById('emailLogs');
-      if (emailLogsDiv) {
-        emailLogsDiv.innerHTML = formattedData;
-      } else {
-        console.error('Div with id emailLogs not found');
-      }
+  
+      setEmailLogsHTML(formattedData);
     }
-  };
+  };  
 
 
   React.useEffect(() => {
