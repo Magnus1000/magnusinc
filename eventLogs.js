@@ -71,7 +71,7 @@ function EventLogs() {
         const newLog = formatLogEntry(payload.new);
         setLogs((currentLogs) => [newLog, ...currentLogs]);
         
-        if (payload.new.event_type === 'email_capture') {
+        if (payload.new.event_type === 'email_capture' && payload.new.uuid === uuid) {
           fetchEmailCaptureLogs();
         }
       }
@@ -111,22 +111,22 @@ function EventLogs() {
   }, [uuid, logs]);
 
   const fetchEmailCaptureLogs = async () => {
-    if (!supabase) return;
+    if (!supabase || !uuid) return;
 
     const { data, error } = await supabase
       .from('event_logs')
       .select('*')
-      .eq('event_type', 'email_capture');
+      .eq('event_type', 'email_capture')
+      .eq('uuid', uuid);
 
     if (error) {
       console.error('Error fetching email capture logs:', error);
     } else {
       const formattedData = data.map((log, index) => {
-        const { event_id, event_time, event_type, event_page, uuid: logUuid } = log;
-        const isCurrentUser = logUuid === uuid;
-        return `<div class="event-log ${isCurrentUser ? 'uuid' : ''}">
+        const { event_id, event_time, event_type, event_page } = log;
+        return `<div class="event-log uuid">
           <span class="code-line-number">${index + 1}</span>
-          <span class="${isCurrentUser ? 'lime-green' : ''}">
+          <span class="lime-green">
             ${JSON.stringify({ event_id, event_time: new Date(event_time).toISOString().split('.')[0], event_type, event_page })}
           </span>
         </div>`;
@@ -140,6 +140,7 @@ function EventLogs() {
       }
     }
   };
+
 
   React.useEffect(() => {
     fetchEmailCaptureLogs();
