@@ -120,7 +120,7 @@ function EventLogs() {
     const { data, error } = await supabase
       .from('event_logs')
       .select('*')
-      .eq('event_type', 'email_capture')
+      .or(`event_type.eq.email_capture,event_type.eq.email_open`)
       .eq('uuid', uuid);
   
     if (error) {
