@@ -35,7 +35,6 @@ const EmailSignupService = () => {
       };
 
       try {
-        addLog('Sending email to server...');
         const responseSendEmail = await fetch('https://magnusinc-magnus1000team.vercel.app/api/sendEmail.js', {
           method: 'POST',
           headers: {
