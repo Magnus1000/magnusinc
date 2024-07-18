@@ -118,32 +118,33 @@ function EventLogs() {
     if (!supabase || !uuid) return;
 
     const { data, error } = await supabase
-      .from('event_logs')
-      .select('*')
-      .eq('event_type', 'email_capture')
-      .eq('uuid', uuid);
+        .from('event_logs')
+        .select('*')
+        .eq('event_type', 'email_capture')
+        .eq('uuid', uuid);
 
     if (error) {
-      console.error('Error fetching email capture logs:', error);
+        console.error('Error fetching email capture logs:', error);
     } else {
-      const formattedData = data.map((log, index) => {
-        const { event_id, event_time, event_type, event_page } = log;
-        return `<div class="event-log uuid">
-          <span class="code-line-number">${index + 1}</span>
-          <span class="uuid">
-            ${JSON.stringify({ event_id, event_time: new Date(event_time).toISOString().split('.')[0], event_type, event_page })}
-          </span>
-        </div>`;
-      }).join('');
+        const formattedData = data.map((log, index) => {
+            const { event_id, event_time, event_type, event_page } = log;
+            return `<div class="event-log uuid">
+              <span class="code-line-number">${index + 1}</span>
+              <span class="uuid">
+                ${JSON.stringify({ event_id, event_time: new Date(event_time).toISOString().split('.')[0], event_type, event_page }).trim()}
+              </span>
+            </div>`;
+        }).join('');
 
-      const emailLogsDiv = document.getElementById('emailLogs');
-      if (emailLogsDiv) {
-        emailLogsDiv.innerHTML = formattedData;
-      } else {
-        console.error('Div with id emailLogs not found');
-      }
+        const emailLogsDiv = document.getElementById('emailLogs');
+        if (emailLogsDiv) {
+            emailLogsDiv.innerHTML = formattedData;
+        } else {
+            console.error('Div with id emailLogs not found');
+        }
     }
-  };
+};
+
 
   // Fetch email logs initially and on supabase state change
   React.useEffect(() => {
