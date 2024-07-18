@@ -49,10 +49,10 @@ const LocationService = () => {
         const { latitude: lat, longitude: lon, city, country_name: country } = data;
         setLogs(prevLogs => [
           ...prevLogs,
-          `[${new Date().toISOString()}] Approx location via IP:`,
-          `[${new Date().toISOString()}] Lat: ${lat}, Lng: ${lon}`,
-          `[${new Date().toISOString()}] City: ${city}`,
-          `[${new Date().toISOString()}] Country: ${country}`
+          `{"event_time":"${new Date().toISOString()}", "event_content":"Approx location via IP:"}`,
+          `{"event_time":"${new Date().toISOString()}", "event_content":"Lat: ${lat}, Lng: ${lon}"}`,
+          `{"event_time":"${new Date().toISOString()}", "event_content":"City: ${city}"}`,
+          `{"event_time":"${new Date().toISOString()}", "event_content":"Country: ${country}"}`
         ]);
 
         if (!pageLoadRecorded) {
