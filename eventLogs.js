@@ -133,12 +133,12 @@ function EventLogs() {
                   <div className="column-header-text light">EVENT LOGS</div>
                   <div className="legend-wrapper">
                     <div className="legend-div">
-                      <div className="legend-dot light-blue"></div>
-                      <div className="legend-text light-blue">you (anonymous)</div>
+                      <div className="legend-dot uuid"></div>
+                      <div className="legend-text uuid">you (anonymous)</div>
                     </div>
                     <div className="legend-div">
-                      <div className="legend-dot white"></div>
-                      <div className="legend-text white">users (anonymous)</div>
+                      <div className="legend-dot nonuuid"></div>
+                      <div className="legend-text nonuuid">users (anonymous)</div>
                     </div>
                   </div>
               </div>
