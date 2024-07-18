@@ -1,3 +1,4 @@
+// /service_template/stacker.js
 function executeStackerScript() {
     // Handle proof markers
     const proofMarkers = document.querySelectorAll('div.proof-marker');

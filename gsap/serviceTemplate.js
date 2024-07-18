@@ -1,4 +1,5 @@
-function executeAnimationScript() {
+// /gsap/serviceTemplate.js
+document.addEventListener("DOMContentLoaded", (event) => {
   console.log("DOM fully loaded and parsed");
 
   // Register the SplitText and ScrollTrigger plugins
@@ -171,4 +172,4 @@ function executeAnimationScript() {
   } else {
       console.warn("No .service-template-subservice-item elements found");
   }
-}
+});
