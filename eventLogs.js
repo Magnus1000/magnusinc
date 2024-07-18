@@ -121,20 +121,20 @@ function EventLogs() {
     if (error) {
       console.error('Error fetching email capture logs:', error);
     } else {
-      const formattedData = data.map((log) => {
-        const { event_id, event_time, event_type, event_page } = log;
-        return {
-          event_id,
-          event_time: new Date(event_time).toISOString().split('.')[0],
-          event_type,
-          event_page,
-          uuid
-        };
-      });
+      const formattedData = data.map((log, index) => {
+        const { event_id, event_time, event_type, event_page, uuid: logUuid } = log;
+        const isCurrentUser = logUuid === uuid;
+        return `<div class="event-log ${isCurrentUser ? 'uuid' : ''}">
+          <span class="code-line-number">${index + 1}</span>
+          <span class="${isCurrentUser ? 'lime-green' : ''}">
+            ${JSON.stringify({ event_id, event_time: new Date(event_time).toISOString().split('.')[0], event_type, event_page })}
+          </span>
+        </div>`;
+      }).join('');
 
       const emailLogsDiv = document.getElementById('emailLogs');
       if (emailLogsDiv) {
-        emailLogsDiv.innerHTML = `<pre>${JSON.stringify(formattedData, null, 2)}</pre>`;
+        emailLogsDiv.innerHTML = formattedData;
       } else {
         console.error('Div with id emailLogs not found');
       }
