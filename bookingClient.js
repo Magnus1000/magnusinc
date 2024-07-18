@@ -64,7 +64,7 @@ const Booking = () => {
         uuid,
         event_content,
         event_type,
-        event_page: '/'
+        event_page:'/'
       };
   
       fetch('https://magnusinc-magnus1000team.vercel.app/api/createEventSB.js', {
