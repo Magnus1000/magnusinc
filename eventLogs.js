@@ -146,9 +146,11 @@ function EventLogs() {
             <code className="language-javascript" style={{ whiteSpace: 'pre' }}>
               {logs.map((log, index) => {
                 const { uuid: logUuid, ...logWithoutUuid } = log; // Remove uuid from log
+                const isCurrentUser = logUuid === uuid;
                 return (
-                  <div key={index} className={`event-log ${logUuid === uuid ? 'lime-green' : ''}`}>
-                    <span className="code-line-number">{index + 1}</span> {JSON.stringify(logWithoutUuid)}
+                  <div key={index} className={`event-log ${isCurrentUser ? 'lime-green' : ''}`}>
+                    <span className="code-line-number">{index + 1}</span> 
+                    <span className={isCurrentUser ? 'lime-green' : ''}>{JSON.stringify(logWithoutUuid)}</span>
                   </div>
                 );
               })}
