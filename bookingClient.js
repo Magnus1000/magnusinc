@@ -187,6 +187,15 @@ const Booking = () => {
     handleFormInteraction();
   };
 
+  const handleWebsiteKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (website && !websiteError && !screenshotLoading) {
+        fetchScreenshot();
+      }
+    }
+  };
+
   const isFormValid = email && name && selectedBookingSlot && selectedServices.length > 0;
 
   if (isLoading) {
@@ -269,6 +278,7 @@ const Booking = () => {
                   value={website}
                   placeholder="Enter website..."
                   onChange={handleWebsiteChange}
+                  onKeyPress={handleWebsiteKeyPress}
                 />
                 <button 
                   className="confirm-button" 
