@@ -4,7 +4,6 @@ function EventLogs() {
   const [supabase, setSupabase] = React.useState(null);
 
   React.useEffect(() => {
-    // Function to initialize Supabase client
     const initializeSupabase = () => {
       if (window.supabase) {
         const supabaseUrl = 'https://lbrtnalayoyzwrnthdse.supabase.co';
@@ -16,11 +15,9 @@ function EventLogs() {
       }
     };
 
-    // Check if Supabase is already loaded
     if (window.supabase) {
       initializeSupabase();
     } else {
-      // If not, set up a MutationObserver to watch for the script being added
       const observer = new MutationObserver((mutations) => {
         if (window.supabase) {
           observer.disconnect();
@@ -33,15 +30,13 @@ function EventLogs() {
         subtree: true
       });
 
-      // Cleanup function to disconnect the observer
       return () => observer.disconnect();
     }
   }, []);
 
   React.useEffect(() => {
-    if (!supabase) return; // Exit if Supabase is not initialized
+    if (!supabase) return;
   
-    // Function to format log entries
     const formatLogEntry = (log) => {
       const { event_id, event_time, event_type, event_page } = log;
       return {
@@ -53,7 +48,6 @@ function EventLogs() {
       };
     };
   
-    // Fetch the last 100 event logs
     const fetchLogs = async () => {
       const { data, error } = await supabase
         .from('event_logs')
@@ -64,7 +58,6 @@ function EventLogs() {
       if (error) {
         console.error('Error fetching logs:', error);
       } else {
-        // Format the logs
         const cleanedData = data.map(formatLogEntry);
         setLogs(cleanedData);
       }
@@ -72,17 +65,18 @@ function EventLogs() {
   
     fetchLogs();
   
-    // Function to handle realtime updates
     const handleRealtimeUpdates = (payload) => {
       console.log('Realtime update received:', payload);
-      // Check if the event type is an INSERT to add new logs
       if (payload.eventType === 'INSERT') {
         const newLog = formatLogEntry(payload.new);
         setLogs((currentLogs) => [newLog, ...currentLogs]);
+        
+        if (payload.new.event_type === 'email_capture') {
+          fetchEmailCaptureLogs();
+        }
       }
     };
   
-    // Subscribe to realtime changes on your table
     const subscription = supabase
       .channel('custom-all-channel')
       .on(
@@ -96,14 +90,12 @@ function EventLogs() {
         }
       });
   
-    // Cleanup function to unsubscribe when the component unmounts
     return () => {
       supabase.removeSubscription(subscription);
     };
   }, [supabase]);
 
   React.useEffect(() => {
-    // Function to get uuid from cookies
     const getUuidFromCookies = () => {
       const cookieUuid = Cookies.get('uuid');
       if (cookieUuid && !uuid) {
@@ -111,42 +103,81 @@ function EventLogs() {
       }
     };
   
-    // Check if uuid is not already set
     if (!uuid) {
-      // Initial check
       getUuidFromCookies();
-  
-      // Set an interval to keep trying until uuid is set
       const interval = setInterval(getUuidFromCookies, 1000);
-  
-      // Cleanup the interval on component unmount
       return () => clearInterval(interval);
     }
   }, [uuid, logs]);
+
+  const fetchEmailCaptureLogs = async () => {
+    if (!supabase) return;
+
+    const { data, error } = await supabase
+      .from('event_logs')
+      .select('*')
+      .eq('event_type', 'email_capture');
+
+    if (error) {
+      console.error('Error fetching email capture logs:', error);
+    } else {
+      const formattedData = data.map((log) => {
+        const { event_id, event_time, event_type, event_page } = log;
+        return {
+          event_id,
+          event_time: new Date(event_time).toISOString().split('.')[0],
+          event_type,
+          event_page,
+          uuid
+        };
+      });
+
+      const emailLogsDiv = document.getElementById('emailLogs');
+      if (emailLogsDiv) {
+        emailLogsDiv.innerHTML = `<pre>${JSON.stringify(formattedData, null, 2)}</pre>`;
+      } else {
+        console.error('Div with id emailLogs not found');
+      }
+    }
+  };
+
+  React.useEffect(() => {
+    fetchEmailCaptureLogs();
+  }, [supabase]);
 
   return (
     <div className="service-row">
       <div className="service-inner-row code">
         <div className="column-right">
           <div className="column-right-header-row">
-              <div className="column-header-wrapper">
-                  <div className="column-header-text light">EVENT LOGS</div>
-                  <div className="legend-wrapper">
-                    <div className="legend-div">
-                      <div className="legend-dot uuid"></div>
-                      <div className="legend-text uuid">you (anonymous)</div>
-                    </div>
-                    <div className="legend-div">
-                      <div className="legend-dot nonuuid"></div>
-                      <div className="legend-text nonuuid">users (anonymous)</div>
-                    </div>
-                  </div>
+            <div className="column-header-wrapper">
+              <div className="column-header-text light">EVENT LOGS</div>
+              <div className="legend-wrapper">
+                <div className="legend-div">
+                  <div className="legend-dot uuid"></div>
+                  <div className="legend-text uuid">you (anonymous)</div>
+                </div>
+                <div className="legend-div">
+                  <div className="legend-dot nonuuid"></div>
+                  <div className="legend-text nonuuid">users (anonymous)</div>
+                </div>
               </div>
+            </div>
           </div>
-          <pre contentEditable="false" className="code-block-examples w-code-block" style={{ display: 'block', overflowX: 'auto', background: '#2b2b2b', color: '#f8f8f2', padding: '0.5em' }}>
+          <pre
+            contentEditable="false"
+            className="code-block-examples w-code-block"
+            style={{
+              display: 'block',
+              overflowX: 'auto',
+              background: '#2b2b2b',
+              color: '#f8f8f2',
+              padding: '0.5em'
+            }}
+          >
             <code className="language-javascript" style={{ whiteSpace: 'pre' }}>
               {logs.map((log, index) => {
-                const { uuid: logUuid, ...logWithoutUuid } = log; // Remove uuid from log
+                const { uuid: logUuid, ...logWithoutUuid } = log;
                 const isCurrentUser = logUuid === uuid;
                 return (
                   <div key={index} className={`event-log ${isCurrentUser ? 'uuid' : ''}`}>
