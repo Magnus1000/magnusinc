@@ -10,15 +10,15 @@ const EmailSignupService = () => {
     event.preventDefault();
     if (email && email.includes('@')) {
       setIsSubmitting(true);
-      addLog(`Email submitted: ${email}`);
 
       let uuid = Cookies.get('uuid');
       if (uuid) {
-        addLog(`UUID fetched from cookies: ${uuid}`);
+        // Perform some action with the existing uuid
+        console.log('UUID exists:', uuid);
       } else {
         uuid = generateUUID();
         Cookies.set('uuid', uuid);
-        addLog(`UUID not found in cookies. New UUID generated and set: ${uuid}`);
+        console.log('New UUID generated and set:', uuid);
       }
 
       const event_content = JSON.stringify({ email });
@@ -44,9 +44,6 @@ const EmailSignupService = () => {
         });
 
         if (responseSendEmail.ok) {
-          addLog('Email successfully sent to the server (sendEmail)');
-
-          addLog('Creating user event...');
           const responseCreateUserEvent = await fetch('https://magnusinc-magnus1000team.vercel.app/api/createEventSB.js', {
             method: 'POST',
             headers: {
@@ -56,22 +53,18 @@ const EmailSignupService = () => {
           });
 
           if (responseCreateUserEvent.ok) {
-            addLog('User event created successfully (createUserEvent)');
+
             setTimeout(() => {
               setIsSubmitting(false);
               setIsSubmitted(true);
-              addLog('Email submission process completed');
             }, 1500);
           } else {
-            addLog('Failed to create user event (createUserEvent)');
             setIsSubmitting(false);
           }
         } else {
-          addLog('Failed to send email to the server (sendEmail)');
           setIsSubmitting(false);
         }
       } catch (error) {
-        addLog(`An error occurred: ${error.message}`);
         setIsSubmitting(false);
       }
     }
