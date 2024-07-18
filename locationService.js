@@ -35,12 +35,12 @@ const LocationService = () => {
   React.useEffect(() => {
     let uuid = Cookies.get('uuid');
     if (uuid) {
-      setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] UUID fetched from cookies: ${uuid}.`]);
+      setLogs(prevLogs => [...prevLogs, `{"event_time":"${new Date().toISOString()}", "event_content":"UUID fetched from cookies: ${uuid}."}`]);
       setUuid(uuid);
     } else {
       uuid = generateUUID();
       Cookies.set('uuid', uuid);
-      setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] UUID not found in cookies. New UUID generated and set: ${uuid}.`]);
+      setLogs(prevLogs => [...prevLogs, `{"event_time":"${new Date().toISOString()}", "event_content":"UUID not found in cookies. New UUID generated and set: ${uuid}."}`]);
       setUuid(uuid);
     }
     fetch('https://ipapi.co/json')
@@ -129,11 +129,11 @@ const LocationService = () => {
     setSelectedResultIndex(index);
     setLogs(prevLogs => [
       ...prevLogs,
-      `[${new Date().toISOString()}] Result clicked: ${index + 1}`,
-      `[${new Date().toISOString()}] Dealer: ${result.dealer}`,
-      `[${new Date().toISOString()}] Make/Model: ${result.make_model}`,
-      `[${new Date().toISOString()}] Value: ${result.value}`,
-      `[${new Date().toISOString()}] Distance: ${result.distance}`
+      `{"event_time":"${new Date().toISOString()}", "event_type":"Result clicked: ${index + 1}"}`,
+      `{"event_time":"${new Date().toISOString()}", "event_content":"Dealer: ${result.dealer}"}`,
+      `{"event_time":"${new Date().toISOString()}", "event_content":"Make/Model: ${result.make_model}"}`,
+      `{"event_time":"${new Date().toISOString()}", "event_content":"Value: ${result.value}"}`,
+      `{"event_time":"${new Date().toISOString()}", "event_content":"Distance: ${result.distance}"}`
     ]);
   };
 
@@ -143,19 +143,19 @@ const LocationService = () => {
       .then(data => {
         setLogs(prevLogs => [
           ...prevLogs,
-          `[${new Date().toISOString()}] Obtained address from coordinates.`,
-          `[${new Date().toISOString()}] Address: ${data.address}`
+          `{"event_time":"${new Date().toISOString()}", "event_content":Obtained address from coordinates."}`,
+          `{"event_time":"${new Date().toISOString()}", "event_content":Address: ${data.address}"}`
         ]);
         setCountry(data.country);
       })
       .catch((error) => {
-        setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Error fetching location string: ${error.message}`]);
+        setLogs(prevLogs => [...prevLogs, `{"event_time":"${new Date().toISOString()}", "event_content":"Error fetching location string: ${error.message}"}`]);
       });
   };
 
   const handleCarClick = (make_model) => {
     setSelectedCar(make_model);
-    setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Car filter selected: ${make_model}`]);
+    setLogs(prevLogs => [...prevLogs, `{"event_time":"${new Date().toISOString()}", "event_content":"Car filter selected: ${make_model}"}`]);
     if (results.length > 0) {
       fetchFilteredResults(make_model);
     }
@@ -168,7 +168,7 @@ const LocationService = () => {
     const lastLng = results[0]?.longitude;
     
     if (!lastLat || !lastLng) {
-      setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Error: No location data available.`]);
+      setLogs(prevLogs => [...prevLogs, `{"event_time":"${new Date().toISOString()}", "event_content":"Error: No location data available."}`]);
       setIsFetching(false);
       return;
     }
@@ -176,28 +176,28 @@ const LocationService = () => {
     fetch(`https://magnusinc-magnus1000team.vercel.app/api/fetchClosestResults?lat=${lastLat}&lng=${lastLng}&make_model=${make_model}`)
       .then(response => response.json())
       .then(data => {
-        setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Filtered results fetched for ${make_model}.`]);
+        setLogs(prevLogs => [...prevLogs, `{"event_time":"${new Date().toISOString()}", "event_content":"Filtered results fetched for ${make_model}."}`]);
         setResults(data.slice(0, 4));
         setIsFetching(false);
       })
       .catch((error) => {
-        setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Error fetching filtered results: ${error.message}`]);
+        setLogs(prevLogs => [...prevLogs, `{"event_time":"${new Date().toISOString()}", "event_content":"Error fetching filtered results: ${error.message}"}`]);
         setIsFetching(false);
       });
   };
 
   const handleGetLocation = () => {
     setIsFetching(true);
-    setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Button clicked.`]);
+    setLogs(prevLogs => [...prevLogs, `{"event_time":"${new Date().toISOString()}", "event_content":"Button clicked."}`]);
     if (navigator.geolocation) {
-      setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Permission granted.`]);
+      setLogs(prevLogs => [...prevLogs, `{"event_time":"${new Date().toISOString()}", "event_content":"Permission granted."}`]);
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
           setLogs(prevLogs => [
             ...prevLogs,
-            `[${new Date().toISOString()}] Precise location via Browser:`,
-            `[${new Date().toISOString()}] Lat: ${latitude}, Lng: ${longitude}.`
+            `{"event_time":"${new Date().toISOString()}", "event_content":Precise location via Browser:"}`,
+            `{"event_time":"${new Date().toISOString()}", "event_content":Lat: ${latitude}, Lng: ${longitude}."}`
           ]);
   
           fetchLocationString(latitude, longitude);
@@ -209,10 +209,10 @@ const LocationService = () => {
           if (!userUuid) {
             userUuid = generateUUID();
             Cookies.set('uuid', userUuid);
-            setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] UUID not found in state or cookies. New UUID generated and set: ${userUuid}.`]);
+            setLogs(prevLogs => [...prevLogs, `{"event_time":"${new Date().toISOString()}", "event_content":"UUID not found in state or cookies. New UUID generated and set: ${userUuid}."}`]);
             setUuid(userUuid);
           } else {
-            setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] UUID fetched from ${uuid ? 'state' : 'cookies'}: ${userUuid}.`]);
+            setLogs(prevLogs => [...prevLogs, `{"event_time":"${new Date().toISOString()}", "event_content":"UUID fetched from ${uuid ? 'state' : 'cookies'}: ${userUuid}."}`]);
           }
   
           if (!locationServiceRecorded) {
@@ -223,22 +223,22 @@ const LocationService = () => {
           fetch(`https://magnusinc-magnus1000team.vercel.app/api/fetchClosestResults?lat=${latitude}&lng=${longitude}${selectedCar ? `&make_model=${selectedCar}` : ''}`)
             .then(response => response.json())
             .then(data => {
-              setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Closest results fetched.`]);
+              setLogs(prevLogs => [...prevLogs, `{"event_time":"${new Date().toISOString()}", "event_content":"Closest results fetched"}`]);
               setResults(data.slice(0, 4));
               setIsFetching(false);
             })
             .catch((error) => {
-              setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Error fetching closest results: ${error.message}`]);
+              setLogs(prevLogs => [...prevLogs, `{"event_time":"${new Date().toISOString()}", "event_content":"Error fetching closest results: ${error.message}"}`]);
               setIsFetching(false);
             });
         },
         (error) => {
-          setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Error getting location: ${error.message}`]);
+          setLogs(prevLogs => [...prevLogs, `{"event_time":"${new Date().toISOString()}", "event_content":"Error getting location: ${error.message}"}`]);
           setIsFetching(false);
         }
       );
     } else {
-      setLogs(prevLogs => [...prevLogs, `[${new Date().toISOString()}] Geolocation not supported by this browser.`]);
+      setLogs(prevLogs => [...prevLogs, `{"event_time":"${new Date().toISOString()}", "event_content":"Geolocation not supported by this browser."}`]);
       setIsFetching(false);
     }
   };
@@ -356,8 +356,7 @@ const LocationService = () => {
                 <code className="language-javascript" style={{ whiteSpace: 'pre' }}>
                   {logs.map((log, index) => (
                     <div key={index} className="event-log">
-                        <span className="code-line-number">{index + 1}</span> 
-                        {JSON.stringify({ event_time: new Date(event_time).toISOString().split('.')[0], event_type, event_page }).replace(/^\s+|\s+$/g, '')}
+                      <span className="code-line-number">{index + 1}</span> {JSON.stringify(log)}
                     </div>
                   ))}
                 </code>
