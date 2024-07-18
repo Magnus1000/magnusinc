@@ -40,7 +40,14 @@ function EventLogs() {
 
   React.useEffect(() => {
     if (!supabase) return; // Exit if Supabase is not initialized
-
+  
+    // Function to format log entries
+    const formatLogEntry = (log) => {
+      const { event_order, event_content, ...cleanedLog } = log;
+      cleanedLog.event_time = new Date(cleanedLog.event_time).toISOString().split('.')[0];
+      return cleanedLog;
+    };
+  
     // Fetch the last 100 event logs
     const fetchLogs = async () => {
       const { data, error } = await supabase
@@ -48,33 +55,28 @@ function EventLogs() {
         .select('*')
         .order('event_id', { ascending: false })
         .limit(100);
-
+  
       if (error) {
         console.error('Error fetching logs:', error);
       } else {
-        // Filter out the unwanted properties and format the time
-        const cleanedData = data.map(log => {
-          const { event_order, event_content, ...cleanedLog } = log;
-          cleanedLog.event_time = new Date(cleanedLog.event_time).toISOString().split('.')[0];
-          return cleanedLog;
-        });
+        // Format the logs
+        const cleanedData = data.map(formatLogEntry);
         setLogs(cleanedData);
       }
     };
-
+  
     fetchLogs();
-
+  
     // Function to handle realtime updates
     const handleRealtimeUpdates = (payload) => {
       console.log('Realtime update received:', payload);
       // Check if the event type is an INSERT to add new logs
       if (payload.eventType === 'INSERT') {
-        const { event_order, event_content, ...newLog } = payload.new;
-        newLog.event_time = new Date(newLog.event_time).toISOString().split('.')[0];
+        const newLog = formatLogEntry(payload.new);
         setLogs((currentLogs) => [newLog, ...currentLogs]);
       }
     };
-
+  
     // Subscribe to realtime changes on your table
     const subscription = supabase
       .channel('custom-all-channel')
@@ -88,7 +90,7 @@ function EventLogs() {
           console.log('Subscribed to the event_logs table');
         }
       });
-
+  
     // Cleanup function to unsubscribe when the component unmounts
     return () => {
       supabase.removeSubscription(subscription);
