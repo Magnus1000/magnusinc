@@ -136,7 +136,7 @@ function executeServiceTemplateScript() {
       }, 0);
   });
 
-  // Draw borders around elements
+// Draw borders around elements
   const subserviceItems = document.querySelectorAll('.service-template-subservice-item');
 
   if (subserviceItems.length > 0) {
@@ -162,6 +162,7 @@ function executeServiceTemplateScript() {
           ["top", "right", "bottom", "left"].forEach(position => {
               tl.to(item.querySelector(`.border.${position}`), {
                   [position === "top" || position === "bottom" ? "width" : "height"]: "100%",
+                  boxShadow: "inset 3px 3px 5px 0 var(--shadow)", // Add box-shadow here
                   duration: 0.25
               });
           });
