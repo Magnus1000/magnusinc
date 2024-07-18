@@ -133,12 +133,12 @@ function EventLogs() {
                   <div className="column-header-text light">EVENT LOGS</div>
                   <div className="legend-wrapper">
                     <div className="legend-div">
-                      <div className="legend-dot lime-green"></div>
-                      <div className="legend-text lime-green">You (anonymous)</div>
+                      <div className="legend-dot light-blue"></div>
+                      <div className="legend-text light-blue">you (anonymous)</div>
                     </div>
                     <div className="legend-div">
                       <div className="legend-dot white"></div>
-                      <div className="legend-text white">Other users (anonymous)</div>
+                      <div className="legend-text white">users (anonymous)</div>
                     </div>
                   </div>
               </div>
@@ -149,7 +149,7 @@ function EventLogs() {
                 const { uuid: logUuid, ...logWithoutUuid } = log; // Remove uuid from log
                 const isCurrentUser = logUuid === uuid;
                 return (
-                  <div key={index} className={`event-log ${isCurrentUser ? 'lime-green' : ''}`}>
+                  <div key={index} className={`event-log ${isCurrentUser ? 'light-blue' : ''}`}>
                     <span className="code-line-number">{index + 1}</span> 
                     <span className={isCurrentUser ? 'lime-green' : ''}>{JSON.stringify(logWithoutUuid)}</span>
                   </div>
