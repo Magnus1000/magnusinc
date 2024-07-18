@@ -2,8 +2,8 @@ document.addEventListener("DOMContentLoaded", (event) => {
 
     // Smooth scrolling setup
     const smoother = ScrollSmoother.create({
-        wrapper: ".smooth-wrapper",
-        content: ".smooth-content",
+        wrapper: "#smooth-wrapper",
+        content: "#smooth-content",
         smooth: 1.5,
         effects: true
     });
@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", (event) => {
     console.log("DOM fully loaded and parsed");
   
     // Register the SplitText and ScrollTrigger plugins
-    gsap.registerPlugin(SplitText, ScrollTrigger);
+    gsap.registerPlugin(SplitText, ScrollTrigger, ScrollSmoother);
     console.log("SplitText and ScrollTrigger plugins registered");
   
     // Split text into spans
