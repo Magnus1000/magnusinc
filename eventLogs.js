@@ -3,6 +3,7 @@ function EventLogs() {
   const [uuid, setUuid] = React.useState('');
   const [supabase, setSupabase] = React.useState(null);
 
+  // Initialize Supabase client
   React.useEffect(() => {
     const initializeSupabase = () => {
       if (window.supabase) {
@@ -34,9 +35,10 @@ function EventLogs() {
     }
   }, []);
 
+  // Fetch logs and set up real-time updates
   React.useEffect(() => {
     if (!supabase) return;
-  
+
     const formatLogEntry = (log) => {
       const { event_id, event_time, event_type, event_page } = log;
       return {
@@ -47,14 +49,14 @@ function EventLogs() {
         uuid
       };
     };
-  
+
     const fetchLogs = async () => {
       const { data, error } = await supabase
         .from('event_logs')
         .select('*')
         .order('event_id', { ascending: false })
         .limit(100);
-  
+
       if (error) {
         console.error('Error fetching logs:', error);
       } else {
@@ -62,21 +64,21 @@ function EventLogs() {
         setLogs(cleanedData);
       }
     };
-  
+
     fetchLogs();
-  
+
     const handleRealtimeUpdates = (payload) => {
       console.log('Realtime update received:', payload);
       if (payload.eventType === 'INSERT') {
         const newLog = formatLogEntry(payload.new);
         setLogs((currentLogs) => [newLog, ...currentLogs]);
-        
+
         if (payload.new.event_type === 'email_capture' && payload.new.uuid === uuid) {
           fetchEmailCaptureLogs();
         }
       }
     };
-  
+
     const subscription = supabase
       .channel('custom-all-channel')
       .on(
@@ -89,12 +91,13 @@ function EventLogs() {
           console.log('Subscribed to the event_logs table');
         }
       });
-  
+
     return () => {
       supabase.removeSubscription(subscription);
     };
   }, [supabase]);
 
+  // Fetch UUID from cookies
   React.useEffect(() => {
     const getUuidFromCookies = () => {
       const cookieUuid = Cookies.get('uuid');
@@ -102,40 +105,47 @@ function EventLogs() {
         setUuid(cookieUuid);
       }
     };
-  
+
     if (!uuid) {
       getUuidFromCookies();
       const interval = setInterval(getUuidFromCookies, 1000);
       return () => clearInterval(interval);
     }
-  }, [uuid, logs]);
+  }, [uuid]);
 
+  // Fetch email capture logs
   const fetchEmailCaptureLogs = async () => {
     if (!supabase || !uuid) return;
-  
+
     const { data, error } = await supabase
       .from('event_logs')
       .select('*')
       .eq('event_type', 'email_capture')
       .eq('uuid', uuid);
-  
+
     if (error) {
       console.error('Error fetching email capture logs:', error);
     } else {
       const formattedData = data.map((log, index) => {
         const { event_id, event_time, event_type, event_page } = log;
-        return `
-  <div class="event-log uuid">
-    <span class="code-line-number">${index + 1}</span>
-    <span class="lime-green">${JSON.stringify({ event_id, event_time: new Date(event_time).toISOString().split('.')[0], event_type, event_page })}</span>
-  </div>`;
+        return `<div class="event-log uuid">
+          <span class="code-line-number">${index + 1}</span>
+          <span class="uuid">
+            ${JSON.stringify({ event_id, event_time: new Date(event_time).toISOString().split('.')[0], event_type, event_page })}
+          </span>
+        </div>`;
       }).join('');
-  
-      setEmailLogsHTML(formattedData);
+
+      const emailLogsDiv = document.getElementById('emailLogs');
+      if (emailLogsDiv) {
+        emailLogsDiv.innerHTML = formattedData;
+      } else {
+        console.error('Div with id emailLogs not found');
+      }
     }
-  };  
+  };
 
-
+  // Fetch email logs initially and on supabase state change
   React.useEffect(() => {
     fetchEmailCaptureLogs();
   }, [supabase]);
