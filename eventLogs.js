@@ -43,9 +43,13 @@ function EventLogs() {
   
     // Function to format log entries
     const formatLogEntry = (log) => {
-      const { event_order, event_content, ...cleanedLog } = log;
-      cleanedLog.event_time = new Date(cleanedLog.event_time).toISOString().split('.')[0];
-      return cleanedLog;
+      const { event_id, event_time, event_type, event_page } = log;
+      return {
+        event_id,
+        event_time: new Date(event_time).toISOString().split('.')[0],
+        event_type,
+        event_page
+      };
     };
   
     // Fetch the last 100 event logs
@@ -139,16 +143,16 @@ function EventLogs() {
               </div>
           </div>
           <pre contentEditable="false" className="code-block-examples w-code-block" style={{ display: 'block', overflowX: 'auto', background: '#2b2b2b', color: '#f8f8f2', padding: '0.5em' }}>
-              <code className="language-javascript" style={{ whiteSpace: 'pre' }}>
-                {logs.map((log, index) => {
-                  const { uuid: logUuid, ...logWithoutUuid } = log; // Remove uuid from log
-                  return (
-                    <div key={index} className={`event-log ${logUuid === uuid ? 'lime-green' : ''}`}>
-                      <span className="code-line-number">{index + 1}</span> {JSON.stringify(logWithoutUuid)}
-                    </div>
-                  );
-                })}
-              </code>
+            <code className="language-javascript" style={{ whiteSpace: 'pre' }}>
+              {logs.map((log, index) => {
+                const { uuid: logUuid, ...logWithoutUuid } = log; // Remove uuid from log
+                return (
+                  <div key={index} className={`event-log ${logUuid === uuid ? 'lime-green' : ''}`}>
+                    <span className="code-line-number">{index + 1}</span> {JSON.stringify(logWithoutUuid)}
+                  </div>
+                );
+              })}
+            </code>
           </pre>
         </div>
       </div>
