@@ -2,6 +2,7 @@ function EventLogs() {
   const [logs, setLogs] = React.useState([]);
   const [uuid, setUuid] = React.useState('');
   const [supabase, setSupabase] = React.useState(null);
+  const [emailLogsHTML, setEmailLogsHTML] = React.useState(''); // Added state for email logs HTML
 
   React.useEffect(() => {
     const initializeSupabase = () => {
@@ -93,7 +94,7 @@ function EventLogs() {
     return () => {
       supabase.removeSubscription(subscription);
     };
-  }, [supabase]);
+  }, [supabase, uuid]);
 
   React.useEffect(() => {
     const getUuidFromCookies = () => {
@@ -125,20 +126,19 @@ function EventLogs() {
       const formattedData = data.map((log, index) => {
         const { event_id, event_time, event_type, event_page } = log;
         return `
-  <div class="event-log uuid">
-    <span class="code-line-number">${index + 1}</span>
-    <span class="lime-green">${JSON.stringify({ event_id, event_time: new Date(event_time).toISOString().split('.')[0], event_type, event_page })}</span>
-  </div>`;
+<div class="event-log uuid">
+  <span class="code-line-number">${index + 1}</span>
+  <span class="lime-green">${JSON.stringify({ event_id, event_time: new Date(event_time).toISOString().split('.')[0], event_type, event_page })}</span>
+</div>`;
       }).join('');
   
       setEmailLogsHTML(formattedData);
     }
-  };  
-
+  };
 
   React.useEffect(() => {
     fetchEmailCaptureLogs();
-  }, [supabase]);
+  }, [supabase, uuid]);
 
   return (
     <div className="service-row">
