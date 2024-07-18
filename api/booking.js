@@ -17,7 +17,7 @@ module.exports = (req, res) => {
       const services = await new Promise((resolve, reject) => {
         let allServices = [];
         base(process.env.AIRTABLE_SERVICES_TABLE).select({
-          fields: ['service_name', 'service_description']
+          fields: ['service_name', 'header_3']
         }).eachPage((records, fetchNextPage) => {
           allServices = allServices.concat(records.map(record => ({
             service_name: record.get('service_name'),
