@@ -48,7 +48,8 @@ function EventLogs() {
         event_id,
         event_time: new Date(event_time).toISOString().split('.')[0],
         event_type,
-        event_page
+        event_page,
+        uuid
       };
     };
   
