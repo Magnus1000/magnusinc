@@ -128,12 +128,7 @@ function EventLogs() {
     } else {
       const formattedData = data.map((log, index) => {
         const { event_id, event_time, event_type, event_page } = log;
-        return `<div class="event-log uuid">
-          <span class="code-line-number">${index + 1}</span>
-          <span class="uuid">
-            ${JSON.stringify({ event_id, event_time: new Date(event_time).toISOString().split('.')[0], event_type, event_page }).replace(/^\s+|\s+$/g, '')}
-          </span>
-        </div>`;
+        return `<div class="event-log uuid"><span class="code-line-number">${index + 1}</span><span class="uuid">${JSON.stringify({ event_id, event_time: new Date(event_time).toISOString().split('.')[0], event_type, event_page }).replace(/^\s+|\s+$/g, '')}</span></div>`;
       }).join('');
   
       const emailLogsDiv = document.getElementById('emailLogs');
