@@ -6,22 +6,29 @@ const EmailSignupService = () => {
   const emailRef = React.useRef(null);
   const [showPointer, setShowPointer] = React.useState(false);
 
+  const getDeviceInfo = () => {
+    const parser = new UAParser();
+    const result = parser.getResult();
+    return {
+      browser: `${result.browser.name} ${result.browser.version}`,
+      os: `${result.os.name} ${result.os.version}`,
+      device: result.device.type || 'desktop'
+    };
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (email && email.includes('@')) {
       setIsSubmitting(true);
 
       let uuid = Cookies.get('uuid');
-      if (uuid) {
-        // Perform some action with the existing uuid
-        console.log('UUID exists:', uuid);
-      } else {
+      if (!uuid) {
         uuid = generateUUID();
         Cookies.set('uuid', uuid);
-        console.log('New UUID generated and set:', uuid);
       }
 
-      const event_content = JSON.stringify({ email });
+      const deviceInfo = getDeviceInfo();
+      const event_content = JSON.stringify({ email, deviceInfo });
       const event_time = new Date().toISOString();
       const event_type = 'email_capture';
       const event_page = '/services';
@@ -40,7 +47,7 @@ const EmailSignupService = () => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ email: email, uuid: uuid }),
+          body: JSON.stringify({ email, uuid, deviceInfo }),
         });
 
         if (responseSendEmail.ok) {
@@ -53,7 +60,6 @@ const EmailSignupService = () => {
           });
 
           if (responseCreateUserEvent.ok) {
-
             setTimeout(() => {
               setIsSubmitting(false);
               setIsSubmitted(true);
