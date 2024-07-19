@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const menuItems = document.querySelectorAll('.menu-item');
     const buttonHome = document.getElementById('buttonHome');
     const buttonClose = document.getElementById('buttonClose');
+    const body = document.body;  // Add this line
   
     // Hide home button if on home page
     if (window.location.pathname === '/') {
@@ -50,6 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function openMenu() {
       const openTl = createOpenAnimation();
       openTl.play();
+      body.classList.add('menu-open');  // Add this line
     }
   
     // Function to close the menu with a "sucking" effect
@@ -73,6 +75,8 @@ document.addEventListener('DOMContentLoaded', function() {
         stagger: 0.05,
         ease: 'power2.in'
       });
+
+      body.classList.remove('menu-open');
     }
   
     // Click event for the Services button
