@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const buttonHome = document.getElementById('buttonHome');
     const buttonClose = document.getElementById('buttonClose');
     const body = document.body;  // Add this line
+    console.log('body:', body);  // Add this line
   
     // Hide home button if on home page
     if (window.location.pathname === '/') {
