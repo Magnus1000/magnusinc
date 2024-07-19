@@ -59,7 +59,7 @@ function executeServiceTemplateScript() {
           scrollTrigger: {
               trigger: element,
               start: "top 90%",
-              end: "bottom center",
+              end: "top 10%",
               scrub: true,
               onEnter: () => console.log("Entering scrub-each-word trigger"),
               onLeave: () => console.log("Leaving scrub-each-word trigger"),
