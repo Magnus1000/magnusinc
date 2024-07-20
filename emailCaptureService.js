@@ -176,9 +176,9 @@ const EmailSignupService = () => {
             ) : (
               <div className="confirmation-wrapper">
                 <div className="confirmation-div">
-                  <h2 className="success-h2">Email Submitted!</h2>
-                  <p className="success-text">Thank you for submitting your email. We've sent a confirmation to {email}.</p>
-                  <p className="success-text">You'll receive updates and news about our services.</p>
+                  <h2 className="confirmation-header">EMAIL SENT</h2>
+                  <p className="confirmation-text">Thank you for submitting your email. We've sent a confirmation to {email}.</p>
+                  <p className="confirmation-text">You'll receive updates and news about our services.</p>
                 </div>
               </div>
             )}
