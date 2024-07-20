@@ -265,7 +265,9 @@ const Booking = () => {
             </div>
           </div>
           <div className="booking-slots-div">
-            <h2 className="booking-h2">Select Consultation Time</h2>
+            <div className="booking-header-wrapper">
+              <h2 className="booking-h2">Select Consultation Time</h2>
+            </div>
             <p className="booking-subheader">Select a consultation time:</p>
             <div className="booking-slots-grid">
               {bookingSlots.map((slot, index) => (
