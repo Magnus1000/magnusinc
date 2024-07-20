@@ -234,24 +234,27 @@ const Booking = () => {
             <h2 className="booking-h2" id="bookingAnchor1">Select Services</h2>
             <p className="booking-subheader">Select the services you are interested in:</p>
             <div className="booking-services-grid">
-              {services.map((service, index) => (
-                <div
-                  key={index}
-                  className={`service-item ${selectedServices.includes(service.service_name) ? 'selected' : ''}`}
-                  onClick={() => handleServiceSelection(service.service_name)}
-                >
-                  <div class="inner-linework-small-wrapper">
-                    <div class="inner-linework-small">
-                      <div class="line-square-small top-left-small"></div>
-                      <div class="line-square-small top-right-small"></div>
-                      <div class="line-square-small bottom-right-small"></div>
-                      <div class="line-square-small bottom-left-small"></div>
+              {services.map((service, index) => {
+                const isSelected = selectedServices.includes(service.service_name);
+                return (
+                  <div
+                    key={index}
+                    className={`service-item ${isSelected ? 'selected' : ''}`}
+                    onClick={() => handleServiceSelection(service.service_name)}
+                  >
+                    <div className={`inner-linework-small-wrapper ${isSelected ? 'selected' : ''}`}>
+                      <div className={`inner-linework-small ${isSelected ? 'selected' : ''}`}>
+                        <div className={`line-square-small top-left-small ${isSelected ? 'selected' : ''}`}></div>
+                        <div className={`line-square-small top-right-small ${isSelected ? 'selected' : ''}`}></div>
+                        <div className={`line-square-small bottom-right-small ${isSelected ? 'selected' : ''}`}></div>
+                        <div className={`line-square-small bottom-left-small ${isSelected ? 'selected' : ''}`}></div>
+                      </div>
                     </div>
+                    <h3 className={`service-name-h3 ${isSelected ? 'selected' : ''}`}>{service.service_name}</h3>
+                    <p className={`service-description ${isSelected ? 'selected' : ''}`}>{service.service_description}</p>
                   </div>
-                  <h3 className="service-name-h3">{service.service_name}</h3>
-                  <p className="service-description">{service.service_description}</p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
           <div className="booking-slots-div">
