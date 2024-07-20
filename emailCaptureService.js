@@ -175,10 +175,16 @@ const EmailSignupService = () => {
               </div>
             ) : (
               <div className="confirmation-wrapper">
+                <div class="inner-linework">
+                  <div class="line-square top-left"></div>
+                  <div class="line-square top-right"></div>
+                  <div class="line-square bottom-right"></div>
+                  <div class="line-square bottom-left"></div>
+                </div>
                 <div className="confirmation-div">
                   <h2 className="confirmation-header">EMAIL SENT</h2>
                   <p className="confirmation-text">I've just sent a personalized email to {email}.</p>
-                  <p className="confirmation-text">`Once you open it, come back and view the backend logs by clicking the button above.</p>
+                  <p className="confirmation-text">Once you open it, come back and view the backend logs by clicking the BACKEND button above.</p>
                 </div>
               </div>
             )}
