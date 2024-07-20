@@ -289,7 +289,9 @@ const Booking = () => {
           </div>
           <div className="booking-form">
             <div className="business-info-div">
-              <h2 className="booking-h2" id="bookingAnchor2">Enter Business Website</h2>
+              <div className="booking-header-wrapper">
+                <h2 className="booking-h2" id="bookingAnchor2">Enter Business Website</h2>
+              </div>
               <div className="website-input-div">
                 <input
                   className="default-input"
@@ -324,7 +326,9 @@ const Booking = () => {
               <WebsitePreview url={screenshot} loading={screenshotLoading} />
             </div>
             <div className="personal-info-div">
-              <h2 className="booking-h2" id="bookingAnchor3">Enter Your Details</h2>
+              <div className="booking-header-wrapper">
+                <h2 className="booking-h2" id="bookingAnchor3">Enter Your Details</h2>
+              </div>
               <div className="name-input-div">
                 <input
                   className="default-input"
