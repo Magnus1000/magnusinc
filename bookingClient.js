@@ -240,11 +240,11 @@ const Booking = () => {
                   className={`service-item ${selectedServices.includes(service.service_name) ? 'selected' : ''}`}
                   onClick={() => handleServiceSelection(service.service_name)}
                 >
-                  <div class="inner-linework">
-                    <div class="line-square top-left"></div>
-                    <div class="line-square top-right"></div>
-                    <div class="line-square bottom-right"></div>
-                    <div class="line-square bottom-left"></div>
+                  <div class="inner-linework-small">
+                    <div class="line-square-small top-left-small"></div>
+                    <div class="line-square-small top-right-small"></div>
+                    <div class="line-square-small bottom-right-small"></div>
+                    <div class="line-square-small bottom-left-small"></div>
                   </div>
                   <h3 className="service-name-h3">{service.service_name}</h3>
                   <p className="service-description">{service.service_description}</p>
