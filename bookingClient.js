@@ -344,6 +344,12 @@ const Booking = () => {
         </>
       ) : (
         <div className="confirmation-wrapper">
+          <div class="inner-linework">
+            <div class="line-square top-left"></div>
+            <div class="line-square top-right"></div>
+            <div class="line-square bottom-right"></div>
+            <div class="line-square bottom-left"></div>
+          </div>
           <div className="confirmation-div">
             <h2 className="confirmation-header">BOOKING CONFIRMED</h2>
             <p className="confirmation-text">Thank you for your booking, {name}. We've sent a confirmation email to {email}.</p>
