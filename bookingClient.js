@@ -231,7 +231,14 @@ const Booking = () => {
       {!bookingConfirmed ? (
         <>
           <div className="booking-services-div">
-            <h2 className="booking-h2" id="bookingAnchor1">Select Services</h2>
+            <div className="booking-header-wrapper">
+              <h2 className="booking-h2" id="bookingAnchor1">Select Services</h2>
+              {selectedServices.length > 0 && (
+                <p className="selected-services-count-text">
+                  {selectedServices.length} {selectedServices.length === 1 ? 'service' : 'services'} selected
+                </p>
+              )}
+            </div>
             <p className="booking-subheader">Select the services you are interested in:</p>
             <div className="booking-services-grid">
               {services.map((service, index) => {
