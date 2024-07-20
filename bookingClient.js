@@ -345,15 +345,15 @@ const Booking = () => {
       ) : (
         <div className="confirmation-wrapper">
           <div className="confirmation-div">
-            <h2 className="success-h2">Booking Confirmed!</h2>
-            <p className="success-text">Thank you for your booking, {name}. We've sent a confirmation email to {email}.</p>
-            <p className="success-text">Selected services:</p>
+            <h2 className="confirmation-header">Booking Confirmed!</h2>
+            <p className="confirmation-text">Thank you for your booking, {name}. We've sent a confirmation email to {email}.</p>
+            <p className="confirmation-text">Selected services:</p>
             <ul>
               {selectedServices.map((service, index) => (
                 <li key={index}>{service}</li>
               ))}
             </ul>
-            <p className="success-text">Your consultation is scheduled for: {selectedBookingSlot}</p>
+            <p className="confirmation-text">Your consultation is scheduled for: {selectedBookingSlot}</p>
           </div>
         </div>
       )}
