@@ -2,19 +2,13 @@ const Chatbot = () => {
   const [messages, setMessages] = React.useState([]);
   const [input, setInput] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(false);
-  const [isFirstKeystroke, setIsFirstKeystroke] = React.useState(true);
-  const [showConsultationButton, setShowConsultationButton] = React.useState(false);
   const [isFirstMessage, setIsFirstMessage] = React.useState(true);
-  const messagesEndRef = React.useRef(null);
-  const [showPointer, setShowPointer] = React.useState(false);
   const [initialMessageSent, setInitialMessageSent] = React.useState(false);
 
-  // Scroll to the consultation booking section
   const handleBookConsultation = () => {
     const element = document.getElementById('booking');
     if (element) {
       element.scrollIntoView({ behavior: 'smooth' });
-      console.log('Scrolling to booking section');
     }
   };
 
@@ -30,37 +24,9 @@ const Chatbot = () => {
     }
   };
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
-
   React.useEffect(() => {
-    const handleScroll = () => {
-      const chatInputElement = document.getElementById('chatAnchor1');
-      if (chatInputElement) {
-        const rect = chatInputElement.getBoundingClientRect();
-        const viewportHeight = window.innerHeight;
-        const triggerPoint = viewportHeight * 0.7; // 70% of viewport height
-
-        if (rect.top <= triggerPoint) {
-          setShowPointer(true);
-          chatInputElement.focus();
-          sendInitialMessage();
-        } else {
-          setShowPointer(false);
-        }
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    handleScroll();
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [initialMessageSent]);
-
-  React.useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
+    sendInitialMessage();
+  }, []);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -69,7 +35,6 @@ const Chatbot = () => {
     setMessages(prevMessages => [...prevMessages, userMessage]);
     setInput('');
     setIsLoading(true);
-    setIsFirstKeystroke(true);
 
     if (isFirstMessage) {
       let userUuid = Cookies.get('uuid');
@@ -78,8 +43,6 @@ const Chatbot = () => {
         setIsFirstMessage(false);
       }
     }
-
-    console.log('Sending to OpenAI:', { input, messages });
 
     try {
       const response = await axios.post('https://magnusinc-magnus1000team.vercel.app/api/chatbot', {
@@ -90,18 +53,8 @@ const Chatbot = () => {
       let botMessageContent = response.data.content;
       let showConsultationButton = response.data.tool === 'consultation_button';
 
-      console.log(response.data);
-
       const botMessage = { sender: 'bot', text: botMessageContent, showConsultationButton };
       setMessages(prevMessages => [...prevMessages, botMessage]);
-
-      setShowConsultationButton(showConsultationButton);
-
-      if (showConsultationButton) {
-        console.log('Consultation button should be shown');
-      } else {
-        console.log('Consultation button should not be shown');
-      }
     } catch (error) {
       console.error('Error fetching response from serverless function:', error);
       setMessages(prevMessages => [...prevMessages, { sender: 'bot', text: 'Sorry, an error occurred.', showConsultationButton: false }]);
@@ -113,18 +66,12 @@ const Chatbot = () => {
   const handleClearChat = () => {
     setMessages([]);
     setInput('');
-    setIsFirstKeystroke(true);
     setIsFirstMessage(true);
     setInitialMessageSent(false);
   };
 
   const handleInputChange = (e) => {
-    if (isFirstKeystroke) {
-      setInput(e.target.value);
-      setIsFirstKeystroke(false);
-    } else {
-      setInput(e.target.value);
-    }
+    setInput(e.target.value);
   };
 
   const handleKeyPress = (e) => {
@@ -142,8 +89,6 @@ const Chatbot = () => {
       event_type,
       event_page
     };
-
-    console.log('Event data:', eventData);
 
     fetch('https://magnusinc-magnus1000team.vercel.app/api/createEventSB.js', {
       method: 'POST',
@@ -163,14 +108,6 @@ const Chatbot = () => {
 
   return (
     <div className="chatbot">
-      {showPointer && (
-        <div className="hand-pointer chatbot">
-          <img 
-            src="https://uploads-ssl.webflow.com/66622a9748f9ccb21e21b57e/66927db8a5ae60cac4f6c1f2_hand-pointer.svg" 
-            alt="Pointer" 
-          />
-        </div>
-      )}
       <div className="chatbot-messages">
         {initialMessageSent && messages.map((message, index) => (
           <div key={index} className={`chatbot-message ${message.sender}`}>
@@ -183,7 +120,6 @@ const Chatbot = () => {
           </div>
         ))}
         {isLoading && <div className="chatbot-message loading">Maggy is typing...</div>}
-        <div ref={messagesEndRef} />
       </div>
       <div className="chatbot-input">
         <input
@@ -193,7 +129,6 @@ const Chatbot = () => {
           onKeyPress={handleKeyPress}
           placeholder="Reply to Maggy..."
           disabled={isLoading}
-          id="chatAnchor1"
           className="chat-input"
         />
         <div className="chat-button-wrapper">
