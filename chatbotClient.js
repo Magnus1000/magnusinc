@@ -4,6 +4,7 @@ const Chatbot = () => {
   const [isLoading, setIsLoading] = React.useState(false);
   const [isFirstMessage, setIsFirstMessage] = React.useState(true);
   const [initialMessageSent, setInitialMessageSent] = React.useState(false);
+  const [isFullScreen, setIsFullScreen] = React.useState(false);
 
   const handleBookConsultation = () => {
     const element = document.getElementById('booking');
@@ -80,6 +81,10 @@ const Chatbot = () => {
     }
   };
 
+  const handleFullScreen = () => {
+    setIsFullScreen(!isFullScreen);
+  };
+
   function createEvent(uuid, event_content, event_type) {
     const event_page = '/services';
 
@@ -107,13 +112,13 @@ const Chatbot = () => {
   };
 
   return (
-    <div className="chatbot-div">
+    <div className={`chatbot-div ${isFullScreen ? 'fullscreen' : ''}`}>
       <div className="chatbot-header">
-        <div class="chatbot-header-name-div">
-          <div class="chatbot-header-name-text">Maggy</div>
+        <div className="chatbot-header-name-div">
+          <div className="chatbot-header-name-text">Maggy</div>
         </div>
-        <div class="chatbot-header-expand-div">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M144 32l16 0 0 32-16 0L32 64l0 112 0 16L0 192l0-16L0 48 0 32l16 0 128 0zM0 336l0-16 32 0 0 16 0 112 112 0 16 0 0 32-16 0L16 480 0 480l0-16L0 336zM432 32l16 0 0 16 0 128 0 16-32 0 0-16 0-112L304 64l-16 0 0-32 16 0 128 0zM416 336l0-16 32 0 0 16 0 128 0 16-16 0-128 0-16 0 0-32 16 0 112 0 0-112z"/></svg>
+        <div className="chatbot-header-expand-div" onClick={handleFullScreen}>
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M144 32l16 0 0 32-16 0L32 64l0 112 0 16L0 192l0-16L0 48 0 32l16 0 128 0zM0 336l0-16 32 0 0 16 0 112 112 0 16 0 0 32-16 0L16 480 0 480l0-16L0 336zM432 32l16 0 0 16 0 128 0 16-32 0 0-16 0-112L304 64l-16 0 0-32 16 0 128 0zM416 336l0-16 32 0 0 16 0 128 0 16-16 0-128 0-16 0 0-32 16 0 112 0 0-112z"/></svg>
         </div>
       </div>    
       <div className="chatbot">
