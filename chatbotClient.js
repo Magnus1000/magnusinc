@@ -107,45 +107,55 @@ const Chatbot = () => {
   };
 
   return (
-    <div className="chatbot">
-      <div className="chatbot-messages">
-        {initialMessageSent && messages.map((message, index) => (
-          <div key={index} className={`chatbot-message ${message.sender}`}>
-            {renderMessage(message)}
-            {message.showConsultationButton && (
-              <button onClick={handleBookConsultation} className="consultation-button">
-                Book Consultation
-              </button>
-            )}
+    <div className="chatbot-div">
+      <div className="chatbot-header">
+        <div class="chatbot-header-name-div">
+          <div class="chatbot-header-name-text">Maggy</div>
+        </div>
+        <div class="chatbot-header-expand-div">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M144 32l16 0 0 32-16 0L32 64l0 112 0 16L0 192l0-16L0 48 0 32l16 0 128 0zM0 336l0-16 32 0 0 16 0 112 112 0 16 0 0 32-16 0L16 480 0 480l0-16L0 336zM432 32l16 0 0 16 0 128 0 16-32 0 0-16 0-112L304 64l-16 0 0-32 16 0 128 0zM416 336l0-16 32 0 0 16 0 128 0 16-16 0-128 0-16 0 0-32 16 0 112 0 0-112z"/></svg>
+        </div>
+      </div>    
+      <div className="chatbot">
+        <div className="chatbot-messages">
+          {initialMessageSent && messages.map((message, index) => (
+            <div key={index} className={`chatbot-message ${message.sender}`}>
+              {renderMessage(message)}
+              {message.showConsultationButton && (
+                <button onClick={handleBookConsultation} className="consultation-button">
+                  Book Consultation
+                </button>
+              )}
+            </div>
+          ))}
+          {isLoading && <div className="chatbot-message loading">Maggy is typing...</div>}
+        </div>
+        <div className="chatbot-input">
+          <input
+            type="text"
+            value={input}
+            onChange={handleInputChange}
+            onKeyPress={handleKeyPress}
+            placeholder="Reply to Maggy..."
+            disabled={isLoading}
+            className="chat-input"
+          />
+          <div className="chat-button-wrapper">
+            <button onClick={handleSend} disabled={isLoading} className="send-button">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                <path fill="currentColor" d="M209 50.2l-17-17-17 17L21.4 203.8l-17 17 33.9 33.9 17-17L168 125.1V456v24h48V456 125.1L328.6 237.8l17 17 33.9-33.9-17-17L209 50.2z"/>
+              </svg>
+            </button>
+            <button onClick={handleClearChat} className="clear-chat-button">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
+                <path fill="currentColor" d="M345 137l17-17L328 86.1l-17 17-119 119L73 103l-17-17L22.1 120l17 17 119 119L39 375l-17 17L56 425.9l17-17 119-119L311 409l17 17L361.9 392l-17-17-119-119L345 137z"/>
+              </svg>
+            </button>
           </div>
-        ))}
-        {isLoading && <div className="chatbot-message loading">Maggy is typing...</div>}
-      </div>
-      <div className="chatbot-input">
-        <input
-          type="text"
-          value={input}
-          onChange={handleInputChange}
-          onKeyPress={handleKeyPress}
-          placeholder="Reply to Maggy..."
-          disabled={isLoading}
-          className="chat-input"
-        />
-        <div className="chat-button-wrapper">
-          <button onClick={handleSend} disabled={isLoading} className="send-button">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-              <path fill="currentColor" d="M209 50.2l-17-17-17 17L21.4 203.8l-17 17 33.9 33.9 17-17L168 125.1V456v24h48V456 125.1L328.6 237.8l17 17 33.9-33.9-17-17L209 50.2z"/>
-            </svg>
-          </button>
-          <button onClick={handleClearChat} className="clear-chat-button">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512">
-              <path fill="currentColor" d="M345 137l17-17L328 86.1l-17 17-119 119L73 103l-17-17L22.1 120l17 17 119 119L39 375l-17 17L56 425.9l17-17 119-119L311 409l17 17L361.9 392l-17-17-119-119L345 137z"/>
-            </svg>
-          </button>
         </div>
       </div>
     </div>
   );
 };
 
-ReactDOM.render(<Chatbot />, document.getElementById('chatbot'));
+ReactDOM.render(<Chatbot />, document.getElementById('chatbotTarget'));
