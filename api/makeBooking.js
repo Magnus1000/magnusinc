@@ -5,7 +5,7 @@ const corsHandler = cors();
 
 module.exports = (req, res) => {
   corsHandler(req, res, async () => {
-	const { website, email, name, selectedServices, selectedBookingSlot, pageSlug, bookingPage } = req.body;
+	const { website, email, name, selectedServices, selectedBookingSlot, selectedSlotId, pageSlug, bookingPage } = req.body;
 
 	console.log('Received booking request:', req.body);
 
@@ -18,6 +18,7 @@ module.exports = (req, res) => {
 		selectedBookingSlot,
 		pageSlug,
 		booking_page: bookingPage,
+		selectedSlotId
 	  });
 	  console.log('Booking submitted successfully:', response.data);
 	  res.status(200).send('Booking submitted successfully');
