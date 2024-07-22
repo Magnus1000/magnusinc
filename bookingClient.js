@@ -90,7 +90,7 @@ const Booking = () => {
   };
 
   const handleSlotSelection = (slot) => {
-    setSelectedBookingSlot(slot);
+    setSelectedBookingSlot(slot.slot_name);
     setSelectedSlotId(slot.slot_id);
     handleFormInteraction();
   };
@@ -279,7 +279,7 @@ const Booking = () => {
                   <div
                     key={index}
                     className={`booking-slot ${selectedBookingSlot === slot.slot_name ? 'selected' : ''} ${slot.slot_availability === 'unavailable' ? 'unavailable' : ''}`}
-                    onClick={() => handleSlotSelection(slot.slot_name)}
+                    onClick={() => handleSlotSelection(slot)}
                   >
                   <p className="slot-date">
                     {new Date(slot.slot_date_time).toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'short' })}
