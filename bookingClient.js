@@ -14,7 +14,7 @@ const Booking = () => {
   const [websiteError, setWebsiteError] = React.useState('');
   const [formInteracted, setFormInteracted] = React.useState(false);
   const [showPointer, setShowPointer] = React.useState(false);
-  const bookingPage = "home";
+  const bookingOrigin = "home";
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -111,7 +111,7 @@ const Booking = () => {
         name,
         selectedServices,
         selectedBookingSlot,
-        booking_page: bookingPage,
+        bookingPage: bookingOrigin,
       });
       console.log('Booking submitted successfully:', response.data);
       createEvent('Booking submitted', 'booking_submitted');
