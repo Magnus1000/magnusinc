@@ -90,9 +90,11 @@ const Booking = () => {
   };
 
   const handleSlotSelection = (slot) => {
-    setSelectedBookingSlot(slot.slot_name);
-    setSelectedSlotId(slot.slot_id);
-    handleFormInteraction();
+    if (slot.slot_availability !== 'unavailable') {
+      setSelectedBookingSlot(slot.slot_name);
+      setSelectedSlotId(slot.slot_id);
+      handleFormInteraction();
+    }
   };
 
   const handleServiceSelection = (service) => {
@@ -281,7 +283,7 @@ const Booking = () => {
                   <div
                     key={index}
                     className={`service-item ${isSelected ? 'selected' : ''} ${slot.slot_availability === 'unavailable' ? 'unavailable' : ''}`}
-                    onClick={() => handleSlotSelection(slot)}
+                    onClick={() => !isUnavailable && handleSlotSelection(slot)}
                   >
                     <div className={`inner-linework-small-wrapper ${isSelected ? 'selected' : ''} ${slot.slot_availability ? 'unavailable' : ''}`}>
                       <div className={`inner-linework-small ${isSelected ? 'selected' : ''}`}>
