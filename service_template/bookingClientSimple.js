@@ -96,6 +96,7 @@ const BookingSimple = () => {
   const handleSlotSelection = (slot) => {
     setSelectedBookingSlot(slot);
     setSelectedSlotId(slot.slot_id);
+    console.log('Selected slot_id:', slot.slot_id);
     handleFormInteraction();
   };
 
