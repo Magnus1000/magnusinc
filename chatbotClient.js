@@ -26,6 +26,7 @@ const Chatbot = () => {
   };
 
   React.useEffect(() => {
+    console.log('Component mounted. Sending initial message.');
     sendInitialMessage();
   }, []);
 
@@ -85,16 +86,29 @@ const Chatbot = () => {
     setIsFullScreen(prevState => {
       const newIsFullScreen = !prevState;
       
+      console.log('Toggling fullscreen. New state:', newIsFullScreen);
+      
       document.body.classList.toggle('chat-fullscreen', newIsFullScreen);
+      console.log('Body class list after toggle:', document.body.classList);
       
       const chatbotWrapper = document.getElementById('chatbotTarget');
       const chatbotOverlay = document.getElementById('chatbotOverlay');
       
+      console.log('chatbotWrapper element:', chatbotWrapper);
+      console.log('chatbotOverlay element:', chatbotOverlay);
+      
       if (chatbotWrapper) {
         chatbotWrapper.classList.toggle('fullscreen', newIsFullScreen);
+        console.log('chatbotWrapper class list after toggle:', chatbotWrapper.classList);
+      } else {
+        console.log('chatbotWrapper element not found');
       }
+      
       if (chatbotOverlay) {
         chatbotOverlay.classList.toggle('fullscreen', newIsFullScreen);
+        console.log('chatbotOverlay class list after toggle:', chatbotOverlay.classList);
+      } else {
+        console.log('chatbotOverlay element not found');
       }
       
       return newIsFullScreen;
@@ -129,6 +143,7 @@ const Chatbot = () => {
 
   return (
     <div className={`chatbot-div ${isFullScreen ? 'fullscreen' : ''}`}>
+      {console.log('Rendering Chatbot. isFullScreen:', isFullScreen)}
       <div className="chatbot-header">
         <div className="chatbot-header-name-div">
           <div className="chatbot-header-name-text">Maggy</div>
