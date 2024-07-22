@@ -83,6 +83,7 @@ const Chatbot = () => {
 
   const handleFullScreen = () => {
     setIsFullScreen(!isFullScreen);
+    document.body.classList.toggle('chat-fullscreen', !isFullScreen);
   };
 
   function createEvent(uuid, event_content, event_type) {
