@@ -273,7 +273,7 @@ const LocationService = () => {
             </div>
         )}
         <div className={`column ${view === 'frontend' ? 'active' : ''}`}>
-          <div className="column-left">
+          <div className="column-left solid">
             <div className="column-left-header-row">
               <div className="location-header" id="locationAnchor1">Select vehicle</div>
             </div>
