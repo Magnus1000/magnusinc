@@ -2,6 +2,9 @@
 	"folders": [
 		{
 			"path": "."
+		},
+		{
+			"path": "../shkr-club-public"
 		}
 	],
 	"settings": {}
