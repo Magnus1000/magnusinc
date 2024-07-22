@@ -94,7 +94,7 @@ const BookingSimple = () => {
   };
 
   const handleSlotSelection = (slot) => {
-    setSelectedBookingSlot(slot.slot_name);
+    setSelectedBookingSlot(slot);
     setSelectedSlotId(slot.slot_id);
     handleFormInteraction();
   };
