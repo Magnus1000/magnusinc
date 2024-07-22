@@ -332,6 +332,7 @@ const LocationService = () => {
                       <div className="location-details-div">
                         <div className="location-result-header">{result.make_model}</div>
                         <div className="location-result-name">{result.dealer}</div>
+                        <div className="location-result-address">{result.address}</div>
                         {result.distance !== 0 && (
                           <div className="location-result-distance-div">
                             <div className="button-icon w-embed">
