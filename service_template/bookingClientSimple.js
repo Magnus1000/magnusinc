@@ -241,6 +241,14 @@ const BookingSimple = () => {
                     className={`booking-slot ${selectedBookingSlot === slot.slot_name ? 'selected' : ''} ${slot.slot_availability === 'unavailable' ? 'unavailable' : ''}`}
                     onClick={() => handleSlotSelection(slot)}
                   >
+                  <div className={`inner-linework-small-wrapper ${isSelected ? 'selected' : ''}`}>
+                    <div className={`inner-linework-small ${isSelected ? 'selected' : ''}`}>
+                      <div className={`line-square-small top-left-small ${isSelected ? 'selected' : ''}`}></div>
+                      <div className={`line-square-small top-right-small ${isSelected ? 'selected' : ''}`}></div>
+                      <div className={`line-square-small bottom-right-small ${isSelected ? 'selected' : ''}`}></div>
+                      <div className={`line-square-small bottom-left-small ${isSelected ? 'selected' : ''}`}></div>
+                    </div>
+                  </div>
                   <p className="slot-date">
                     {new Date(slot.slot_date_time).toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'short' })}
                   </p>
