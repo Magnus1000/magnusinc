@@ -253,9 +253,9 @@ const BookingSimple = () => {
                         <div className={`line-square-small bottom-left-small ${isSelected ? 'selected' : ''}`}></div>
                       </div>
                     </div>
-                    <h3 className={`slot-date ${isSelected ? 'selected' : ''}`}>
+                    <p className={`slot-date ${isSelected ? 'selected' : ''}`}>
                       {new Date(slot.slot_date_time).toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'short' })}
-                    </h3>
+                    </p>
                     <p className={`slot-time ${isSelected ? 'selected' : ''}`}>
                       {new Date(slot.slot_date_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' })}
                     </p>
