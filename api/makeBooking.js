@@ -5,7 +5,7 @@ const corsHandler = cors();
 
 module.exports = (req, res) => {
   corsHandler(req, res, async () => {
-	const { website, email, selectedServices, selectedBookingSlot, pageSlug, bookingPage } = req.body;
+	const { website, email, name, selectedServices, selectedBookingSlot, pageSlug, bookingPage } = req.body;
 
 	console.log('Received booking request:', req.body);
 
@@ -13,6 +13,7 @@ module.exports = (req, res) => {
 	  const response = await axios.post('https://hook.us1.make.com/y6c61clds14yvapchy7y8lfd5f0m4t8u', {
 		website,
 		email,
+		name,
 		selectedServices,
 		selectedBookingSlot,
 		pageSlug,
