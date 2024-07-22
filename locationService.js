@@ -322,6 +322,8 @@ const LocationService = () => {
                         {result.value === 0 ? "SOLD OUT" : `${result.value} on lot`}
                       </div>
                       <div className="location-image-div">
+                        <div className="image-overlay-div">
+                        </div>
                         <img
                           src={result.image}
                           loading="lazy"
