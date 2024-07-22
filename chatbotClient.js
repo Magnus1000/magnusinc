@@ -7,10 +7,23 @@ const Chatbot = () => {
   const [isFullScreen, setIsFullScreen] = React.useState(false);
 
   const handleBookConsultation = () => {
-    const element = document.getElementById('booking');
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    console.log('Book consultation clicked. Current fullscreen state:', isFullScreen);
+    
+    // Exit fullscreen if it's currently active
+    if (isFullScreen) {
+      handleFullScreen();
     }
+    
+    // Use setTimeout to ensure fullscreen exit completes before scrolling
+    setTimeout(() => {
+      const element = document.getElementById('booking');
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+        console.log('Scrolling to booking section');
+      } else {
+        console.log('Booking element not found');
+      }
+    }, 100); // Short delay to allow for state update and re-render
   };
 
   const sendInitialMessage = () => {
