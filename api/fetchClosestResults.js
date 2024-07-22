@@ -24,6 +24,7 @@ module.exports = (req, res) => {
           dealer: record.fields.dealer,
           name: record.fields.name,
           value: record.fields.value,
+          address: record.fields.address,
           distance: getDistance(
             { latitude: lat, longitude: lng },
             { latitude: record.fields.lat, longitude: record.fields.lng }
