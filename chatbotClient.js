@@ -82,16 +82,23 @@ const Chatbot = () => {
   };
 
   const handleFullScreen = () => {
-    setIsFullScreen(!isFullScreen);
-    document.body.classList.toggle('chat-fullscreen', !isFullScreen);
-    const chatbotWrapper = document.getElementById('chatbotTarget');
-    const chatbotOverlay = document.getElementById('chatbotOverlay');
-    if (chatbotWrapper) {
-      chatbotWrapper.classList.toggle('fullscreen', !isFullScreen);
-    }
-    if (chatbotOverlay) {
-      chatbotOverlay.classList.toggle('fullscreen', !isFullScreen);
-    }
+    setIsFullScreen(prevState => {
+      const newIsFullScreen = !prevState;
+      
+      document.body.classList.toggle('chat-fullscreen', newIsFullScreen);
+      
+      const chatbotWrapper = document.getElementById('chatbotTarget');
+      const chatbotOverlay = document.getElementById('chatbotOverlay');
+      
+      if (chatbotWrapper) {
+        chatbotWrapper.classList.toggle('fullscreen', newIsFullScreen);
+      }
+      if (chatbotOverlay) {
+        chatbotOverlay.classList.toggle('fullscreen', newIsFullScreen);
+      }
+      
+      return newIsFullScreen;
+    });
   };
 
   function createEvent(uuid, event_content, event_type) {
