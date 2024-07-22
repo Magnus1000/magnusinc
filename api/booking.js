@@ -38,7 +38,7 @@ module.exports = (req, res) => {
       const bookingSlots = await new Promise((resolve, reject) => {
         let allSlots = [];
         base(process.env.AIRTABLE_CALENDAR_TABLE).select({
-          fields: ['slot_name', 'slot_date_time', 'slot_availability', 'id'],  // Added 'id' field
+          fields: ['slot_name', 'slot_date_time', 'slot_availability', 'slot_id'], 
           filterByFormula: `IS_AFTER({slot_date_time}, '${date}')`
         }).eachPage((records, fetchNextPage) => {
           allSlots = allSlots.concat(records.map(record => ({
