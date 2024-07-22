@@ -1,4 +1,3 @@
-// /api/fetchClosestResults.js
 const Airtable = require('airtable');
 const cors = require('cors')();
 
@@ -39,10 +38,11 @@ module.exports = (req, res) => {
       const bookingSlots = await new Promise((resolve, reject) => {
         let allSlots = [];
         base(process.env.AIRTABLE_CALENDAR_TABLE).select({
-          fields: ['slot_name', 'slot_date_time', 'slot_availability'],
+          fields: ['slot_name', 'slot_date_time', 'slot_availability', 'id'],  // Added 'id' field
           filterByFormula: `IS_AFTER({slot_date_time}, '${date}')`
         }).eachPage((records, fetchNextPage) => {
           allSlots = allSlots.concat(records.map(record => ({
+            slot_id: record.id,  // Include the record ID as slot_id
             slot_name: record.get('slot_name'),
             slot_date_time: record.get('slot_date_time'),
             slot_availability: record.get('slot_availability'),
