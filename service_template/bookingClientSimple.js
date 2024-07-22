@@ -218,7 +218,7 @@ const BookingSimple = () => {
   };
 
   return (
-    <div className="booking-div">
+    <div className={`booking-div ${!bookingConfirmed ? 'solid' : ''}`}>
       {showPointer && (
           <div 
             className={`hand-pointer ${getPointerClass()}`}
