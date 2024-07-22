@@ -245,7 +245,7 @@ const BookingSimple = () => {
                     className={`service-item ${isSelected ? 'selected' : ''} ${slot.slot_availability === 'unavailable' ? 'unavailable' : ''}`}
                     onClick={() => handleSlotSelection(slot)}
                   >
-                    <div className={`inner-linework-small-wrapper ${isSelected ? 'selected' : ''}`}>
+                    <div className={`inner-linework-small-wrapper ${isSelected ? 'selected' : ''} ${isUnavailable ? 'unavailable' : ''}`}>
                       <div className={`inner-linework-small ${isSelected ? 'selected' : ''}`}>
                         <div className={`line-square-small top-left-small ${isSelected ? 'selected' : ''}`}></div>
                         <div className={`line-square-small top-right-small ${isSelected ? 'selected' : ''}`}></div>
