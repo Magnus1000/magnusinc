@@ -232,32 +232,37 @@ const BookingSimple = () => {
       {!bookingConfirmed ? (
         <>
           <div className="booking-slots-div">
-            <h2 className="booking-h2" id="bookingAnchor1">Select Consultation Time</h2>
+            <div className="booking-header-wrapper">
+              <h2 className="booking-h2">Select Consultation Time</h2>
+            </div>
             <p className="booking-subheader">Select a consultation time:</p>
-            <div className="booking-slots-grid">
-              {bookingSlots.map((slot, index) => (
+            <div className="booking-services-grid">
+              {bookingSlots.map((slot, index) => {
+                const isSelected = selectedBookingSlot === slot.slot_name;
+                return (
                   <div
                     key={index}
-                    className={`booking-slot ${selectedBookingSlot === slot.slot_name ? 'selected' : ''} ${slot.slot_availability === 'unavailable' ? 'unavailable' : ''}`}
+                    className={`service-item ${isSelected ? 'selected' : ''} ${slot.slot_availability === 'unavailable' ? 'unavailable' : ''}`}
                     onClick={() => handleSlotSelection(slot)}
                   >
-                  <div className={`inner-linework-small-wrapper ${isSelected ? 'selected' : ''}`}>
-                    <div className={`inner-linework-small ${isSelected ? 'selected' : ''}`}>
-                      <div className={`line-square-small top-left-small ${isSelected ? 'selected' : ''}`}></div>
-                      <div className={`line-square-small top-right-small ${isSelected ? 'selected' : ''}`}></div>
-                      <div className={`line-square-small bottom-right-small ${isSelected ? 'selected' : ''}`}></div>
-                      <div className={`line-square-small bottom-left-small ${isSelected ? 'selected' : ''}`}></div>
+                    <div className={`inner-linework-small-wrapper ${isSelected ? 'selected' : ''}`}>
+                      <div className={`inner-linework-small ${isSelected ? 'selected' : ''}`}>
+                        <div className={`line-square-small top-left-small ${isSelected ? 'selected' : ''}`}></div>
+                        <div className={`line-square-small top-right-small ${isSelected ? 'selected' : ''}`}></div>
+                        <div className={`line-square-small bottom-right-small ${isSelected ? 'selected' : ''}`}></div>
+                        <div className={`line-square-small bottom-left-small ${isSelected ? 'selected' : ''}`}></div>
+                      </div>
                     </div>
+                    <h3 className={`slot-date ${isSelected ? 'selected' : ''}`}>
+                      {new Date(slot.slot_date_time).toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'short' })}
+                    </h3>
+                    <p className={`slot-time ${isSelected ? 'selected' : ''}`}>
+                      {new Date(slot.slot_date_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' })}
+                    </p>
+                    <p className={`slot-length ${isSelected ? 'selected' : ''}`}>30 mins</p>
                   </div>
-                  <p className="slot-date">
-                    {new Date(slot.slot_date_time).toLocaleDateString('en-US', { weekday: 'long', day: 'numeric', month: 'short' })}
-                  </p>
-                  <p className="slot-time">
-                    {new Date(slot.slot_date_time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZoneName: 'short' })}
-                  </p>
-                  <p className="slot-length">30 mins</p>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
           <div className="booking-form">
