@@ -12,6 +12,8 @@ const BookingSimple = () => {
   const [websiteError, setWebsiteError] = React.useState('');
   const [formInteracted, setFormInteracted] = React.useState(false);
   const [showPointer, setShowPointer] = React.useState(false);
+  const [pageSlug, setPageSlug] = React.useState('');
+  const bookingPage = "service";
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -29,6 +31,12 @@ const BookingSimple = () => {
     };
   
     fetchData();
+
+    // Get the current page slug
+    const path = window.location.pathname;
+    const slug = path.substr(path.lastIndexOf('/') + 1);
+    setPageSlug(slug);
+
   }, []);
 
   React.useEffect(() => {
@@ -61,7 +69,7 @@ const BookingSimple = () => {
         uuid,
         event_content,
         event_type,
-        event_page:'/'
+        event_page: pageSlug
       };
   
       fetch('https://magnusinc-magnus1000team.vercel.app/api/createEventSB.js', {
@@ -97,6 +105,8 @@ const BookingSimple = () => {
         email,
         name,
         selectedBookingSlot,
+        pageSlug,
+        booking_page: bookingPage,
       });
       console.log('Booking submitted successfully:', response.data);
       createEvent('Booking submitted', 'booking_submitted');
