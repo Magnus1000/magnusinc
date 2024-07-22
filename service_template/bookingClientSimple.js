@@ -4,6 +4,7 @@ const BookingSimple = () => {
   const [email, setEmail] = React.useState('');
   const [name, setName] = React.useState('');
   const [selectedBookingSlot, setSelectedBookingSlot] = React.useState('');
+  const [selectedSlotId, setSelectedSlotId] = React.useState('');
   const [isLoading, setIsLoading] = React.useState(true);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [bookingConfirmed, setBookingConfirmed] = React.useState(false);
@@ -93,7 +94,8 @@ const BookingSimple = () => {
   };
 
   const handleSlotSelection = (slot) => {
-    setSelectedBookingSlot(slot);
+    setSelectedBookingSlot(slot.slot_name);
+    setSelectedSlotId(slot.slot_id);
     handleFormInteraction();
   };
 
@@ -105,6 +107,7 @@ const BookingSimple = () => {
         email,
         name,
         selectedBookingSlot,
+        selectedSlotId,
         pageSlug,
         bookingPage: bookingOrigin,
       });
