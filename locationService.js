@@ -312,10 +312,10 @@ const LocationService = () => {
             <div className="column-left-header-row">
               <div className="location-result-grid">
                 {isFetching ? (
-                  Array(4).fill(0).map((_, index) => (
-                    <div key={index} className="location-result-placeholder"></div>
-                  ))
-                ) : (
+                  <div className="loading-placeholder-div">
+                    <div className="loading-placeholder-text">Searching nearest dealerships...</div>
+                  </div>
+                ) : results.length > 0 ? (
                   results.map((result, index) => (
                     <div key={index} className={`location-result-div ${selectedResultIndex === index ? 'selected' : ''}`} onClick={() => handleResultClick(result, index)}>
                       <div className="location-result-value">
@@ -347,6 +347,10 @@ const LocationService = () => {
                         )}
                       </div>
                     </div>
+                  ))
+                ) : (
+                  Array(4).fill(0).map((_, index) => (
+                    <div key={index} className="location-result-placeholder"></div>
                   ))
                 )}
               </div>
