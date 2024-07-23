@@ -179,6 +179,7 @@ const LocationService = () => {
       .then(data => {
         setLogs(prevLogs => [...prevLogs, { event_time: new Date().toISOString(), event_content: `Filtered results fetched for ${make_model}.` }]);
         setResults(data.slice(0, 4));
+        console.log('Filtered results:', data);
         setIsFetching(false);
       })
       .catch((error) => {
