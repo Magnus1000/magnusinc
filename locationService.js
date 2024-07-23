@@ -319,7 +319,7 @@ const LocationService = () => {
                   results.map((result, index) => (
                     <div key={index} className={`location-result-div ${selectedResultIndex === index ? 'selected' : ''}`} onClick={() => handleResultClick(result, index)}>
                       <div className="location-result-value">
-                        {result.value === 0 ? "SOLD OUT" : `${result.value} on lot`}
+                        {result.value === 0 ? "SOLD OUT" : `${result.value} available`}
                       </div>
                       <div className="location-image-div">
                         <div className="image-overlay-div">
