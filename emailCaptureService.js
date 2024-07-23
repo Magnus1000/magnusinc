@@ -20,19 +20,37 @@ const EmailSignupService = () => {
     event.preventDefault();
     if (email && email.includes('@')) {
       setIsSubmitting(true);
-
+  
       let uuid = Cookies.get('uuid');
       if (!uuid) {
         uuid = generateUUID();
         Cookies.set('uuid', uuid);
       }
-
+  
+      const selectedCar = Cookies.get('selectedVehicle');
+      const locationCookie = Cookies.get('userLocation');
+      let latitude, longitude;
+      if (locationCookie) {
+        try {
+          const parsedLocation = JSON.parse(locationCookie);
+          latitude = parsedLocation.latitude;
+          longitude = parsedLocation.longitude;
+        } catch (error) {
+          console.error('Error parsing location cookie:', error);
+        }
+      }
+  
       const deviceInfo = getDeviceInfo();
-      const event_content = JSON.stringify({ email, deviceInfo });
+      const event_content = JSON.stringify({ 
+        email, 
+        deviceInfo, 
+        selectedCar, 
+        location: { latitude, longitude } 
+      });
       const event_time = new Date().toISOString();
       const event_type = 'email_capture';
       const event_page = '/services';
-
+  
       const eventData = {
         uuid,
         event_content,
@@ -40,16 +58,22 @@ const EmailSignupService = () => {
         event_type,
         event_page
       };
-
+  
       try {
         const responseSendEmail = await fetch('https://magnusinc-magnus1000team.vercel.app/api/sendEmail.js', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ email, uuid, deviceInfo }),
+          body: JSON.stringify({ 
+            email, 
+            uuid, 
+            deviceInfo, 
+            selectedCar, 
+            location: { latitude, longitude } 
+          }),
         });
-
+  
         if (responseSendEmail.ok) {
           const responseCreateUserEvent = await fetch('https://magnusinc-magnus1000team.vercel.app/api/createEventSB.js', {
             method: 'POST',
@@ -58,7 +82,7 @@ const EmailSignupService = () => {
             },
             body: JSON.stringify(eventData),
           });
-
+  
           if (responseCreateUserEvent.ok) {
             setTimeout(() => {
               setIsSubmitting(false);
