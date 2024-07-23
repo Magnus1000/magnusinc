@@ -326,7 +326,7 @@ const LocationService = () => {
                           <div className="image-overlay-div">
                           </div>
                           <img
-                            src={result.image}
+                            src={result.image_cdn_link}
                             loading="lazy"
                             alt=""
                             className="location-image"
