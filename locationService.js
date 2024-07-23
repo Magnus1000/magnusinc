@@ -12,6 +12,8 @@ const LocationService = () => {
   const [selectedCar, setSelectedCar] = React.useState(null);
   const [showPointer, setShowPointer] = React.useState(false);
   const [pointerPosition, setPointerPosition] = React.useState('select');
+  const [latitude, setLatitude] = React.useState(null);
+  const [longitude, setLongitude] = React.useState(null);
 
   const carOptions = [
     {
@@ -47,6 +49,11 @@ const LocationService = () => {
       .then(response => response.json())
       .then(data => {
         const { latitude: lat, longitude: lon, city, country_name: country } = data;
+
+        // Set lat and lon to state
+        setLatitude(lat);
+        setLongitude(lon);
+
         setLogs(prevLogs => [
           ...prevLogs,
           { event_time: new Date().toISOString(), event_content: "Approx location via IP:" },
@@ -165,8 +172,6 @@ const LocationService = () => {
   const fetchFilteredResults = (make_model) => {
     console.log('Fetching filtered results for:', make_model);
     setIsFetching(true);
-    const lastLat = results[0]?.latitude;
-    const lastLng = results[0]?.longitude;
     
     if (!lastLat || !lastLng) {
       setLogs(prevLogs => [...prevLogs, { event_time: new Date().toISOString(), event_content: "Error: No location data available." }]);
@@ -175,7 +180,7 @@ const LocationService = () => {
       return;
     }
 
-    fetch(`https://magnusinc-magnus1000team.vercel.app/api/fetchClosestResults?lat=${lastLat}&lng=${lastLng}&make_model=${make_model}`)
+    fetch(`https://magnusinc-magnus1000team.vercel.app/api/fetchClosestResults?lat=${latitude}&lng=${longitude}&make_model=${make_model}`)
       .then(response => response.json())
       .then(data => {
         setLogs(prevLogs => [...prevLogs, { event_time: new Date().toISOString(), event_content: `Filtered results fetched for ${make_model}.` }]);
@@ -197,6 +202,9 @@ const LocationService = () => {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
+          setLatitude(latitude);
+          setLongitude(longitude);
+
           setLogs(prevLogs => [
             ...prevLogs,
             { event_time: new Date().toISOString(), event_content: "Precise location via Browser:" },
