@@ -170,6 +170,7 @@ const LocationService = () => {
     
     if (!lastLat || !lastLng) {
       setLogs(prevLogs => [...prevLogs, { event_time: new Date().toISOString(), event_content: "Error: No location data available." }]);
+      console.log('Error: No location data available.');
       setIsFetching(false);
       return;
     }
