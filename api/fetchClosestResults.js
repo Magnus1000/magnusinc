@@ -20,7 +20,7 @@ module.exports = (req, res) => {
       const records = response.data.records
         .filter(record => record.fields.make_model === make_model) // Filter by make_model
         .map(record => ({
-          image: record.fields.image,
+          image_cdn_link: record.fields.image_cdn_link,
           dealer: record.fields.dealer,
           name: record.fields.name,
           value: record.fields.value,
