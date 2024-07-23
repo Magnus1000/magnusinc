@@ -163,6 +163,7 @@ const LocationService = () => {
   };
 
   const fetchFilteredResults = (make_model) => {
+    console.log('Fetching filtered results for:', make_model);
     setIsFetching(true);
     const lastLat = results[0]?.latitude;
     const lastLng = results[0]?.longitude;
@@ -199,6 +200,15 @@ const LocationService = () => {
             { event_time: new Date().toISOString(), event_content: "Precise location via Browser:" },
             { event_time: new Date().toISOString(), event_content: `Lat: ${latitude}, Lng: ${longitude}.` }
           ]);
+
+          // Set the selected car and location as cookies
+          if (selectedCar) {
+            Cookies.set('selectedVehicle', selectedCar);
+          }
+          
+          // Set location cookie
+          const locationCookie = JSON.stringify({ latitude, longitude });
+          Cookies.set('userLocation', locationCookie);
   
           fetchLocationString(latitude, longitude);
   
