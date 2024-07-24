@@ -30,21 +30,11 @@ module.exports = async (req, res) => {
             if (req.method === 'POST') {
                 try {
                     console.log('Processing POST request');
-                    let eventContent;
 
-                    try {
-                        console.log('Parsing event_content');
-                        eventContent = JSON.parse(req.body.event_content);
-                        console.log('Parsed event_content:', JSON.stringify(eventContent, null, 2));
-                    } catch (parseError) {
-                        console.error('Error parsing event_content:', parseError);
-                        eventContent = {};
-                    }
-
-                    console.log('Extracting device info');
-                    const simplifiedOS = simplifyOS(eventContent.deviceInfo?.os);
-                    const browser = eventContent.deviceInfo?.browser || 'unknown';
-                    const device = eventContent.deviceInfo?.device || 'unknown';
+                    // The deviceInfo is now directly in the request body
+                    const simplifiedOS = simplifyOS(req.body.deviceInfo?.os);
+                    const browser = req.body.deviceInfo?.browser || 'unknown';
+                    const device = req.body.deviceInfo?.device || 'unknown';
 
                     console.log('Simplified OS:', simplifiedOS);
                     console.log('Browser:', browser);
@@ -52,12 +42,9 @@ module.exports = async (req, res) => {
 
                     const newBody = {
                         ...req.body,
-                        event_content: {
-                            ...eventContent,
-                            simplified_os: simplifiedOS,
-                            browser: browser,
-                            device: device
-                        }
+                        simplified_os: simplifiedOS,
+                        browser: browser,
+                        device: device
                     };
 
                     console.log('Prepared body for webhook:', JSON.stringify(newBody, null, 2));
