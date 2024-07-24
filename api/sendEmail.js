@@ -11,7 +11,8 @@ function simplifyOS(os) {
     
     const osLower = os.toLowerCase();
     
-    if (osLower.includes('mac') || osLower.includes('ios')) return 'mac';
+    if (osLower.includes('mac')) return 'mac';
+    if (osLower.includes('ios')) return 'iphone'; 
     if (osLower.includes('win')) return 'windows';
     if (osLower.includes('android')) return 'android';
     if (osLower.includes('linux')) return 'linux';
