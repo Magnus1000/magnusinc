@@ -20,6 +20,32 @@ function simplifyOS(os) {
     return 'other';
 }
 
+// Function to simplify browser
+function simplifyBrowser(browser) {
+    console.log('Simplifying browser:', browser);
+    if (!browser) return 'unknown';
+    
+    const browserLower = browser.toLowerCase();
+    
+    if (browserLower.includes('chrome')) return 'chrome';
+    if (browserLower.includes('firefox')) return 'firefox';
+    if (browserLower.includes('safari')) return 'safari';
+    if (browserLower.includes('edge')) return 'edge';
+    if (browserLower.includes('opera')) return 'opera';
+    if (browserLower.includes('ie') || browserLower.includes('internet explorer')) return 'ie';
+    
+    return 'other';
+}
+
+// Function to simplify vehicle
+function simplifyVehicle(vehicle) {
+    console.log('Simplifying vehicle:', vehicle);
+    if (!vehicle) return 'unknown';
+    
+    // Extract the first word and convert to lowercase
+    return vehicle.split(' ')[0].toLowerCase();
+}
+
 module.exports = async (req, res) => {
     console.log('Function invoked. Method:', req.method);
     console.log('Request headers:', req.headers);
@@ -31,20 +57,22 @@ module.exports = async (req, res) => {
                 try {
                     console.log('Processing POST request');
 
-                    // The deviceInfo is now directly in the request body
                     const simplifiedOS = simplifyOS(req.body.deviceInfo?.os);
-                    const browser = req.body.deviceInfo?.browser || 'unknown';
+                    const simplifiedBrowser = simplifyBrowser(req.body.deviceInfo?.browser);
                     const device = req.body.deviceInfo?.device || 'unknown';
+                    const simplifiedVehicle = simplifyVehicle(req.body.selectedCar);
 
                     console.log('Simplified OS:', simplifiedOS);
-                    console.log('Browser:', browser);
+                    console.log('Simplified Browser:', simplifiedBrowser);
                     console.log('Device:', device);
+                    console.log('Simplified Vehicle:', simplifiedVehicle);
 
                     const newBody = {
                         ...req.body,
                         simplified_os: simplifiedOS,
-                        browser: browser,
-                        device: device
+                        simplified_browser: simplifiedBrowser,
+                        device: device,
+                        simplified_vehicle: simplifiedVehicle
                     };
 
                     console.log('Prepared body for webhook:', JSON.stringify(newBody, null, 2));
