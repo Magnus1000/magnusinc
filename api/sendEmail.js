@@ -7,6 +7,7 @@ const corsHandler = cors(); // Simplify CORS implementation
 module.exports = async (req, res) => {
     try {
         console.log('Inside the serverless function...');
+        console.log('Request body:', req.body);
 
         corsHandler(req, res, async () => { // Use corsHandler to handle CORS
             if (req.method === 'POST') {
