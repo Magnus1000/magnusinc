@@ -6,6 +6,7 @@ const corsHandler = cors();
 
 // Function to simplify OS
 function simplifyOS(os) {
+    console.log('Simplifying OS:', os);
     if (!os) return 'unknown';
     
     const osLower = os.toLowerCase();
@@ -20,54 +21,72 @@ function simplifyOS(os) {
 }
 
 module.exports = async (req, res) => {
-    try {
-        console.log('Inside the serverless function...');
-        console.log('Request body:', req.body);
+    console.log('Function invoked. Method:', req.method);
+    console.log('Request headers:', req.headers);
+    console.log('Request body:', JSON.stringify(req.body, null, 2));
 
+    try {
         corsHandler(req, res, async () => {
             if (req.method === 'POST') {
                 try {
-                    let eventContent, simplifiedOS, browser, device;
+                    console.log('Processing POST request');
+                    let eventContent;
 
                     try {
+                        console.log('Parsing event_content');
                         eventContent = JSON.parse(req.body.event_content);
-                        simplifiedOS = simplifyOS(eventContent.deviceInfo?.os);
-                        browser = eventContent.deviceInfo?.browser || 'unknown';
-                        device = eventContent.deviceInfo?.device || 'unknown';
+                        console.log('Parsed event_content:', JSON.stringify(eventContent, null, 2));
                     } catch (parseError) {
                         console.error('Error parsing event_content:', parseError);
                         eventContent = {};
-                        simplifiedOS = 'unknown';
-                        browser = 'unknown';
-                        device = 'unknown';
                     }
+
+                    console.log('Extracting device info');
+                    const simplifiedOS = simplifyOS(eventContent.deviceInfo?.os);
+                    const browser = eventContent.deviceInfo?.browser || 'unknown';
+                    const device = eventContent.deviceInfo?.device || 'unknown';
+
+                    console.log('Simplified OS:', simplifiedOS);
+                    console.log('Browser:', browser);
+                    console.log('Device:', device);
 
                     const newBody = {
                         ...req.body,
-                        simplified_os: simplifiedOS,
-                        browser: browser,
-                        device: device
+                        event_content: {
+                            ...eventContent,
+                            simplified_os: simplifiedOS,
+                            browser: browser,
+                            device: device
+                        }
                     };
 
-                    // Replace with your Make webhook URL
+                    console.log('Prepared body for webhook:', JSON.stringify(newBody, null, 2));
+
+                    console.log('Sending request to webhook');
                     const response = await axios.post('https://hook.us1.make.com/hwokeowcw3so3jfkgy5pnns0o2r9mkd6', newBody, {
                         headers: {
                             'Content-Type': 'application/json',
                         },
                     });
 
+                    console.log('Webhook response status:', response.status);
+                    console.log('Webhook response data:', JSON.stringify(response.data, null, 2));
+
                     res.status(200).json(response.data);
                 } catch (error) {
-                    console.error('Error:', error);
+                    console.error('Error in request processing:', error);
+                    console.error('Error stack:', error.stack);
                     res.status(500).json({ message: error.message });
                 }
             } else {
+                console.log('Method not allowed:', req.method);
                 res.setHeader('Allow', ['POST']);
                 res.status(405).end(`Method ${req.method} Not Allowed`);
             }
         });
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Unhandled error:', error);
+        console.error('Error stack:', error.stack);
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
