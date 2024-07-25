@@ -8,25 +8,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const homeHeaderImage = homeHeaderDiv.querySelector(".home-header-image");
     const loadingImageWrapper = document.querySelector(".loading-image-wrapper");
   
-    console.log('Elements selected');
+    const initialTextDuration = 3; // Adjust this value to change the wait time
   
     if (!homeHeaderImage) {
       console.error('Home header image not found. Check the selector.');
       return;
     }
   
-    // Clone the home-header-image and place it in the loading screen
-    const loadingImage = homeHeaderImage.cloneNode(true);
-    loadingImageWrapper.appendChild(loadingImage);
-  
-    console.log('Image cloned and appended');
+    // Move the original image to the loading screen
+    loadingImageWrapper.appendChild(homeHeaderImage);
   
     // Set initial states
     gsap.set(loadingScreen, { autoAlpha: 1 });
-    gsap.set(loadingImage, { autoAlpha: 0, scale: 0.8 });
-    gsap.set(homeHeaderImage, { autoAlpha: 0 }); // Hide the original image initially
-  
-    console.log('Initial states set');
+    gsap.set(homeHeaderImage, { autoAlpha: 0, scale: 0.8 });
   
     // Animation sequence
     tl.from(loadingText, {
@@ -40,48 +34,49 @@ document.addEventListener('DOMContentLoaded', function() {
       y: -20,
       duration: 1,
       ease: "power2.in"
-    }, "+=1.5") // Wait 2 seconds before fading out text
-    .to(loadingImage, {
+    }, `+=${initialTextDuration}`)
+    .to(homeHeaderImage, {
       autoAlpha: 1,
       scale: 1,
       duration: 1.5,
       ease: "back.out(1.7)"
-    }, "-=0.5") // Start slightly before text fade out completes
+    }, "-=0.5");
   
     function hideLoadingScreen() {
-      console.log('Hiding loading screen');
+      const loadingImageRect = homeHeaderImage.getBoundingClientRect();
+      const finalRect = homeHeaderDiv.getBoundingClientRect();
   
-      const loadingImageRect = loadingImage.getBoundingClientRect();
-      const homeImageRect = homeHeaderImage.getBoundingClientRect();
-  
-      tl.to(loadingScreen, {
+      gsap.to(loadingScreen, {
         autoAlpha: 0,
         duration: 1,
         ease: "power2.inOut"
-      })
-      .to(loadingImage, {
-        x: homeImageRect.left - loadingImageRect.left,
-        y: homeImageRect.top - loadingImageRect.top,
-        width: homeImageRect.width,
-        height: homeImageRect.height,
+      });
+  
+      gsap.to(homeHeaderImage, {
+        x: finalRect.left - loadingImageRect.left,
+        y: finalRect.top - loadingImageRect.top,
+        width: finalRect.width,
+        height: finalRect.height,
         duration: 1.5,
         ease: "power2.inOut",
         onComplete: () => {
-          gsap.set(homeHeaderImage, { autoAlpha: 1 }); // Show the original image
+          // Move the image back to its original container
+          homeHeaderDiv.appendChild(homeHeaderImage);
+          // Reset any inline styles added by GSAP
+          gsap.set(homeHeaderImage, { clearProps: "all" });
           loadingScreen.style.display = "none";
-          loadingImage.remove(); // Remove the cloned image
           console.log('Transition complete');
         }
-      }, "-=0.5"); // Start slightly before the loading screen fades out
+      });
     }
   
     // Call this when your content is ready
     window.addEventListener('load', () => {
       console.log('Window loaded');
       // Delay hiding the loading screen to ensure a minimum display time
-      setTimeout(hideLoadingScreen, 6000); // Increased to account for longer animation sequence
+      setTimeout(hideLoadingScreen, (initialTextDuration + 4) * 1000);
     });
   
     // Set a maximum time for the loading screen
-    setTimeout(hideLoadingScreen, 10000); // Increased maximum time
-  });
+    setTimeout(hideLoadingScreen, (initialTextDuration + 8) * 1000);
+});
