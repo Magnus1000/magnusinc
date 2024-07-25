@@ -26,7 +26,7 @@ function ClearDataButton() {
   
         const result = await response.json();
         console.log('Data cleared successfully. Refresh page:', result);
-        alert('Data cleared successfully');
+        alert('Data cleared successfully. Refresh page.');
       } catch (error) {
         console.error('Error clearing data:', error);
         alert('Failed to clear data. Please try again.');
