@@ -8,11 +8,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const homeHeaderImage = homeHeaderDiv.querySelector(".home-header-image");
     const loadingImageWrapper = document.querySelector(".loading-image-wrapper");
   
-    console.log('Loading Screen:', loadingScreen);
-    console.log('Loading Text:', loadingText);
-    console.log('Home Header Div:', homeHeaderDiv);
-    console.log('Home Header Image:', homeHeaderImage);
-    console.log('Loading Image Wrapper:', loadingImageWrapper);
+    console.log('Elements selected');
   
     if (!homeHeaderImage) {
       console.error('Home header image not found. Check the selector.');
@@ -23,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const loadingImage = homeHeaderImage.cloneNode(true);
     loadingImageWrapper.appendChild(loadingImage);
   
-    console.log('Loading Image (cloned):', loadingImage);
+    console.log('Image cloned and appended');
   
     // Set initial states
     gsap.set(loadingScreen, { autoAlpha: 1 });
@@ -32,23 +28,25 @@ document.addEventListener('DOMContentLoaded', function() {
   
     console.log('Initial states set');
   
-    // Initial animations
+    // Animation sequence
     tl.from(loadingText, {
       opacity: 0,
       y: 20,
       duration: 1.5,
-      ease: "power2.out",
-      onComplete: () => console.log('Loading text animation complete')
-    });
-  
-    tl.to(loadingImage, {
+      ease: "power2.out"
+    })
+    .to(loadingText, {
+      opacity: 0,
+      y: -20,
+      duration: 1,
+      ease: "power2.in"
+    }, "+=2") // Wait 2 seconds before fading out text
+    .to(loadingImage, {
       autoAlpha: 1,
       scale: 1,
       duration: 1.5,
-      ease: "back.out(1.7)",
-      onStart: () => console.log('Starting loading image animation'),
-      onComplete: () => console.log('Loading image animation complete')
-    }, "-=1");
+      ease: "back.out(1.7)"
+    }, "-=0.5") // Start slightly before text fade out completes
   
     function hideLoadingScreen() {
       console.log('Hiding loading screen');
@@ -56,40 +54,34 @@ document.addEventListener('DOMContentLoaded', function() {
       const loadingImageRect = loadingImage.getBoundingClientRect();
       const homeImageRect = homeHeaderImage.getBoundingClientRect();
   
-      console.log('Loading Image Rect:', loadingImageRect);
-      console.log('Home Image Rect:', homeImageRect);
-  
       tl.to(loadingScreen, {
         autoAlpha: 0,
         duration: 1,
-        ease: "power2.inOut",
-        onComplete: () => console.log('Loading screen fade out complete')
-      });
-  
-      tl.to(loadingImage, {
+        ease: "power2.inOut"
+      })
+      .to(loadingImage, {
         x: homeImageRect.left - loadingImageRect.left,
         y: homeImageRect.top - loadingImageRect.top,
         width: homeImageRect.width,
         height: homeImageRect.height,
         duration: 1.5,
         ease: "power2.inOut",
-        onStart: () => console.log('Starting image transition'),
         onComplete: () => {
-          console.log('Image transition complete');
-          loadingScreen.style.display = "none";
           gsap.set(homeHeaderImage, { autoAlpha: 1 }); // Show the original image
+          loadingScreen.style.display = "none";
           loadingImage.remove(); // Remove the cloned image
+          console.log('Transition complete');
         }
-      }, "-=1");
+      }, "-=0.5"); // Start slightly before the loading screen fades out
     }
   
     // Call this when your content is ready
     window.addEventListener('load', () => {
       console.log('Window loaded');
       // Delay hiding the loading screen to ensure a minimum display time
-      setTimeout(hideLoadingScreen, 2000);
+      setTimeout(hideLoadingScreen, 6000); // Increased to account for longer animation sequence
     });
   
     // Set a maximum time for the loading screen
-    setTimeout(hideLoadingScreen, 5000);
+    setTimeout(hideLoadingScreen, 10000); // Increased maximum time
   });
