@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
       y: -20,
       duration: 1,
       ease: "power2.in"
-    }, "+=2") // Wait 2 seconds before fading out text
+    }, "+=1.5") // Wait 2 seconds before fading out text
     .to(loadingImage, {
       autoAlpha: 1,
       scale: 1,
