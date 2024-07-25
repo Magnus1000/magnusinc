@@ -42,10 +42,10 @@ function EventLogs() {
     const formatLogEntry = (log) => {
       const { event_id, event_time, event_type, event_page } = log;
       return {
-        event_id,
-        event_time: new Date(event_time).toISOString().split('.')[0],
         event_type,
+        event_time: new Date(event_time).toISOString().split('.')[0],
         event_page,
+        event_id,
         uuid
       };
     };
@@ -128,7 +128,7 @@ function EventLogs() {
     } else {
       const formattedData = data.map((log, index) => {
         const { event_id, event_time, event_type, event_page } = log;
-        return `<div class="event-log uuid"><span class="code-line-number">${index + 1}</span><span class="uuid">${JSON.stringify({ event_id, event_time: new Date(event_time).toISOString().split('.')[0], event_type, event_page }).replace(/^\s+|\s+$/g, '')}</span></div>`;
+        return `<div class="event-log uuid"><span class="code-line-number">${index + 1}</span><span class="uuid">${JSON.stringify({ event_type, event_time: new Date(event_time).toISOString().split('.')[0], event_page, event_id }).replace(/^\s+|\s+$/g, '')}</span></div>`;
       }).join('');
   
       const emailLogsDiv = document.getElementById('emailLogs');
@@ -139,8 +139,6 @@ function EventLogs() {
       }
     }
   };
-  
-
 
   // Fetch email logs initially and on supabase state change
   React.useEffect(() => {
@@ -181,10 +179,16 @@ function EventLogs() {
               {logs.map((log, index) => {
                 const { uuid: logUuid, ...logWithoutUuid } = log;
                 const isCurrentUser = logUuid === uuid;
+                const orderedLog = {
+                  event_type: logWithoutUuid.event_type,
+                  event_time: logWithoutUuid.event_time,
+                  event_page: logWithoutUuid.event_page,
+                  event_id: logWithoutUuid.event_id
+                };
                 return (
                   <div key={index} className={`event-log ${isCurrentUser ? 'uuid' : ''}`}>
                     <span className="code-line-number">{index + 1}</span> 
-                    <span className={isCurrentUser ? 'uuid' : ''}>{JSON.stringify(logWithoutUuid)}</span>
+                    <span className={isCurrentUser ? 'uuid' : ''}>{JSON.stringify(orderedLog)}</span>
                   </div>
                 );
               })}
