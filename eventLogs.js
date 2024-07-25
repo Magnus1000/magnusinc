@@ -74,8 +74,11 @@ function EventLogs() {
       if (payload.eventType === 'INSERT' && !payload.new.archive) {
         const newLog = formatLogEntry(payload.new);
         setLogs((currentLogs) => [newLog, ...currentLogs]);
-
-        if (payload.new.event_type === 'email_capture' && payload.new.uuid === uuid) {
+    
+        if (
+          (payload.new.event_type === 'email_capture' || payload.new.event_type === 'email_open') &&
+          payload.new.uuid === uuid
+        ) {
           fetchEmailCaptureLogs();
         }
       }
