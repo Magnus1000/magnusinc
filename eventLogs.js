@@ -40,13 +40,13 @@ function EventLogs() {
     if (!supabase) return;
 
     const formatLogEntry = (log) => {
-      const { event_id, event_time, event_type, event_page, archive } = log;
+      const { event_id, event_time, event_type, event_page, archive, uuid: logUuid } = log;
       return {
         event_type,
         event_time: new Date(event_time).toISOString().split('.')[0],
         event_page,
         event_id,
-        uuid,
+        uuid: logUuid,  // Use the log's UUID, not the current user's
         archive
       };
     };
