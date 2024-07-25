@@ -3,24 +3,27 @@ document.addEventListener('DOMContentLoaded', function() {
   
     const tl = gsap.timeline();
     const loadingScreen = document.querySelector(".loading-screen");
-    console.log('Loading Screen:', loadingScreen);
     const loadingText = document.querySelector(".loading-text-small");
-    console.log('Loading Text:', loadingText);
     const homeHeaderDiv = document.querySelector(".home-header-div");
-    console.log('Loading Image:', loadingImage);
     const homeHeaderImage = homeHeaderDiv.querySelector(".home-header-image");
-    console.log('Home Header Div:', homeHeaderDiv);
     const loadingImageWrapper = document.querySelector(".loading-image-wrapper");
+  
+    console.log('Loading Screen:', loadingScreen);
+    console.log('Loading Text:', loadingText);
+    console.log('Home Header Div:', homeHeaderDiv);
     console.log('Home Header Image:', homeHeaderImage);
+    console.log('Loading Image Wrapper:', loadingImageWrapper);
   
-    // Move the home-header-image to the loading screen
-    loadingImageWrapper.appendChild(homeHeaderImage.cloneNode(true));
-    const loadingImage = loadingImageWrapper.querySelector(".home-header-image");
-  
-    if (!loadingImage) {
-      console.error('Loading image not found. Check the selector.');
+    if (!homeHeaderImage) {
+      console.error('Home header image not found. Check the selector.');
       return;
     }
+  
+    // Clone the home-header-image and place it in the loading screen
+    const loadingImage = homeHeaderImage.cloneNode(true);
+    loadingImageWrapper.appendChild(loadingImage);
+  
+    console.log('Loading Image (cloned):', loadingImage);
   
     // Set initial states
     gsap.set(loadingScreen, { autoAlpha: 1 });
@@ -89,4 +92,4 @@ document.addEventListener('DOMContentLoaded', function() {
   
     // Set a maximum time for the loading screen
     setTimeout(hideLoadingScreen, 5000);
-});
+  });
