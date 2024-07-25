@@ -76,7 +76,9 @@ function EventLogs() {
         setLogs((currentLogs) => [newLog, ...currentLogs]);
     
         if (
-          (payload.new.event_type === 'email_capture' || payload.new.event_type === 'email_open') &&
+          (payload.new.event_type === 'email_capture' || 
+           payload.new.event_type === 'email_open' || 
+           payload.new.event_type === 'email_delivered') &&
           payload.new.uuid === uuid
         ) {
           fetchEmailCaptureLogs();
