@@ -40,13 +40,14 @@ function EventLogs() {
     if (!supabase) return;
 
     const formatLogEntry = (log) => {
-      const { event_id, event_time, event_type, event_page } = log;
+      const { event_id, event_time, event_type, event_page, archive } = log;
       return {
         event_type,
         event_time: new Date(event_time).toISOString().split('.')[0],
         event_page,
         event_id,
-        uuid
+        uuid,
+        archive
       };
     };
 
@@ -54,6 +55,7 @@ function EventLogs() {
       const { data, error } = await supabase
         .from('event_logs')
         .select('*')
+        .eq('archive', false)  // Only select logs where archive is false
         .order('event_id', { ascending: false })
         .limit(100);
 
@@ -69,7 +71,7 @@ function EventLogs() {
 
     const handleRealtimeUpdates = (payload) => {
       console.log('Realtime update received:', payload);
-      if (payload.eventType === 'INSERT') {
+      if (payload.eventType === 'INSERT' && !payload.new.archive) {
         const newLog = formatLogEntry(payload.new);
         setLogs((currentLogs) => [newLog, ...currentLogs]);
 
@@ -121,7 +123,8 @@ function EventLogs() {
       .from('event_logs')
       .select('*')
       .or(`event_type.eq.email_capture,event_type.eq.email_open`)
-      .eq('uuid', uuid);
+      .eq('uuid', uuid)
+      .eq('archive', false);  // Only select logs where archive is false
   
     if (error) {
       console.error('Error fetching email capture logs:', error);
@@ -177,7 +180,7 @@ function EventLogs() {
           >
             <code className="language-javascript" style={{ whiteSpace: 'pre' }}>
               {logs.map((log, index) => {
-                const { uuid: logUuid, ...logWithoutUuid } = log;
+                const { uuid: logUuid, archive, ...logWithoutUuid } = log;
                 const isCurrentUser = logUuid === uuid;
                 const orderedLog = {
                   event_type: logWithoutUuid.event_type,
