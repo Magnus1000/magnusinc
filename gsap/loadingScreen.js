@@ -3,20 +3,19 @@ document.addEventListener('DOMContentLoaded', function() {
   
     const tl = gsap.timeline();
     const loadingScreen = document.querySelector(".loading-screen");
+    console.log('Loading Screen:', loadingScreen);
     const loadingText = document.querySelector(".loading-text-small");
+    console.log('Loading Text:', loadingText);
     const homeHeaderDiv = document.querySelector(".home-header-div");
+    console.log('Loading Image:', loadingImage);
     const homeHeaderImage = homeHeaderDiv.querySelector(".home-header-image");
+    console.log('Home Header Div:', homeHeaderDiv);
     const loadingImageWrapper = document.querySelector(".loading-image-wrapper");
+    console.log('Home Header Image:', homeHeaderImage);
   
     // Move the home-header-image to the loading screen
     loadingImageWrapper.appendChild(homeHeaderImage.cloneNode(true));
     const loadingImage = loadingImageWrapper.querySelector(".home-header-image");
-  
-    console.log('Loading Screen:', loadingScreen);
-    console.log('Loading Text:', loadingText);
-    console.log('Loading Image:', loadingImage);
-    console.log('Home Header Div:', homeHeaderDiv);
-    console.log('Home Header Image:', homeHeaderImage);
   
     if (!loadingImage) {
       console.error('Loading image not found. Check the selector.');
