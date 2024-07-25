@@ -194,7 +194,7 @@ function EventLogs() {
                   event_id: logWithoutUuid.event_id
                 };
                 return (
-                  <div key={index} className={`event-log ${isCurrentUser ? 'uuid' : ''}`}>
+                  <div key={index} className={`event-log ${isCurrentUser ? 'uuid' : 'nonuuid'}`}>
                     <span className="code-line-number">{index + 1}</span> 
                     <span className={isCurrentUser ? 'uuid' : ''}>{JSON.stringify(orderedLog)}</span>
                   </div>
