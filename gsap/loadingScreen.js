@@ -1,18 +1,3 @@
-// Create the loading screen HTML
-const loadingScreenHTML = `
-  <div id="loading-screen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #f0f0f0; z-index: 9999;">
-    <div class="loading-text-wrapper">
-      <div class="loading-text-small">Magnus Inc builds digital solutions that are...</div>
-    </div>
-    <div class="loading-image-wrapper">
-      <img src="https://cdn.prod.website-files.com/66622a9748f9ccb21e21b57e/66a2a34adc4f07bb92e3fa6e_prett_and_smart_flat.svg" width="150" alt="Pretty and Smart" class="loading-image">
-    </div>
-  </div>
-`;
-
-// Insert the loading screen into the DOM
-document.body.insertAdjacentHTML('afterbegin', loadingScreenHTML);
-
 // Create and start the initial animations immediately
 const tl = gsap.timeline();
 
@@ -32,12 +17,12 @@ tl.from(".loading-image", {
 
 // Function to hide the loading screen
 function hideLoadingScreen() {
-  tl.to("#loading-screen", {
+  tl.to(".loading-screen", {
     y: "-100%",
     duration: 1,
     ease: "power2.inOut",
     onComplete: () => {
-      document.getElementById("loading-screen").remove();
+      document.querySelector(".loading-screen").style.display = "none";
     }
   });
 }
