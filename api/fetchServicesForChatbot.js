@@ -12,8 +12,7 @@ module.exports = (req, res) => {
       // Fetch data from Supabase
       const { data, error } = await supabase
         .from('services') // Replace with your actual table name
-        .select('service_name, service_description');
-
+        .select('service_name, problem_description, solution_description') 
       if (error) {
         throw error;
       }
